@@ -1,3 +1,4 @@
+'use strict';
 var GRAVITY = 2500;
 
 function stats(obj) {
