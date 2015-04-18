@@ -74,5 +74,11 @@ module.exports = {
 			accel: 1,
 			jheight: 180
 		})
-	}
+	},
+
+	SHOTS: {
+		Bolt: {
+			speed: 900
+		},
+	},
 };

@@ -1,15 +1,16 @@
 'use strict';
 var monster = require('./monster');
 var params = require('./params');
-var walker = require('./walker');
+var player = require('./player');
+var shots = require('./shots');
 
 function Level() {
 	this.gStartInfo = null;
 	this.gInput = null;
 	this.gPlayer = null;
-	this.gWalker = null;
 	this.gTiles = null;
 	this.gMonsters = null;
+	this.gShots = null;
 }
 
 Level.prototype = {
@@ -22,6 +23,7 @@ Level.prototype = {
 				right: k.addKey(Phaser.Keyboard.RIGHT),
 				up: k.addKey(Phaser.Keyboard.UP),
 				down: k.addKey(Phaser.Keyboard.DOWN),
+				fire: k.addKey(Phaser.Keyboard.Z)
 			};
 		}
 	},
@@ -58,7 +60,6 @@ Level.prototype = {
 		map.setCollision([1], true, 'Main', true);
 
 		this.gPlayer = null;
-		this.gWalker = null;
 		this.gMonsters = new monster.Monsters(this);
 
 		var olayer = map.objects.Default;
@@ -75,27 +76,20 @@ Level.prototype = {
 			}
 			console.error('Unknown object type: ' + obj.type);
 		}
+
+		this.gShots = new shots.Shots(this);
 	},
 
 	spawnPlayer: function(obj) {
-		var player = game.add.sprite(
-			obj.x + obj.width / 2, obj.y + obj.height / 2, 'player');
-		player.anchor.setTo(0.5, 0.5);
-		game.physics.arcade.enable(player);
-		player.body.gravity.y = params.GRAVITY;
-		player.body.collideWorldBounds = true;
-		player.body.maxVelocity.set(params.MAX_VELOCITY, params.MAX_VELOCITY);
-		this.gPlayer = player;
-		this.gWalker = new walker.Walker(player, params.PLAYER_STATS);
+		this.gPlayer = new player.Player(this, obj);
 	},
 
 	update: function() {
 		if (this.gPlayer) {
-			game.physics.arcade.collide(this.gPlayer, this.gTiles);
-			game.physics.arcade.collide(this.gMonsters.group, this.gTiles);
-			this.gWalker.updatePlayer(this.gInput);
-			this.gMonsters.update();
+			this.gPlayer.update();
 		}
+		this.gMonsters.update();
+		this.gShots.update();
 	}
 };
 

@@ -14,6 +14,10 @@ function Monsters(level) {
 Monsters.prototype = {
 	spawn: function(obj) {
 		var stats = params.MONSTERS[obj.type];
+		if (!stats) {
+			console.error('Unknown monster:', obj.type);
+			return;
+		}
 		var name = 'Monster ' + this.counter;
 		this.counter++;
 		var sprite = this.group.create(
@@ -33,6 +37,7 @@ Monsters.prototype = {
 	},
 
 	update: function() {
+		game.physics.arcade.collide(this.group, this.level.gTiles);
 		var name, obj;
 		for (name in this.objs) {
 			obj = this.objs[name];
