@@ -82,8 +82,8 @@ Level.prototype = {
 
 	update: function() {
 		if (this.gPlayer) {
-			this.gWalker.updatePlayer(this.gInput);
 			game.physics.arcade.collide(this.gPlayer, this.gTiles);
+			this.gWalker.updatePlayer(this.gInput);
 		}
 	}
 };
