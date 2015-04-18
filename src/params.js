@@ -1,4 +1,4 @@
-var GRAVITY = 2000;
+var GRAVITY = 2500;
 
 function stats(obj) {
 	// Calculate initial jump speed from target jump height.
@@ -31,7 +31,7 @@ module.exports = {
 		// Jumping
 		jtime: 0.5,
 		jaccel: 1800,
-		jheight: 200,
+		jheight: 180,
 		jdouble: true
 	}),
 };
