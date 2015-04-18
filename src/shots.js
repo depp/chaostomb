@@ -22,9 +22,7 @@ Shots.prototype = {
 		sprite = this.group.getFirstDead();
 		if (sprite) {
 			name = sprite.name;
-			sprite.x = px;
-			sprite.y = py;
-			sprite.revive();
+			sprite.reset(px, py);
 		} else {
 			name = 'P' + this.counter;
 			sprite = this.group.create(px, py, 'shots', 0);
