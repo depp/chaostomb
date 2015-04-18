@@ -66,7 +66,6 @@ function processInput() {
 
 function Walker(sprite, stats) {
 	console.log(stats);
-	sprite.body.bounce.y = stats.bounce;
 	this.sprite = sprite;
 	this.stats = stats;
 	this.state = 0;
@@ -79,6 +78,8 @@ Walker.prototype = {
 	update: function(xdrive, ydrive) {
 		var body = this.sprite.body;
 		var stats = this.stats;
+
+		sprite.body.bounce.y = stats.bounce;
 
 		var drag, accel, speed;
 		if (this.state === 0) {
