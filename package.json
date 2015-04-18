@@ -1,0 +1,19 @@
+{
+  "name": "PhaserDemo",
+  "version": "0.1.0",
+  "description": "A demo project to learn Phaser",
+  "author": "Dietrich Epp <depp@zdome.net>",
+  "main": "src/main.js",
+  "dependencies": {},
+  "devDependencies": {
+    "browserify": "^9.0.8",
+    "clean-css": "^3.1.9",
+    "html-minifier": "^0.7.2",
+    "phaser": "^2.3.0",
+    "uglifyjs": "^2.4.10"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/depp/warmup32.git"
+  }
+}

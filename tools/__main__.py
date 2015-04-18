@@ -1,0 +1,29 @@
+from . import app
+from . import build
+
+def run():
+    import argparse
+    import configparser
+    p = argparse.ArgumentParser()
+    p.add_argument('action', choices=('build', 'serve', 'package', 'deploy'))
+    p.add_argument('config')
+    args = p.parse_args()
+    config = configparser.ConfigParser()
+    with open(args.config) as fp:
+        config.read_file(fp)
+    system = build.BuildSystem()
+    try:
+        obj = app.App(config, system)
+        obj.build()
+        if args.action == 'serve':
+            from . import serve
+            serve.serve(config, obj)
+        elif args.action == 'package':
+            system.package('package.tar.gz', 'build')
+        elif args.action == 'deploy':
+            pass
+    except build.BuildFailure as ex:
+        print('Build failed: {}'.format(ex))
+
+if __name__ == '__main__':
+    run()
