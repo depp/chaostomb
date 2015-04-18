@@ -17,34 +17,55 @@ function preload() {
 		s = spritesheets[x];
 		game.load.spritesheet(x, 'images/' + s.path, s.w, s.h);
 	}
+	var levels = PATH_MAP.levels;
+	for (x in levels) {
+		game.load.tilemap(
+			x, 'levels/' + levels[x], null, Phaser.Tilemap.TILED_JSON);
+	}
 }
 
 var player, platforms, cursors, walker;
 
+var TYPES = {
+	Player: function(obj) {
+		player = game.add.sprite(obj.x, obj.y, 'player');
+		game.physics.arcade.enable(player);
+		player.body.gravity.y = params.GRAVITY;
+		player.body.collideWorldBounds = true;
+		walker = new Walker(player, params.PLAYER_STATS);
+	}
+};
+
 function create() {
+	var i;
+
 	cursors = game.input.keyboard.createCursorKeys();
 
 	game.antialias = false;
 	game.stage.smoothed = false;
-	// game.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;
-	// game.scale.setUserScale(2);
 	game.physics.startSystem(Phaser.Physics.ARCADE);
 
-	player = game.add.sprite(32, game.world.height - 150, 'player');
-	game.physics.arcade.enable(player);
-
-	player.body.gravity.y = params.GRAVITY;
-	player.body.collideWorldBounds = true;
-
-	// player.animations.add('left', [0, 1, 2, 3], 10, true);
-	// player.animations.add('right', [5, 6, 7, 8], 10, true);
-
-	walker = new Walker(player, params.PLAYER_STATS);
+	var map = game.add.tilemap('test');
+	map.addTilesetImage('tiles', 'tiles');
+	var layer = map.createLayer('Main');
+	layer.resizeWorld();
+	var olayer = map.objects.Default;
+	for (i = 0; i < olayer.length; i++) {
+		var obj = olayer[i];
+		var func = TYPES[obj.type];
+		if (!func) {
+			console.error('Unknown object type: ' + obj.type);
+			continue;
+		}
+		func(obj);
+	}
 }
 
 function update() {
-	game.physics.arcade.collide(player, platforms);
-	processInput();
+	if (player) {
+		game.physics.arcade.collide(player, platforms);
+		processInput();
+	}
 }
 
 function processInput() {
@@ -61,11 +82,13 @@ function processInput() {
 	if (cursors.down.isDown) {
 		ydrive += +1;
 	}
-	walker.update(xdrive, ydrive);
+	if (walker) {
+		walker.update(xdrive, ydrive);
+	}
 }
 
 function Walker(sprite, stats) {
-	console.log(stats);
+	sprite.body.bounce.y = stats.bounce;
 	this.sprite = sprite;
 	this.stats = stats;
 	this.state = 0;
@@ -78,8 +101,6 @@ Walker.prototype = {
 	update: function(xdrive, ydrive) {
 		var body = this.sprite.body;
 		var stats = this.stats;
-
-		sprite.body.bounce.y = stats.bounce;
 
 		var drag, accel, speed;
 		if (this.state === 0) {

@@ -12,6 +12,7 @@ PLAIN_TEXT = ('Content-Type', 'text/plain;charset=UTF-8')
 CONTENT_TYPE = {
     '.html': 'text/html;charset=UTF-8',
     '.js': 'application/javascript',
+    '.json': 'application/json',
     '.png': 'image/png',
     '.jpg': 'image/jpeg',
 }

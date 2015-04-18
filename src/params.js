@@ -5,7 +5,6 @@ function stats(obj) {
 	obj.jspeed = Math.sqrt(
 		(obj.jaccel * obj.jtime * obj.jtime + 2 * obj.jheight) * GRAVITY) -
 		obj.jaccel * obj.jtime;
-	console.log(obj.jspeed);
 	return obj;
 }
 

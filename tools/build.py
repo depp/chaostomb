@@ -1,5 +1,6 @@
 import base64
 import hashlib
+import json
 import os
 import pipes
 import subprocess
@@ -169,3 +170,8 @@ def minify_html(config, data):
         cmd.extend(sec.get('flags', '').split())
         data = run_pipe(cmd, data)
     return data
+
+def minify_json(config, path):
+    with open(path) as fp:
+        obj = json.load(fp)
+    return json.dumps(obj, separators=(',', ':')).encode('UTF-8')

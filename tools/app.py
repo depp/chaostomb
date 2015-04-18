@@ -12,17 +12,19 @@ def bad_sprite(path):
         'Invalid sprite description: {}'.format(path))
 
 class App(object):
-    __slots__ = ['config', 'system']
+    __slots__ = ['config', 'system', 'scale']
 
     def __init__(self, config, system):
         self.config = config
         self.system = system
+        self.scale = 2
 
     def build(self):
         ver = version.get_version('.')
 
         path_map = {}
         self.build_images(path_map)
+        self.build_levels(path_map)
 
         if self.config.getboolean('json', 'pretty', fallback=False):
             path_map = 'var PATH_MAP = {};\n'.format(
@@ -59,12 +61,12 @@ class App(object):
         spritesheets = {}
         path_map['images'] = images
         path_map['spritesheets'] = spritesheets
-        scale = 2
         for path in build.all_files('images', exts={'.png', '.jpg'}):
             img_path = self.system.build(
                 os.path.join('build', path),
                 self.scale_image,
-                args=[path, 2],
+                deps=[path],
+                args=[path, self.scale],
                 bust=True)
             ypath = os.path.splitext(path)[0] + '.yaml'
             path = os.path.splitext(path)[0]
@@ -101,6 +103,53 @@ class App(object):
         fp = io.BytesIO()
         img.save(fp, 'PNG')
         return fp.getvalue()
+
+    def build_levels(self, path_map):
+        levels = {}
+        path_map['levels'] = levels
+        for path in build.all_files('levels', exts={'.json'}):
+            level_path = self.system.build(
+                os.path.join('build', path),
+                self.level,
+                deps=[path],
+                args=[path, self.scale],
+                bust=True)
+            path = os.path.splitext(path)[0]
+            path = os.path.relpath(path, 'levels')
+            level_path = os.path.relpath(level_path, 'build/levels')
+            levels[path] = level_path
+
+    def json(self, path):
+        return build.minify_json(self.config, path)
+
+    def level(self, path, scale):
+        with open(path) as fp:
+            obj = json.load(fp)
+        obj['tilewidth'] *= scale
+        obj['tileheight'] *= scale
+        for t in obj['tilesets']:
+            t['tilewidth'] *= scale
+            t['tileheight'] *= scale
+            t['imagewidth'] *= scale
+            t['imageheight'] *= scale
+        for t in obj['layers']:
+            if t['type'] != 'objectgroup':
+                continue
+            t['height'] *= scale
+            t['width'] *= scale
+            for u in t['objects']:
+                u['height'] *= scale
+                u['width'] *= scale
+                u['x'] *= scale
+                u['y'] *= scale
+            #tpath = tileset['image']
+            #tpath = os.path.relpath(
+            #    os.path.join(
+            #        os.path.dirname(os.path.abspath(path)),
+            #        os.path.splitext(tpath)[0]),
+            #    'images')
+            #tileset['image'] = tpath
+        return json.dumps(obj, separators=(',', ':')).encode('UTF-8')
 
     def app_js(self):
         return build.minify_js(
