@@ -80,7 +80,9 @@ Level.prototype = {
 	},
 
 	spawnPlayer: function(obj) {
-		var player = game.add.sprite(obj.x, obj.y, 'player');
+		var player = game.add.sprite(
+			obj.x + obj.width / 2, obj.y + obj.height / 2, 'player');
+		player.anchor.setTo(0.5, 0.5);
 		game.physics.arcade.enable(player);
 		player.body.gravity.y = params.GRAVITY;
 		player.body.collideWorldBounds = true;
