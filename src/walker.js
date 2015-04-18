@@ -11,23 +11,6 @@ function Walker(sprite, stats) {
 }
 
 Walker.prototype = {
-	updatePlayer: function(input) {
-		var xdrive = 0, ydrive = 0;
-		if (input.left.isDown) {
-			xdrive += -1;
-		}
-		if (input.right.isDown) {
-			xdrive += +1;
-		}
-		if (input.up.isDown) {
-			ydrive += -1;
-		}
-		if (input.down.isDown) {
-			ydrive += +1;
-		}
-		this.update(xdrive, ydrive);
-	},
-
 	update: function(xdrive, ydrive) {
 		var body = this.sprite.body;
 		var stats = this.stats;
