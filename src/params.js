@@ -1,5 +1,9 @@
 'use strict';
+
 var GRAVITY = 2500;
+
+// In one 60 Hz tick, don't move more than 90% of a half tile.
+var MAX_VELOCITY = 16 * 60 * 0.9;
 
 function stats(obj) {
 	// Calculate initial jump speed from target jump height.
@@ -11,6 +15,8 @@ function stats(obj) {
 
 module.exports = {
 	GRAVITY: GRAVITY,
+
+	MAX_VELOCITY: MAX_VELOCITY,
 
 	PLAYER_STATS: stats({
 		bounce: 0.2,

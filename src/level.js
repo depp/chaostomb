@@ -84,6 +84,7 @@ Level.prototype = {
 		game.physics.arcade.enable(player);
 		player.body.gravity.y = params.GRAVITY;
 		player.body.collideWorldBounds = true;
+		player.body.maxVelocity.set(params.MAX_VELOCITY, params.MAX_VELOCITY);
 		this.gPlayer = player;
 		this.gWalker = new walker.Walker(player, params.PLAYER_STATS);
 	},
