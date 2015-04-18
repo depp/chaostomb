@@ -21,6 +21,7 @@ Monsters.prototype = {
 		sprite.anchor.setTo(0.5, 0.5);
 		sprite.name = name;
 		sprite.body.collideWorldBounds = true;
+		sprite.body.gravity.y = params.GRAVITY;
 		this.objs[name] = {
 			sprite: sprite,
 			stats: stats,
