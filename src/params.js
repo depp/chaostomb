@@ -5,6 +5,10 @@ var GRAVITY = 2500;
 // In one 60 Hz tick, don't move more than 90% of a half tile.
 var MAX_VELOCITY = 16 * 60 * 0.9;
 
+// Speed at which a player flips to the other direction.
+// Negative numbers means a player flips before stopping.
+var FLIP_SPEED = -50;
+
 function stats(obj) {
 	// Calculate initial jump speed from target jump height.
 	if (obj.jheight > 0) {
@@ -44,6 +48,8 @@ module.exports = {
 	GRAVITY: GRAVITY,
 
 	MAX_VELOCITY: MAX_VELOCITY,
+
+	FLIP_SPEED: FLIP_SPEED,
 
 	PLAYER_STATS: stats({
 		bounce: 0.2,

@@ -1,4 +1,5 @@
 'use strict';
+var params = require('./params');
 
 function Walker(sprite, stats) {
 	sprite.body.bounce.y = stats.bounce;
@@ -8,6 +9,7 @@ function Walker(sprite, stats) {
 	this.jumptime = 0;
 	this.jumpdown = false;
 	this.stepdistance = 0;
+	this.direction = +1;
 }
 
 Walker.prototype = {
@@ -33,6 +35,9 @@ Walker.prototype = {
 		// Final X acceleration
 		var xaccel;
 		if (Math.abs(xdrive) > 0.1) {
+			if (body.velocity.x * Math.sign(xdrive) >= params.FLIP_SPEED) {
+				this.sprite.scale.x = this.direction = Math.sign(xdrive);
+			}
 			xaccel = accel;
 			var xfrac = body.velocity.x / xtarget;
 			if (xfrac > 0.8) {
