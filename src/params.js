@@ -33,7 +33,10 @@ function monster(obj) {
 			jaccel: 0,
 			jheight: obj.jheight,
 			jdouble: false
-		})
+		}),
+		ai: {
+			pausetime: obj.pausetime || 0.3,
+		},
 	};
 }
 

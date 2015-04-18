@@ -27,7 +27,8 @@ Monsters.prototype = {
 			stats: stats,
 			walker: new walker.Walker(sprite, stats.stats),
 			state: this.statePatrol,
-			param: Math.random() > 0.5 ? 1 : 0
+			param: Math.random() > 0.5 ? 2 : 0,
+			time: 0
 		};
 	},
 
@@ -45,13 +46,23 @@ Monsters.prototype = {
 			obj.walker.update(-1, 0);
 			if (obj.sprite.body.blocked.left) {
 				obj.param = 1;
+				obj.time = (Math.random() + 0.5) * obj.stats.ai.pausetime;
+			}
+			break;
+
+		case 2:
+			obj.walker.update(+1, 0);
+			if (obj.sprite.body.blocked.right) {
+				obj.param = 3;
+				obj.time = (Math.random() + 0.5) * obj.stats.ai.pausetime;
 			}
 			break;
 
 		case 1:
-			obj.walker.update(+1, 0);
-			if (obj.sprite.body.blocked.right) {
-				obj.param = 0;
+		case 3:
+			obj.time -= game.time.physicsElapsed;
+			if (obj.time <= 0) {
+				obj.param = (obj.param + 1) & 3;
 			}
 			break;
 		}
