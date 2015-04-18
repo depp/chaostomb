@@ -4,6 +4,11 @@
   "description": "A demo project to learn Phaser",
   "author": "Dietrich Epp <depp@zdome.net>",
   "main": "src/main.js",
+  "jshintConfig": {
+    "browserify": true,
+    "predef": ["Phaser", "game", "PATH_MAP"],
+    "devel": true
+  },
   "dependencies": {},
   "devDependencies": {
     "browserify": "^9.0.8",
