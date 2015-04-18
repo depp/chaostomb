@@ -3,10 +3,11 @@ var params = require('./params');
 var walker = require('./walker');
 
 function Monsters(level) {
+	this.level = level;
 	this.group = level.add.group();
 	this.group.enableBody = true;
 	this.group.physicsBodyType = Phaser.Physics.ARCADE;
-	this.state = {};
+	this.objs = {};
 	this.counter = 0;
 }
 
@@ -20,18 +21,38 @@ Monsters.prototype = {
 		sprite.anchor.setTo(0.5, 0.5);
 		sprite.name = name;
 		sprite.body.collideWorldBounds = true;
-		this.state[name] = {
+		this.objs[name] = {
 			sprite: sprite,
 			stats: stats,
-			walker: new walker.Walker(sprite, stats.stats)
+			walker: new walker.Walker(sprite, stats.stats),
+			state: this.statePatrol,
+			param: Math.random() > 0.5 ? 1 : 0
 		};
 	},
 
 	update: function() {
-		var name, state;
-		for (name in this.state) {
-			state = this.state[name];
-			state.walker.update(1, 0);
+		var name, obj;
+		for (name in this.objs) {
+			obj = this.objs[name];
+			obj.state.call(this, obj);
+		}
+	},
+
+	statePatrol: function(obj) {
+		switch (obj.param) {
+		case 0:
+			obj.walker.update(-1, 0);
+			if (obj.sprite.body.blocked.left) {
+				obj.param = 1;
+			}
+			break;
+
+		case 1:
+			obj.walker.update(+1, 0);
+			if (obj.sprite.body.blocked.right) {
+				obj.param = 0;
+			}
+			break;
 		}
 	}
 };
