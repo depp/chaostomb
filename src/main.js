@@ -1,3 +1,5 @@
+var params = require('./params');
+
 var game = new Phaser.Game(800, 480, Phaser.AUTO, 'game', {
 	preload: preload,
 	create: create,
@@ -31,14 +33,13 @@ function create() {
 	player = game.add.sprite(32, game.world.height - 150, 'player');
 	game.physics.arcade.enable(player);
 
-	player.body.bounce.y = 0.2;
-	player.body.gravity.y = 300;
+	player.body.gravity.y = params.GRAVITY;
 	player.body.collideWorldBounds = true;
 
 	// player.animations.add('left', [0, 1, 2, 3], 10, true);
 	// player.animations.add('right', [5, 6, 7, 8], 10, true);
 
-	walker = new Walker(player, PLAYER_STATS);
+	walker = new Walker(player, params.PLAYER_STATS);
 }
 
 function update() {
@@ -63,41 +64,19 @@ function processInput() {
 	walker.update(xdrive, ydrive);
 }
 
-var PLAYER_STATS = {
-	// Gravity
-	gravity: 1200,
-
-	// Time between steps
-	steptime: 0.16,
-
-	// Ground movement
-	gdrag: 1200,
-	gaccel: 2400,
-	gspeed: 300,
-
-	// Air movement
-	adrag: 0,
-	aaccel: 300,
-	aspeed: 180,
-
-	// Jumping
-	jtime: 0.8,
-	jaccel: 400,
-	jspeed: 280,
-	jdouble: true
-};
-
 function Walker(sprite, stats) {
+	console.log(stats);
+	sprite.body.bounce.y = stats.bounce;
 	this.sprite = sprite;
 	this.stats = stats;
 	this.state = 0;
-	this.jump_time = 0;
-	this.step_distance = 0;
+	this.jumptime = 0;
+	this.jumpdown = false;
+	this.stepdistance = 0;
 }
 
 Walker.prototype = {
 	update: function(xdrive, ydrive) {
-		this.sprite.body.acceler
 		var body = this.sprite.body;
 		var stats = this.stats;
 
@@ -127,11 +106,39 @@ Walker.prototype = {
 		} else {
 			xaccel = drag;
 		}
-		if (Math.abs(xdel) <= xaccel * game.time.physicsElabsed) {
+		if (Math.abs(xdel) <= xaccel * game.time.physicsElapsed) {
 			body.velocity.x = xtarget;
 			body.acceleration.x = 0;
 		} else {
 			body.acceleration.x = Math.sign(xdel) * xaccel;
+		}
+
+		var did_jump = false;
+		body.acceleration.y = 0;
+		if (ydrive <= -0.5) {
+			if (this.jumptime > 0) {
+				this.jumptime -= game.time.physicsElapsed;
+				body.acceleration.y = stats.jaccel * ydrive;
+			} else {
+				var can_jump = !this.jumpdown &&
+					(this.state === 0 || this.state === 1 && stats.jdouble);
+				if (can_jump) {
+					this.state++;
+					this.jumptime = stats.jtime;
+					if (body.velocity.y >= -stats.jspeed) {
+						body.velocity.y = -stats.jspeed;
+					}
+					did_jump = true;
+				}
+			}
+			this.jumpdown = true;
+		} else {
+			this.jumpdown = false;
+			body.acceleration.y = 0;
+			this.jumptime = 0;
+		}
+		if (!did_jump && body.onFloor()) {
+			this.state = 0;
 		}
 	},
 };
