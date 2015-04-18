@@ -1,6 +1,6 @@
 console.log(Phaser)
 
-var game = new Phaser.Game(900, 600, Phaser.AUTO, 'game', {
+var game = new Phaser.Game(800, 480, Phaser.AUTO, 'game', {
 	preload: preload,
 	create: create,
 	update: update
@@ -22,6 +22,10 @@ function preload() {
 var player, platforms;
 
 function create() {
+	game.antialias = false;
+	game.stage.smoothed = false;
+	// game.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;
+	// game.scale.setUserScale(2);
 	game.physics.startSystem(Phaser.Physics.ARCADE);
 
 	player = game.add.sprite(32, game.world.height - 150, 'player');

@@ -1,8 +1,10 @@
 from . import build
 from . import version
 from mako import template
+import io
 import json
 import os
+import PIL.Image
 import yaml
 
 def bad_sprite(path):
@@ -57,10 +59,12 @@ class App(object):
         spritesheets = {}
         path_map['images'] = images
         path_map['spritesheets'] = spritesheets
+        scale = 2
         for path in build.all_files('images', exts={'.png', '.jpg'}):
-            img_path = self.system.copy(
+            img_path = self.system.build(
                 os.path.join('build', path),
-                path,
+                self.scale_image,
+                args=[path, 2],
                 bust=True)
             ypath = os.path.splitext(path)[0] + '.yaml'
             path = os.path.splitext(path)[0]
@@ -82,9 +86,21 @@ class App(object):
                     bad_sprite(ypath)
                 if not isinstance(width, int) and isinstance(height, int):
                     bad_sprite(ypath)
-                spritesheets[path] = {'path': img_path, 'w': width, 'h': height}
+                spritesheets[path] = {
+                    'path': img_path,
+                    'w': width * 2,
+                    'h': height * 2,
+                }
             else:
                 bad_sprite(ypath)
+
+    def scale_image(self, path, scale):
+        img = PIL.Image.open(path)
+        w, h = img.size
+        img = img.resize((w * scale, h * scale), resample=PIL.Image.NEAREST)
+        fp = io.BytesIO()
+        img.save(fp, 'PNG')
+        return fp.getvalue()
 
     def app_js(self):
         return build.minify_js(
