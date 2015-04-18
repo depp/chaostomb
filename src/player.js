@@ -41,7 +41,6 @@ Player.prototype = {
 
 		if (fire && !this.fireDown) {
 			var sprite = this.sprite;
-			console.log("FIRE");
 			this.level.gShots.spawn(
 				'Bolt',
 				sprite.x, sprite.y, 1, 0);

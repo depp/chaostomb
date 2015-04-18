@@ -13,15 +13,28 @@ function Shots(level) {
 Shots.prototype = {
 	// type, position(x, y), direction(x, y)
 	spawn: function(type, px, py, dx, dy) {
+		console.log(this.group.countDead(), this.group.countLiving());
+
 		var stats = params.SHOTS[type];
 		if (!stats) {
 			console.error('Unknown shot:', type);
 			return;
 		}
-		var name = 'P' + this.counter;
-		var sprite = this.group.create(px, py, 'shots', 0);
-		sprite.anchor.setTo(0.5, 0.5);
-		sprite.name = name;
+		var sprite, name;
+		sprite = this.group.getFirstDead();
+		if (sprite) {
+			name = sprite.name;
+			sprite.x = px;
+			sprite.y = py;
+			sprite.revive();
+		} else {
+			name = 'P' + this.counter;
+			sprite = this.group.create(px, py, 'shots', 0);
+			sprite.name = name;
+			sprite.anchor.setTo(0.5, 0.5);
+			sprite.checkWorldBounds = true;
+			sprite.outOfBoundsKill = true;
+		}
 		var dmag = Math.hypot(dx, dy);
 		var dfac;
 		if (Math.abs(dmag) < 0.1) {
