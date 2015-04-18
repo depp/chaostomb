@@ -78,7 +78,8 @@ module.exports = {
 
 	SHOTS: {
 		Bolt: {
-			speed: 900
+			speed: 900,
+			size: 12
 		},
 	},
 };

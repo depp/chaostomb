@@ -44,6 +44,7 @@ Shots.prototype = {
 		}
 		dfac *= stats.speed;
 		sprite.body.velocity.set(dx * dfac, dy * dfac);
+		sprite.body.setSize(stats.size, stats.size);
 		this.objs[name] = {
 			sprite: sprite,
 		};
