@@ -13,7 +13,7 @@
         }, 
         {
          "draworder":"topdown",
-         "height":70,
+         "height":0,
          "name":"Default",
          "objects":[
                 {
@@ -27,13 +27,41 @@
                  "type":"Player",
                  "visible":true,
                  "width":16,
-                 "x":208,
+                 "x":160,
+                 "y":104
+                }, 
+                {
+                 "height":24,
+                 "name":"",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"Eye",
+                 "visible":true,
+                 "width":16,
+                 "x":64,
+                 "y":200
+                }, 
+                {
+                 "height":24,
+                 "name":"",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"Eye",
+                 "visible":true,
+                 "width":16,
+                 "x":272,
                  "y":104
                 }],
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
-         "width":20,
+         "width":0,
          "x":0,
          "y":0
         }],

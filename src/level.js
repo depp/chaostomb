@@ -1,4 +1,5 @@
 'use strict';
+var monster = require('./monster');
 var params = require('./params');
 var walker = require('./walker');
 
@@ -8,11 +9,11 @@ function Level() {
 	this.gPlayer = null;
 	this.gWalker = null;
 	this.gTiles = null;
+	this.gMonsters = null;
 }
 
 Level.prototype = {
 	init: function(startInfo) {
-		console.log('INIT', startInfo);
 		this.gStartInfo = startInfo;
 		if (!this.gInput) {
 			var k = this.input.keyboard;
@@ -26,7 +27,6 @@ Level.prototype = {
 	},
 
 	preload: function() {
-		console.log('PRELOAD');
 		var x, s;
 		var images = PATH_MAP.images;
 		for (x in images) {
@@ -45,29 +45,37 @@ Level.prototype = {
 	},
 
 	create: function() {
-		console.log('CREATE');
+		var i;
 
 		game.antialias = false;
 		game.stage.smoothed = false;
 		game.physics.startSystem(Phaser.Physics.ARCADE);
 
-		this.gPlayer = null;
-		this.gWalker = null;
-		var i;
 		var map = game.add.tilemap(this.gStartInfo.level);
 		map.addTilesetImage('tiles', 'tiles');
 		this.gTiles = map.createLayer('Main');
 		this.gTiles.resizeWorld();
 		map.setCollision([1], true, 'Main', true);
+
+		this.gPlayer = null;
+		this.gWalker = null;
+		this.gMonsters = this.add.group();
+		this.gMonsters.enableBody = true;
+		this.gMonsters.physicsBodyType = Phaser.Physics.ARCADE;
+
 		var olayer = map.objects.Default;
 		for (i = 0; i < olayer.length; i++) {
 			var obj = olayer[i];
 			var func = this['spawn' + obj.type];
-			if (!func) {
-				console.error('Unknown object type: ' + obj.type);
+			if (func) {
+				func.call(this, obj);
 				continue;
 			}
-			func.call(this, obj);
+			if (obj.type in monster.TYPES) {
+				monster.spawn(this.gMonsters, obj);
+				continue;
+			}
+			console.error('Unknown object type: ' + obj.type);
 		}
 	},
 

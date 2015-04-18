@@ -21,6 +21,8 @@
 </data>
  </layer>
  <objectgroup name="Default">
-  <object type="Player" x="208" y="104" width="16" height="24"/>
+  <object type="Player" x="160" y="104" width="16" height="24"/>
+  <object type="Eye" x="64" y="200" width="16" height="24"/>
+  <object type="Eye" x="272" y="104" width="16" height="24"/>
  </objectgroup>
 </map>
