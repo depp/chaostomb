@@ -13,8 +13,6 @@ function Shots(level) {
 Shots.prototype = {
 	// type, position(x, y), direction(x, y)
 	spawn: function(type, px, py, dx, dy) {
-		console.log(this.group.countDead(), this.group.countLiving());
-
 		var stats = params.SHOTS[type];
 		if (!stats) {
 			console.error('Unknown shot:', type);
@@ -52,6 +50,16 @@ Shots.prototype = {
 	},
 
 	update: function() {
+		game.physics.arcade.overlap(
+			this.level.gMonsters.group, this.group, this.monsterHit, null, this);
+	},
+
+	// Callback when monster is hit by shot.
+	monsterHit: function(monster, shot) {
+		var cx = (monster.x + shot.x) / 2;
+		var cy = (monster.y + shot.y) / 2;
+		this.level.gFx.spawn('Boom', cx, cy);
+		shot.kill();
 	}
 };
 

@@ -1,4 +1,5 @@
 'use strict';
+var fx = require('./fx');
 var monster = require('./monster');
 var params = require('./params');
 var player = require('./player');
@@ -11,6 +12,7 @@ function Level() {
 	this.gTiles = null;
 	this.gMonsters = null;
 	this.gShots = null;
+	this.gFx = null;
 }
 
 Level.prototype = {
@@ -78,6 +80,7 @@ Level.prototype = {
 		}
 
 		this.gShots = new shots.Shots(this);
+		this.gFx = new fx.Fx(this);
 	},
 
 	spawnPlayer: function(obj) {
@@ -90,6 +93,7 @@ Level.prototype = {
 		}
 		this.gMonsters.update();
 		this.gShots.update();
+		this.gFx.update();
 	}
 };
 
