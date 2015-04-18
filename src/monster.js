@@ -2,10 +2,6 @@
 var params = require('./params');
 var walker = require('./walker');
 
-var TYPES = {
-	Eye: {}
-};
-
 function Monsters(level) {
 	this.group = level.add.group();
 	this.group.enableBody = true;
@@ -41,6 +37,5 @@ Monsters.prototype = {
 };
 
 module.exports = {
-	TYPES: TYPES,
 	Monsters: Monsters
 };

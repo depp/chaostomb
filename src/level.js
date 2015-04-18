@@ -69,7 +69,7 @@ Level.prototype = {
 				func.call(this, obj);
 				continue;
 			}
-			if (obj.type in monster.TYPES) {
+			if (obj.type in params.MONSTERS) {
 				this.gMonsters.spawn(obj);
 				continue;
 			}
