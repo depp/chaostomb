@@ -67,7 +67,7 @@ Walker.prototype = {
 
 		var did_jump = false;
 		body.acceleration.y = 0;
-		if (ydrive <= -0.5) {
+		if (ydrive <= -0.5 && stats.jspeed > 0) {
 			if (this.jumptime > 0) {
 				this.jumptime -= game.time.physicsElapsed;
 				body.acceleration.y = stats.jaccel * ydrive;

@@ -59,9 +59,7 @@ Level.prototype = {
 
 		this.gPlayer = null;
 		this.gWalker = null;
-		this.gMonsters = this.add.group();
-		this.gMonsters.enableBody = true;
-		this.gMonsters.physicsBodyType = Phaser.Physics.ARCADE;
+		this.gMonsters = new monster.Monsters(this);
 
 		var olayer = map.objects.Default;
 		for (i = 0; i < olayer.length; i++) {
@@ -72,7 +70,7 @@ Level.prototype = {
 				continue;
 			}
 			if (obj.type in monster.TYPES) {
-				monster.spawn(this.gMonsters, obj);
+				this.gMonsters.spawn(obj);
 				continue;
 			}
 			console.error('Unknown object type: ' + obj.type);
@@ -94,7 +92,9 @@ Level.prototype = {
 	update: function() {
 		if (this.gPlayer) {
 			game.physics.arcade.collide(this.gPlayer, this.gTiles);
+			game.physics.arcade.collide(this.gMonsters.group, this.gTiles);
 			this.gWalker.updatePlayer(this.gInput);
+			this.gMonsters.update();
 		}
 	}
 };
