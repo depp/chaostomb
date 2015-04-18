@@ -11,9 +11,7 @@ Fx.prototype = {
 		var sprite;
 		sprite = this.group.getFirstDead();
 		if (sprite) {
-			sprite.x = px;
-			sprite.y = py;
-			sprite.revive();
+			sprite.reset(px, py);
 		} else {
 			sprite = this.group.create(px, py, 'fx', 0);
 			sprite.anchor.setTo(0.5, 0.5);
