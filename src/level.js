@@ -104,6 +104,7 @@ Level.prototype.create = function() {
 	this.gShots = new shots.Shots(this);
 	this.gFx = new fx.Fx(this);
 	this.gUi = game.add.group();
+	this.gUi.fixedToCamera = true;
 	this.gOuch = game.add.group();
 	this.gOuch.enableBody = true;
 	this.gOuch.physicsBodyType = Phaser.Physics.ARCADE;
