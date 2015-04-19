@@ -97,7 +97,7 @@ Player.prototype.addWeapon = function(weapon) {
 		name: weapon,
 		sprite: sprite
 	});
-},
+};
 
 Player.prototype.setHearts = function(count) {
 	var i;
