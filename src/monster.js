@@ -135,7 +135,7 @@ Patrol.prototype.update = function() {
 	}
 };
 Patrol.prototype.scan = function() {
-	var target = this.obj.level.gPlayer.getPosition();
+	var target = this.obj.level.gPlayer.getTargetPosition();
 	if (!target) {
 		return;
 	}
@@ -163,7 +163,7 @@ Shoot.prototype.update = function() {
 		this.obj.behavior = this.previous;
 		return;
 	}
-	var target = this.obj.level.gPlayer.getPosition();
+	var target = this.obj.level.gPlayer.getTargetPosition();
 	if (!target) {
 		target = this.target;
 	} else {

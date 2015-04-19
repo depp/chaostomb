@@ -233,12 +233,21 @@ Player.prototype.setHealth = function(amt) {
 };
 
 // Get the current player position, for monster targeting purposes.
-Player.prototype.getPosition = function(count) {
+Player.prototype.getTargetPosition = function() {
 	var obj = this.objs.Player;
 	if (!obj) {
 		return null;
 	}
 	return obj.sprite.position;
+};
+
+// Get the current player sprite, for interaction purposes.
+Player.prototype.getInteractSprite = function() {
+	var obj = this.objs.Player;
+	if (!obj) {
+		return null;
+	}
+	return obj.sprite;
 };
 
 // Call a function on a player object.

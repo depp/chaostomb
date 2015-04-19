@@ -96,10 +96,9 @@ Level.prototype = {
 
 	update: function() {
 		input.update();
-		if (this.gPlayer) {
-			this.gPlayer.update();
-		}
+		this.gPlayer.update();
 		this.gMonsters.update();
+		this.gProps.update();
 		this.gShots.update();
 		this.gFx.update();
 	}
