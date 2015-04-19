@@ -142,10 +142,12 @@ Level.prototype.create = function() {
 	}
 };
 
+/*
 Level.prototype.render = function() {
 	this.gPlayer.group.forEachAlive(game.debug.body, game.debug);
 	this.gOuch.forEachAlive(game.debug.body, game.debug);
 };
+*/
 
 Level.prototype.spawnPlayer = function(obj) {
 	this.gPlayer.spawn(obj);
