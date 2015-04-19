@@ -50,16 +50,26 @@ Shots.prototype = {
 
 	update: function() {
 		game.physics.arcade.overlap(
-			this.level.gMonsters.group, this.group, this.monsterHit, null, this);
+			this.group, this.level.gMonsters.group, this.monsterHit, null, this);
+		this.group.forEachAlive(function(shot) {
+			game.physics.arcade.overlap(
+				shot, this.level.gTiles, this.tileHit, null, this);
+		}, this);
 	},
 
-	// Callback when monster is hit by shot.
-	monsterHit: function(monster, shot) {
+	// Callback when shot hits monster.
+	monsterHit: function(shot, monster) {
 		var cx = (monster.x + shot.x) / 2;
 		var cy = (monster.y + shot.y) / 2;
 		this.level.gFx.spawn('Boom', cx, cy);
 		shot.kill();
-	}
+	},
+
+	// Callback when shot hits tile.
+	tileHit: function(shot, tile) {
+		this.level.gFx.spawn('Boom', shot.x, shot.y);
+		shot.kill();
+	},
 };
 
 module.exports = {
