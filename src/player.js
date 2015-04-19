@@ -2,7 +2,6 @@
 var params = require('./params');
 var mover = require('./mover');
 var loader = require('./loader');
-var text = require('./text');
 var weapons = require('./weapons');
 
 function Player(level, obj) {
@@ -13,8 +12,6 @@ function Player(level, obj) {
 	this.fireDown = true;
 	this.weapons = [];
 	this.weapon = -1;
-	this.wtext = null;
-	this.wsprite = null;
 	this.hearts = [];
 	this.health = 0;
 }
@@ -102,12 +99,6 @@ Player.prototype.addWeapon = function(weapon) {
 	if (this.weapons.length === 0) {
 		info.setIcon(sprite, true);
 		this.weapon = 0;
-		if (!this.wtext) {
-			this.wtext = text.create();
-			this.wtext.text = info.name;
-			this.wsprite = new Phaser.Image(game, 4, 4, this.wtext);
-			this.level.gUi.add(this.wsprite);
-		}
 	} else {
 		info.setIcon(sprite, false);
 	}
