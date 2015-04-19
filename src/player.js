@@ -11,6 +11,7 @@ function Behavior(obj) {
 	this.obj = obj;
 	this.stuntime = 0;
 }
+Behavior.prototype.canInteract = true;
 Behavior.prototype.update = function() {
 	var level = this.obj.level;
 	var input = level.gInput;
@@ -78,6 +79,7 @@ function Dead(obj) {
 	obj.sprite.body.gravity.y = params.GRAVITY;
 	this.obj = obj;
 }
+Dead.prototype.canInteract = false;
 Dead.prototype.update = function() {
 	this.obj.mover.update(0, 0, false);
 };
@@ -248,7 +250,7 @@ Player.prototype.getTargetPosition = function() {
 // Get the current player sprite, for interaction purposes.
 Player.prototype.getInteractSprite = function() {
 	var obj = this.objs.Player;
-	if (!obj) {
+	if (!obj || !obj.behavior.canInteract) {
 		return null;
 	}
 	return obj.sprite;
