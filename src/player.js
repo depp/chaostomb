@@ -13,6 +13,7 @@ function Player(level, obj) {
 	sprite.body.maxVelocity.set(params.MAX_VELOCITY, params.MAX_VELOCITY);
 	sprite.animations.add('stand', [0], true)
 	sprite.animations.add('walk', [1, 2, 3, 4], 10, true);
+	sprite.animations.add('jump', [5], 10, true);
 	sprite.play('walk');
 	this.sprite = sprite;
 	this.walker = new walker.Walker(sprite, params.PLAYER_STATS);

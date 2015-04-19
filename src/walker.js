@@ -89,6 +89,9 @@ Walker.prototype = {
 		if (!did_jump && body.onFloor()) {
 			this.state = 0;
 		}
+		if (this.state !== 0) {
+			anim = 'jump';
+		}
 
 		if (this.anim != anim) {
 			this.sprite.play(anim);
