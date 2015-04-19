@@ -5,8 +5,20 @@ var loader = require('./loader');
 var weapons = require('./weapons');
 
 function Player(level, obj) {
+	this.group = game.add.group();
 	this.level = level;
-	var sprite = game.add.sprite(64, 64);
+	this.sprite = null;
+	this.mover = null;
+	this.fireDown = true;
+	this.weapons = [];
+	this.weapon = -1;
+	this.hearts = [];
+	this.health = 0;
+}
+
+Player.prototype.spawn = function(obj) {
+	var sprite = this.group.create(
+		obj.x + obj.width / 2, obj.y + obj.height / 2);
 	loader.setAnimations(sprite, 'player');
 	sprite.anchor.setTo(0.5, 0.5);
 	game.physics.arcade.enable(sprite);
@@ -16,22 +28,18 @@ function Player(level, obj) {
 	sprite.play('walk');
 	this.sprite = sprite;
 	this.mover = new mover.Walker(sprite, params.PLAYER_STATS);
-	this.fireDown = true;
-	this.weapons = [];
-	this.weapon = -1;
-	this.hearts = [];
-}
-
-Player.prototype.spawn = function(obj) {
-	this.sprite.reset(obj.x + obj.width / 2, obj.y + obj.height / 2);
 	var w;
 	for (w in weapons) {
 		this.addWeapon(w);
 	}
 	this.setHearts(7);
+	this.setHealth(11);
 };
 
 Player.prototype.update = function() {
+	if (!this.sprite) {
+		return;
+	}
 	var input = this.level.gInput;
 	var xdrive = 0, ydrive = 0, fire = false;
 	if (input.left.isDown) {
@@ -103,6 +111,9 @@ Player.prototype.addWeapon = function(weapon) {
 Player.prototype.setHearts = function(count) {
 	var i;
 	var size = 48, margin = 4;
+	if (count === this.hearts.length) {
+		return;
+	}
 	for (i = this.hearts.length; i < count; i++) {
 		var sprite = this.level.gUi.create(
 			params.WIDTH - (size / 2 + margin + (margin + size) * i),
@@ -111,6 +122,18 @@ Player.prototype.setHearts = function(count) {
 		sprite.anchor.setTo(0.5, 0.5);
 		this.hearts.push(sprite);
 	}
+	this.setHealth(this.health);
+};
+
+// Set the player's current health.
+Player.prototype.setHealth = function(amt) {
+	var i;
+	var newHealth = Math.max(0, Math.min(this.hearts.length * 2, amt));
+	for (i = 0; i < this.hearts.length; i++) {
+		var heart = this.hearts[i];
+		heart.frame = newHealth <= i * 2 ? 2 : (newHealth <= i * 2 + 1 ? 1 : 0);
+	}
+	this.health = newHealth;
 };
 
 // Get the current player position, for monster targeting purposes.

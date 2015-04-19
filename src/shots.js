@@ -93,7 +93,7 @@ Shots.prototype.update = function() {
 	game.physics.arcade.overlap(
 		this.level.gMonsters.group, this.pgroup, this.monsterHit, null, this);
 	game.physics.arcade.overlap(
-		this.level.gPlayer.sprite, this.mgroup, this.playerHit, null, this);
+		this.level.gPlayer.group, this.mgroup, this.playerHit, null, this);
 	for (i = 0; i < this.groups.length; i++) {
 		group = this.groups[i];
 		group.forEachAlive(this.tileTest, this);
