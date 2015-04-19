@@ -14,15 +14,15 @@ function explosionPush(target, center, info, fixed) {
 	info = info || {};
 	var dx = target.x - center.x;
 	var dy = target.y - center.y;
-	var a, dd;
+	var a;
+	var dd = Math.hypot(dx, dy);
 	if (info.push) {
 		a = info.push;
 	} else {
 		var maxpush = info.maxpush || 200;
 		var minpush = info.minpush || 100;
-		var dd = Math.hypot(dx, dy);
 		var radius = info.radius || 32;
-		var a = radius - dd;
+		a = radius - dd;
 		if (a <= 0) {
 			return null;
 		}
@@ -90,7 +90,6 @@ Shots.prototype = {
 
 	// Callback when shot hits monster.
 	monsterHit: function(shot, monster) {
-		this.level.gMonsters.damage(monster, 1);
 		var cx = (monster.x + shot.x) / 2;
 		var cy = (monster.y + shot.y) / 2;
 		this.level.gFx.spawn('Boom', cx, cy);
@@ -98,9 +97,12 @@ Shots.prototype = {
 			push: 300,
 			kick: 16
 		});
-		if (push) {
-			this.level.gMonsters.push(monster, push);
-		}
+		this.level.gMonsters.invoke(monster, function(obj) {
+			obj.damage(1);
+			if (push) {
+				obj.push(push);
+			}
+		});
 		shot.kill();
 	},
 

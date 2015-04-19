@@ -1,7 +1,131 @@
 'use strict';
 var params = require('./params');
-var walker = require('./walker');
+var mover = require('./mover');
 var loader = require('./loader');
+
+////////////////////////////////////////////////////////////////////////
+// Behavior
+
+function Behavior(obj) {
+	this.obj = obj;
+}
+Behavior.prototype.update = function() {
+	this.obj.mover.update(0, 0, false);
+};
+Behavior.prototype.stun = function() {
+	this.obj.behavior = new Stun(this.obj);
+};
+Behavior.prototype.damage = function(amt) {
+	if (typeof amt == 'undefined') {
+		amt = 1;
+	}
+	this.obj.health -= amt;
+	if (this.obj.health > 0) {
+		this.obj.behavior = new Stun(this.obj);
+	} else {
+		this.obj.behavior = new Die(this.obj);
+	}
+};
+Behavior.prototype.kill = function() {
+	this.obj.behavior = new Die(this.obj);
+};
+Behavior.prototype.push = function(push) {
+	var vel = this.obj.sprite.body.velocity;
+	Phaser.Point.add(vel, push, vel);
+};
+
+////////////////////////////////////////////////////////////////////////
+// Stun
+
+function Stun(obj) {
+	this.obj = obj;
+	this.time = params.MONSTER_STUN_TIME;
+	this.previous = obj.behavior;
+}
+Stun.prototype = Object.create(Behavior.prototype);
+Stun.prototype.update = function() {
+	this.obj.mover.update(0, 0, true);
+	this.time -= game.time.physicsElapsed;
+	if (this.time <= 0 && this.obj.sprite.body.blocked.down) {
+		this.obj.behavior = this.previous;
+	}
+};
+Stun.prototype.stun = function(obj) {
+	this.time = params.MONSTER_STUN_TIME;
+};
+
+////////////////////////////////////////////////////////////////////////
+// Die
+
+function Die(obj) {
+	obj.sprite.body.gravity.y = params.GRAVITY;
+	this.obj = obj;
+	this.time = params.MONSTER_DEATH_TIME;
+}
+Die.prototype = Object.create(Behavior.prototype);
+Die.prototype.update = function() {
+	this.obj.mover.update(0, 0, true);
+	this.time -= game.time.physicsElapsed;
+	if (this.time <= 0) {
+		this.obj.sprite.body.enable = false;
+		this.obj.mover = new mover.Corpse(this.obj.sprite);
+		this.obj.behavior = new Behavior(this.obj);
+	}
+};
+Die.prototype.stun = function() {};
+Die.prototype.push = function(push) {
+	var vel = this.obj.sprite.body.velocity;
+	if (this.obj.health <= 0) {
+		var d = vel.dot(push);
+		if (d <= 0) {
+			vel.setTo(push.x * 2, push.y * 2);
+			return;
+		}
+	}
+	vel.add(push.x * 2, push.y * 2);
+};
+Die.prototype.kill = function() {};
+
+////////////////////////////////////////////////////////////////////////
+// Patrol
+
+function Patrol(obj) {
+	this.obj = obj;
+	this.state = Math.random() > 0.5 ? 2 : 0;
+	this.time = 0;
+}
+Patrol.prototype = Object.create(Behavior.prototype);
+Patrol.prototype.update = function() {
+	switch (this.state) {
+	case 0:
+		this.obj.mover.update(-1, 0);
+		if (this.obj.sprite.body.blocked.left) {
+			this.state = 1;
+			this.time = (Math.random() + 0.5) * this.obj.stats.ai.pausetime;
+		}
+		break;
+
+	case 2:
+		this.obj.mover.update(+1, 0);
+		if (this.obj.sprite.body.blocked.right) {
+			this.state = 3;
+			this.time = (Math.random() + 0.5) * this.obj.stats.ai.pausetime;
+		}
+		break;
+
+	case 1:
+	case 3:
+		this.obj.mover.update(0, 0);
+		this.time -= game.time.physicsElapsed;
+		if (this.time <= 0) {
+			this.state = (this.state + 1) & 3;
+		}
+		break;
+	}
+};
+
+////////////////////////////////////////////////////////////////////////
+// Monsters
 
 function Monsters(level) {
 	this.level = level;
@@ -11,139 +135,57 @@ function Monsters(level) {
 }
 
 Monsters.prototype = {
-	spawn: function(obj) {
-		var stats = params.MONSTERS[obj.type];
+	spawn: function(info) {
+		var stats = params.MONSTERS[info.type];
 		if (!stats) {
-			console.error('Unknown monster:', obj.type);
+			console.error('Unknown monster:', info.type);
 			return;
 		}
 		var name = 'Monster ' + this.counter;
 		this.counter++;
 		var sprite = this.group.create(
-			obj.x + obj.width / 2, obj.y + obj.height / 2);
-		loader.setAnimations(sprite, obj.type.toLowerCase());
+			info.x + info.width / 2, info.y + info.height / 2);
+		loader.setAnimations(sprite, info.type.toLowerCase());
 		sprite.anchor.setTo(0.5, 0.5);
 		sprite.name = name;
 		game.physics.arcade.enable(sprite);
 		sprite.body.collideWorldBounds = true;
 		sprite.body.gravity.y = params.GRAVITY;
 		sprite.body.maxVelocity.set(params.MAX_VELOCITY, params.MAX_VELOCITY);
-		this.objs[name] = {
+		var obj = {
+			level: this.level,
 			sprite: sprite,
 			stats: stats,
 			health: stats.health,
-			walker: new walker.Walker(sprite, stats.stats),
-			state: this.statePatrol,
-			param: Math.random() > 0.5 ? 2 : 0,
-			time: 0,
-			stuntime: 0
+			behavior: null,
+			mover: new mover.Walker(sprite, stats.stats),
 		};
+		obj.behavior = new Patrol(obj);
+		this.objs[name] = obj;
 	},
 
 	update: function() {
 		game.physics.arcade.collide(this.group, this.level.gTiles);
-		var name, obj;
+		var name;
 		for (name in this.objs) {
-			obj = this.objs[name];
-			if (obj.state) {
-				obj.state.call(this, obj);
-			}
+			this.objs[name].behavior.update();
 		}
 	},
 
-	statePatrol: function(obj) {
-		if (obj.stuntime > 0) {
-			obj.walker.update(0, 0, true);
-			obj.stuntime -= game.time.physicsElapsed;
-			return;
-		}
-		switch (obj.param) {
-		case 0:
-			obj.walker.update(-1, 0);
-			if (obj.sprite.body.blocked.left) {
-				obj.param = 1;
-				obj.time = (Math.random() + 0.5) * obj.stats.ai.pausetime;
-			}
-			break;
-
-		case 2:
-			obj.walker.update(+1, 0);
-			if (obj.sprite.body.blocked.right) {
-				obj.param = 3;
-				obj.time = (Math.random() + 0.5) * obj.stats.ai.pausetime;
-			}
-			break;
-
-		case 1:
-		case 3:
-			obj.walker.update(0, 0);
-			obj.time -= game.time.physicsElapsed;
-			if (obj.time <= 0) {
-				obj.param = (obj.param + 1) & 3;
-			}
-			break;
-		}
-	},
-
-	stateDead: function(obj) {
-		if (obj.time > 0) {
-			obj.time -= game.time.physicsElapsed;
-		}
-		if (obj.time <= 0 && obj.sprite.body.blocked.down) {
-			obj.state = null;
-			obj.sprite.body.enable = false;
-			obj.sprite.play('dead');
-			return;
-		}
-		obj.walker.update(0, 0, true);
-	},
-
-	kill: function(obj) {
-		obj.state = this.stateDead;
-		obj.time = params.MONSTER_DEATH_TIME;
-	},
-
-	// Damage a monster.
-	damage: function(sprite, amt) {
-		var obj = this.find(sprite);
-		if (!obj || obj.health <= 0) {
-			return;
-		}
-		obj.health--;
-		if (obj.health > 0) {
-			obj.stuntime = params.MONSTER_STUN_TIME;
-		} else {
-			this.kill(obj);
-		}
-	},
-
-	// Push a monster.
-	push: function(sprite, push) {
-		var obj = this.find(sprite);
-		if (!obj) {
-			return;
-		}
-		var vel = sprite.body.velocity;
-		if (obj.health <= 0) {
-			var d = vel.dot(push);
-			if (d <= 0) {
-				vel.setTo(push.x, push.y);
-				return;
-			}
-		}
-		Phaser.Point.add(vel, push, vel);
-	},
-
-	find: function(sprite) {
+	// Call a function on a monster object.
+	invoke: function(sprite, func, context) {
 		var name = sprite.name;
 		var obj = this.objs[name];
 		if (!obj) {
 			console.error('Not a monster:', sprite);
-			return null;
+			return;
 		}
-		return obj;
+		func.call(context, obj.behavior);
 	}
 };
+
+////////////////////////////////////////////////////////////////////////
+// Exports
 
 module.exports = {
 	Monsters: Monsters

@@ -1,6 +1,6 @@
 'use strict';
 var params = require('./params');
-var walker = require('./walker');
+var mover = require('./mover');
 var loader = require('./loader');
 var weapons = require('./weapons');
 
@@ -15,7 +15,7 @@ function Player(level, obj) {
 	sprite.body.maxVelocity.set(params.MAX_VELOCITY, params.MAX_VELOCITY);
 	sprite.play('walk');
 	this.sprite = sprite;
-	this.walker = new walker.Walker(sprite, params.PLAYER_STATS);
+	this.mover = new mover.Walker(sprite, params.PLAYER_STATS);
 	this.fireDown = true;
 	this.weapons = [];
 	this.weapon = -1;
@@ -52,13 +52,13 @@ Player.prototype = {
 		}
 
 		game.physics.arcade.collide(this.sprite, this.level.gTiles);
-		this.walker.update(xdrive, ydrive);
+		this.mover.update(xdrive, ydrive);
 
 		if (fire && !this.fireDown) {
 			var sprite = this.sprite;
 			this.level.gShots.spawn(
 				'Bolt',
-				sprite.x, sprite.y, this.walker.direction, 0);
+				sprite.x, sprite.y, this.mover.direction, 0);
 		}
 		this.fireDown = fire;
 	},
