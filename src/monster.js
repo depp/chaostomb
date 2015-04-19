@@ -82,7 +82,6 @@ Monsters.prototype = {
 
 	// Push a monster.
 	push: function(sprite, dx, dy) {
-		console.log(dx, dy);
 		sprite.body.velocity.add(dx, dy);
 	},
 };
