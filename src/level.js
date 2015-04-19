@@ -98,9 +98,9 @@ Level.prototype.spawnPlayer = function(obj) {
 Level.prototype.update = function() {
 	input.update();
 	if (!this.gPaused) {
+		this.gProps.update();
 		this.gPlayer.update();
 		this.gMonsters.update();
-		this.gProps.update();
 		this.gShots.update();
 		this.gFx.update();
 	}
