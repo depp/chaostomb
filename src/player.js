@@ -46,7 +46,7 @@ Player.prototype = {
 			var sprite = this.sprite;
 			this.level.gShots.spawn(
 				'Bolt',
-				sprite.x, sprite.y, 1, 0);
+				sprite.x, sprite.y, this.walker.direction, 0);
 		}
 		this.fireDown = fire;
 	},
