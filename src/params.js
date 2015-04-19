@@ -90,6 +90,8 @@ module.exports = {
 	WALK_THRESHOLD: WALK_THRESHOLD,
 	MONSTER_DEATH_TIME: 0.5,
 	MONSTER_STUN_TIME: 0.5,
+	PLAYER_DEATH_TIME: 1.5,
+	PLAYER_STUN_TIME: 0.3,
 	CORPSE_DRAG: 800,
 	CORPSE_AIR_DRAG: 50,
 	// Time after leaving a platform while you can still jump.

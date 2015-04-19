@@ -76,7 +76,6 @@ function loadBindings() {
 		return;
 	}
 	userbindings = data;
-	console.log('USER BINDINGS', userbindings);
 }
 
 function loadKeys() {
@@ -92,13 +91,11 @@ function loadKeys() {
 		if (typeof obj !== 'object') {
 			continue;
 		}
-		console.log('OBJ', JSON.stringify(obj));
 		for (cmd in COMMANDS) {
 			if (!(cmd in obj) || (cmd in bindings)) {
 				continue;
 			}
 			var buttons = getButtons(obj[cmd]);
-			console.log(cmd, obj[cmd], buttons);
 			if (buttons.length !== 0) {
 				bindings[cmd] = buttons;
 			}
@@ -152,7 +149,6 @@ function rebind(cmd, buttons) {
 	}
 	userbindings.keys[cmd] = buttons;
 	bindings[cmd] = blist;
-	console.log(blist);
 	if (persist.hasLocalStorage) {
 		console.log('bindings saved');
 		window.localStorage.setItem('bindings', JSON.stringify(userbindings));

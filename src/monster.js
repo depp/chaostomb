@@ -25,9 +25,9 @@ Behavior.prototype.damage = function(amt) {
 	}
 	this.obj.health -= amt;
 	if (this.obj.health > 0) {
-		this.obj.behavior = new Stun(this.obj);
+		this.stun();
 	} else {
-		this.obj.behavior = new Die(this.obj);
+		this.kill();
 	}
 };
 Behavior.prototype.kill = function() {
@@ -77,6 +77,7 @@ Die.prototype.update = function() {
 	}
 };
 Die.prototype.stun = function() {};
+Die.prototype.damage = function(amt) {};
 Die.prototype.push = function(push) {
 	var vel = this.obj.sprite.body.velocity;
 	if (this.obj.health <= 0) {

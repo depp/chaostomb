@@ -109,16 +109,13 @@ Shots.prototype.actorHit = function(target, shot, isPlayer) {
 		push: 300,
 		kick: 16
 	});
-	if (isPlayer) {
-		console.log("PLAYER HIT");
-	} else {
-		this.level.gMonsters.invoke(target, function(obj) {
-			obj.damage(1);
-			if (push) {
+	var team = isPlayer ? this.level.gPlayer : this.level.gMonsters;
+	team.invoke(target, function(obj) {
+		obj.damage(1);
+		if (push) {
 				obj.push(push);
-			}
-		});
-	}
+		}
+	});
 	shot.kill();
 };
 
