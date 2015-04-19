@@ -142,13 +142,6 @@ class App(object):
                 u['width'] *= scale
                 u['x'] *= scale
                 u['y'] *= scale
-            #tpath = tileset['image']
-            #tpath = os.path.relpath(
-            #    os.path.join(
-            #        os.path.dirname(os.path.abspath(path)),
-            #        os.path.splitext(tpath)[0]),
-            #    'images')
-            #tileset['image'] = tpath
         return json.dumps(obj, separators=(',', ':')).encode('UTF-8')
 
     def app_js(self):
