@@ -1,5 +1,8 @@
 'use strict';
 
+var BOB_MAGNITUDE = 16;
+var BOB_TIME = 1.0;
+
 ////////////////////////////////////////////////////////////////////////
 // Door
 
@@ -52,6 +55,7 @@ function Props(level) {
 	this.counter = 0;
 	this.markerSprite = null;
 	this.markerTarget = null;
+	this.markerTween = null;
 }
 
 // Spawn a prop from the map.
@@ -99,6 +103,8 @@ Props.prototype.setTarget = function(sprite) {
 		if (this.markerTarget) {
 			this.markerSprite.kill();
 			this.markerTarget = null;
+			this.markerTween.stop();
+			this.markerTween = null;
 		}
 		return;
 	}
@@ -112,14 +118,23 @@ Props.prototype.setTarget = function(sprite) {
 		return;
 	}
 	this.markerTarget = obj;
-	var tx = sprite.x, ty = sprite.y;
-	ty -= obj.markerOffset;
+	var tx = sprite.x;
+	var ty0 = sprite.y - BOB_MAGNITUDE -obj.markerOffset;
+	var ty1 = ty0 + BOB_MAGNITUDE * 2;
 	if (!this.markerSprite) {
-		this.markerSprite = this.group.create(tx, ty, 'props', 6);
+		this.markerSprite = this.group.create(tx, ty0, 'props', 6);
 		this.markerSprite.anchor.setTo(0.5, 0.5);
 	} else {
-		this.markerSprite.reset(tx, ty);
+		this.markerSprite.reset(tx, ty0);
 	}
+	if (this.markerTween) {
+		this.markerTween.stop();
+		this.markerTween = null;
+	}
+	this.markerTween = game.add.tween(this.markerSprite);
+	this.markerTween.to(
+		{x: tx, y: ty1}, BOB_TIME * 500, Phaser.Easing.Sinusoidal.InOut,
+		true, 0, -1, true);
 };
 
 ////////////////////////////////////////////////////////////////////////
