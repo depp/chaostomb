@@ -2,11 +2,11 @@
 var params = require('./params');
 var walker = require('./walker');
 var loader = require('./loader');
+var weapons = require('./weapons');
 
 function Player(level, obj) {
 	this.level = level;
-	var sprite = game.add.sprite(
-		obj.x + obj.width / 2, obj.y + obj.height / 2);
+	var sprite = game.add.sprite(64, 64);
 	loader.setAnimations(sprite, 'player');
 	sprite.anchor.setTo(0.5, 0.5);
 	game.physics.arcade.enable(sprite);
@@ -17,9 +17,19 @@ function Player(level, obj) {
 	this.sprite = sprite;
 	this.walker = new walker.Walker(sprite, params.PLAYER_STATS);
 	this.fireDown = true;
+	this.weapons = [];
+	this.weapon = -1;
 }
 
 Player.prototype = {
+	spawn: function(obj) {
+		this.sprite.reset(obj.x + obj.width / 2, obj.y + obj.height / 2);
+		var w;
+		for (w in weapons) {
+			this.addWeapon(w);
+		}
+	},
+
 	update: function() {
 		var input = this.level.gInput;
 		var xdrive = 0, ydrive = 0, fire = false;
@@ -49,6 +59,44 @@ Player.prototype = {
 				sprite.x, sprite.y, this.walker.direction, 0);
 		}
 		this.fireDown = fire;
+	},
+
+	// Add a weapon to the player's inventory.
+	// Returns true if succesful, false otherwise.
+	addWeapon: function(weapon) {
+		var i;
+		for (i = 0; i < this.weapons.length; i++) {
+			if (this.weapons[i].name === weapon) {
+				return false;
+			}
+		}
+		var info = weapons[weapon];
+		if (!info) {
+			console.error('Unknown weapon:', weapon);
+			return false;
+		}
+		var idx = this.weapons.length;
+		var rowlength = 7;
+		var x, y;
+		x = idx % rowlength;
+		y = Math.floor(idx / rowlength);
+		var size = 48, margin = 8;
+		var sprite = this.level.gUi.create(
+			size / 2 + margin + (margin + size) * x,
+			size / 2 + margin + (margin + size) * y,
+			'icons', 0);
+		sprite.anchor.setTo(0.5, 0.5);
+		if (this.weapons.length === 0) {
+			info.setIcon(sprite, true);
+			this.weapon = 0;
+		} else {
+			info.setIcon(sprite, false);
+		}
+		console.log(sprite);
+		this.weapons.push({
+			name: weapon,
+			sprite: sprite
+		});
 	},
 };
 

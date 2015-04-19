@@ -13,6 +13,7 @@ function Level() {
 	this.gMonsters = null;
 	this.gShots = null;
 	this.gFx = null;
+	this.gUi = null;
 }
 
 Level.prototype = {
@@ -61,8 +62,11 @@ Level.prototype = {
 		this.gTiles.resizeWorld();
 		map.setCollision([1], true, 'Main', true);
 
-		this.gPlayer = null;
 		this.gMonsters = new monster.Monsters(this);
+		this.gPlayer = new player.Player(this);
+		this.gShots = new shots.Shots(this);
+		this.gFx = new fx.Fx(this);
+		this.gUi = game.add.group();
 
 		var olayer = map.objects.Default;
 		for (i = 0; i < olayer.length; i++) {
@@ -79,12 +83,10 @@ Level.prototype = {
 			console.error('Unknown object type: ' + obj.type);
 		}
 
-		this.gShots = new shots.Shots(this);
-		this.gFx = new fx.Fx(this);
 	},
 
 	spawnPlayer: function(obj) {
-		this.gPlayer = new player.Player(this, obj);
+		this.gPlayer.spawn(obj);
 	},
 
 	update: function() {
