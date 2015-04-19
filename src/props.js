@@ -24,7 +24,10 @@ function Chest(level, sprite, info) {
 }
 Chest.prototype.markerOffset = 48;
 Chest.prototype.interact = function() {
-	console.log('Chest');
+	var level = this.level;
+	this.sprite.frame = 3;
+	level.setPaused(true);
+	level.gProps.setTarget(null);
 };
 
 ////////////////////////////////////////////////////////////////////////
