@@ -1,9 +1,5 @@
 'use strict';
 
-function setFrame(sprite, key) {
-
-}
-
 function setAnimations(sprite, key) {
 	sprite.loadTexture(key);
 	var sheet = PATH_MAP.spritesheets[key];
@@ -17,6 +13,5 @@ function setAnimations(sprite, key) {
 }
 
 module.exports = {
-	setFrame: setFrame,
 	setAnimations: setAnimations
 };
