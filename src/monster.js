@@ -97,15 +97,21 @@ function Patrol(obj) {
 	this.obj = obj;
 	this.state = Math.random() > 0.5 ? 2 : 0;
 	this.time = 0;
+	this.scantime = this.obj.stats.scaninterval * randAdjust();
 }
 Patrol.prototype = Object.create(Behavior.prototype);
 Patrol.prototype.update = function() {
+	this.scantime -= game.time.physicsElapsed;
+	if (this.scantime <= 0) {
+		this.scantime = this.obj.stats.scaninterval * randAdjust();
+		this.scan();
+	}
 	switch (this.state) {
 	case 0:
 		this.obj.mover.update(-1, 0);
 		if (this.obj.sprite.body.blocked.left) {
 			this.state = 1;
-			this.time = randAdjust() * this.obj.stats.ai.pausetime;
+			this.time = randAdjust() * this.obj.stats.patrolpause;
 		}
 		break;
 
@@ -113,7 +119,7 @@ Patrol.prototype.update = function() {
 		this.obj.mover.update(+1, 0);
 		if (this.obj.sprite.body.blocked.right) {
 			this.state = 3;
-			this.time = randAdjust() * this.obj.stats.ai.pausetime;
+			this.time = randAdjust() * this.obj.stats.patrolpause;
 		}
 		break;
 
@@ -126,6 +132,46 @@ Patrol.prototype.update = function() {
 		}
 		break;
 	}
+};
+Patrol.prototype.scan = function() {
+	var target = this.obj.level.gPlayer.getPosition();
+	if (!target) {
+		return;
+	}
+	this.obj.behavior = new Shoot(this.obj);
+};
+
+////////////////////////////////////////////////////////////////////////
+// Shoot
+
+function Shoot(obj) {
+	this.obj = obj;
+	this.time = obj.stats.shotdelay;
+	this.count = obj.stats.shotcount;
+	this.previous = obj.behavior;
+}
+Shoot.prototype = Object.create(Behavior.prototype);
+Shoot.prototype.update = function() {
+	this.obj.mover.update(0, 0);
+	this.time -= game.time.physicsElapsed;
+	if (this.time > 0) {
+		return;
+	}
+	if (this.count <= 0) {
+		this.obj.behavior = this.previous;
+		return;
+	}
+	var target = this.obj.level.gPlayer.getPosition();
+	if (!target) {
+		this.obj.behavior = this.previous;
+		return;
+	}
+	var pos = this.obj.sprite.position;
+	this.obj.level.gShots.spawn(
+		this.obj.stats.shot,
+		pos.x, pos.y,
+		target.x - pos.x, target.y - pos.y);
+	this.count--;
 };
 
 ////////////////////////////////////////////////////////////////////////

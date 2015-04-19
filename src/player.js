@@ -112,6 +112,11 @@ Player.prototype.setHearts = function(count) {
 	}
 };
 
+// Get the current player position, for monster targeting purposes.
+Player.prototype.getPosition = function(count) {
+	return this.sprite.position;
+};
+
 module.exports = {
 	Player: Player
 };

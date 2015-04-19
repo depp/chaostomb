@@ -24,14 +24,30 @@ function stats(obj) {
 	return obj;
 }
 
+var MON_DEFAULTS = {
+	accel: 1,
+	bounce: 0.2,
+	patrolpause: 0.3,
+	scaninterval: 2,
+	shotdelay: 0.2,
+	shotinterval: 0.1,
+	shotrecover: 0.2,
+	shotcount: 1,
+};
+
 function monster(obj) {
-	var accel = obj.accel || 1;
-	return {
+	var key;
+	for (key in MON_DEFAULTS) {
+		if (!(key in obj)) {
+			obj[key] = MON_DEFAULTS[key];
+		}
+	}
+	var result = {
 		stats: stats({
-			bounce: obj.bounce || 0.2,
+			bounce: obj.bounce,
 			steptime: null,
-			gdrag: obj.speed * 4 * accel,
-			gaccel: obj.speed * 8 * accel,
+			gdrag: obj.speed * 4 * obj.accel,
+			gaccel: obj.speed * 8 * obj.accel,
 			gspeed: obj.speed,
 			adrag: 0,
 			aaccel: 0,
@@ -41,13 +57,29 @@ function monster(obj) {
 			jheight: obj.jheight,
 			jdouble: false
 		}),
-		ai: {
-			pausetime: obj.pausetime || 0.3,
-		},
-		width: obj.width,
-		height: obj.height,
-		health: obj.health
+		patrolpause: obj.patrolpause,
+		scaninterval: obj.scaninterval,
+		health: obj.health,
+		shot: obj.shot,
+		shotdelay: obj.shotdelay,
+		shotinterval: obj.shotinterval,
+		shotrecover: obj.shotrecover,
+		shotcount: obj.shotcount,
 	};
+	for (key in result) {
+		var val = result[key];
+		switch (typeof val) {
+		case 'undefined':
+			console.error('Undefined key in monster:', key);
+			break;
+		case 'number':
+			if (!isFinite(val)) {
+				console.error('Invalid number in monster:', key);
+			}
+			break;
+		}
+	}
+	return result;
 }
 
 module.exports = {
@@ -91,7 +123,10 @@ module.exports = {
 			speed: 200,
 			accel: 1,
 			jheight: 180,
-			health: 2
+			health: 2,
+			scanperiod: 2,
+			shot: 'Eye',
+			shotcount: 2,
 		})
 	},
 
