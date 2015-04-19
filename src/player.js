@@ -166,10 +166,17 @@ Player.prototype.spawn = function(pos) {
 
 Player.prototype.update = function() {
 	game.physics.arcade.collide(this.group, this.level.gTiles);
+	game.physics.arcade.overlap(
+		this.group, this.level.gOuch, this.playerOuch, null, this);
 	var name;
 	for (name in this.objs) {
 		this.objs[name].behavior.update();
 	}
+};
+
+// Handle an overlap between a player and an ouch region.
+Player.prototype.playerOuch = function(player, ouch) {
+	this.invoke(player, function(obj) { obj.kill(); });
 };
 
 // Add a weapon to the player's inventory.
