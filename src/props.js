@@ -49,7 +49,7 @@ Door.prototype.spawnPlayer = function() {
 			this.level.setPaused(false);
 		}, this);
 	timer.start();
-}
+};
 
 ////////////////////////////////////////////////////////////////////////
 // Chest
