@@ -4,6 +4,7 @@ var monster = require('./monster');
 var params = require('./params');
 var player = require('./player');
 var shots = require('./shots');
+var text = require('./text');
 
 function Level() {
 	this.gStartInfo = null;
@@ -83,6 +84,10 @@ Level.prototype = {
 			console.error('Unknown object type: ' + obj.type);
 		}
 
+		var txt = text.create();
+		txt.text = "Why, hello?";
+		console.log(txt);
+		this.add.image(params.WIDTH/2, params.HEIGHT/2, txt);
 	},
 
 	spawnPlayer: function(obj) {
