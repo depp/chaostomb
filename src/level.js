@@ -1,5 +1,6 @@
 'use strict';
 var fx = require('./fx');
+var input = require('./input');
 var monster = require('./monster');
 var params = require('./params');
 var player = require('./player');
@@ -18,17 +19,8 @@ function Level() {
 
 Level.prototype = {
 	init: function(startInfo) {
+		this.gInput = input.getKeys();
 		this.gStartInfo = startInfo;
-		if (!this.gInput) {
-			var k = this.input.keyboard;
-			this.gInput = {
-				left: k.addKey(Phaser.Keyboard.LEFT),
-				right: k.addKey(Phaser.Keyboard.RIGHT),
-				up: k.addKey(Phaser.Keyboard.UP),
-				down: k.addKey(Phaser.Keyboard.DOWN),
-				fire: k.addKey(Phaser.Keyboard.Z)
-			};
-		}
 	},
 
 	preload: function() {
@@ -89,6 +81,7 @@ Level.prototype = {
 	},
 
 	update: function() {
+		input.update();
 		if (this.gPlayer) {
 			this.gPlayer.update();
 		}

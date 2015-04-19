@@ -9,7 +9,6 @@ function Player(level, obj) {
 	this.level = level;
 	this.sprite = null;
 	this.mover = null;
-	this.fireDown = true;
 	this.weapons = [];
 	this.weapon = -1;
 	this.hearts = [];
@@ -42,33 +41,32 @@ Player.prototype.update = function() {
 	}
 	var input = this.level.gInput;
 	var xdrive = 0, ydrive = 0, fire = false;
-	if (input.left.isDown) {
+	if (input.left !== 0) {
 		xdrive += -1;
 	}
-	if (input.right.isDown) {
+	if (input.right !== 0) {
 		xdrive += +1;
 	}
-	if (input.up.isDown) {
+	if (input.up !== 0) {
 		ydrive += -1;
 	}
-	if (input.down.isDown) {
+	if (input.down !== 0) {
 		ydrive += +1;
 	}
-	if (input.fire.isDown) {
+	if (input.fire === 1) {
 		fire = true;
 	}
 
 	game.physics.arcade.collide(this.sprite, this.level.gTiles);
 	this.mover.update(xdrive, ydrive);
 
-	if (fire && !this.fireDown) {
+	if (fire) {
 		var sprite = this.sprite;
 		this.level.gShots.spawn(
 			true, 'Bolt',
 			sprite.x, sprite.y,
 			this.mover.direction, 0);
 	}
-	this.fireDown = fire;
 };
 
 // Add a weapon to the player's inventory.
