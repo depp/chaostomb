@@ -144,7 +144,7 @@
 
                     },
                  "rotation":0,
-                 "type":"Eye",
+                 "type":"Player",
                  "visible":true,
                  "width":16,
                  "x":160,
