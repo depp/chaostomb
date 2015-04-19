@@ -26,8 +26,13 @@ Level.prototype.init = function(startInfo) {
 	this.gPaused = false;
 };
 
-Level.prototype.preload = function() {
-	var x, s;
+var haveCommonAssets = false;
+function loadCommonAssets() {
+	if (haveCommonAssets) {
+		return;
+	}
+	haveCommonAssets = true;
+	var x, s, uris, i;
 	var images = PATH_MAP.images;
 	for (x in images) {
 		game.load.image(x, 'images/' + images[x]);
@@ -37,6 +42,19 @@ Level.prototype.preload = function() {
 		s = spritesheets[x];
 		game.load.spritesheet(x, 'images/' + s.path, s.w, s.h);
 	}
+	var sfx = PATH_MAP.sfx;
+	for (x in sfx) {
+		s = sfx[x];
+		uris = [];
+		for (i = 0; i < s.length; i++) {
+			uris.push('sfx/' + s[i]);
+		}
+		game.load.audio(x, uris);
+	}
+}
+
+Level.prototype.preload = function() {
+	loadCommonAssets();
 	game.load.tilemap(
 		this.gStartInfo.level,
 		'levels/' + PATH_MAP.levels[this.gStartInfo.level],

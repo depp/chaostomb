@@ -6,6 +6,7 @@ import json
 import os
 import PIL.Image
 import yaml
+import re
 
 def bad_sprite(path):
     raise build.BuildFailure(
@@ -58,6 +59,7 @@ class App(object):
         path_map = {}
         self.build_images(path_map)
         self.build_levels(path_map)
+        self.build_audio(path_map)
 
         if self.config.getboolean('json', 'pretty', fallback=False):
             path_map = 'var PATH_MAP = {};\n'.format(
@@ -188,6 +190,32 @@ class App(object):
                 u['x'] *= scale
                 u['y'] *= scale
         return json.dumps(obj, separators=(',', ':')).encode('UTF-8')
+
+    def build_audio(self, path_map):
+        not_word = re.compile(r'[_\W]+')
+        sort_order = ['.ogg', '.m4a']
+        for stype in ('sfx', 'music'):
+            bpath = os.path.join('build', stype)
+            objs = {}
+            for path in build.all_files(stype, exts={'.m4a', '.ogg'}):
+                name = os.path.splitext(path)[0]
+                name = os.path.basename(name)
+                name = not_word.sub('_', name.lower())
+                print(name)
+                apath = self.system.copy(
+                    os.path.join(bpath, name + os.path.splitext(path)[1]),
+                    path,
+                    bust=True)
+                try:
+                    files = objs[name]
+                except KeyError:
+                    files = []
+                    objs[name] = files
+                files.append(os.path.relpath(apath, bpath))
+            for files in objs.values():
+                files.sort(
+                    key=lambda x: sort_order.index(os.path.splitext(x)[1]))
+            path_map[stype] = objs
 
     def app_js(self):
         return build.minify_js(

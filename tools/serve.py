@@ -15,6 +15,8 @@ CONTENT_TYPE = {
     '.json': 'application/json',
     '.png': 'image/png',
     '.jpg': 'image/jpeg',
+    '.m4a': 'audio/mpeg4',
+    '.ogg': 'audio/ogg',
 }
 
 def error_method_not_allowed(env, start_response):
