@@ -57,7 +57,7 @@ Player.prototype = {
 		if (fire && !this.fireDown) {
 			var sprite = this.sprite;
 			this.level.gShots.spawn(
-				'Bolt',
+				Math.random() > 0.5 ? 'Bolt' : 'Eye',
 				sprite.x, sprite.y, this.mover.direction, 0);
 		}
 		this.fireDown = fire;

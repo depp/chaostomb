@@ -95,8 +95,14 @@ module.exports = {
 
 	SHOTS: {
 		Bolt: {
+			frame: 0,
 			speed: 900,
-			size: 12
+			size: 12,
+		},
+		Eye: {
+			frame: 1,
+			speed: 450,
+			size: 12,
 		},
 	},
 };
