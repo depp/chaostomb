@@ -57,6 +57,81 @@
                  "width":16,
                  "x":272,
                  "y":104
+                }, 
+                {
+                 "gid":65,
+                 "height":0,
+                 "name":"",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":112,
+                 "y":160
+                }, 
+                {
+                 "gid":70,
+                 "height":0,
+                 "name":"",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":240,
+                 "y":128
+                }, 
+                {
+                 "gid":72,
+                 "height":0,
+                 "name":"",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":80,
+                 "y":160
+                }, 
+                {
+                 "gid":69,
+                 "height":0,
+                 "name":"",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":112,
+                 "y":224
+                }, 
+                {
+                 "gid":67,
+                 "height":0,
+                 "name":"",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":344,
+                 "y":224
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -87,6 +162,21 @@
          "spacing":0,
          "tileheight":16,
          "tilewidth":16
+        }, 
+        {
+         "firstgid":65,
+         "image":"..\/images\/props.png",
+         "imageheight":64,
+         "imagewidth":128,
+         "margin":0,
+         "name":"props",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":32,
+         "tilewidth":32
         }],
  "tilewidth":16,
  "version":1,

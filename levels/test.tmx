@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="25" height="15" tilewidth="16" tileheight="16">
  <tileset firstgid="1" source="tiles.tsx"/>
+ <tileset firstgid="65" name="props" tilewidth="32" tileheight="32">
+  <image source="../images/props.png" width="128" height="64"/>
+ </tileset>
  <layer name="Main" width="25" height="15">
   <data encoding="csv">
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
@@ -24,5 +27,10 @@
   <object type="Player" x="160" y="104" width="16" height="24"/>
   <object type="Eye" x="192" y="104" width="16" height="24"/>
   <object type="Eye" x="272" y="104" width="16" height="24"/>
+  <object gid="65" x="112" y="160"/>
+  <object gid="70" x="240" y="128"/>
+  <object gid="72" x="80" y="160"/>
+  <object gid="69" x="112" y="224"/>
+  <object gid="67" x="344" y="224"/>
  </objectgroup>
 </map>

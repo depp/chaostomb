@@ -3,6 +3,7 @@ var fx = require('./fx');
 var input = require('./input');
 var monster = require('./monster');
 var params = require('./params');
+var props = require('./props');
 var player = require('./player');
 var shots = require('./shots');
 
@@ -11,6 +12,7 @@ function Level() {
 	this.gInput = null;
 	this.gPlayer = null;
 	this.gTiles = null;
+	this.gProps = null;
 	this.gMonsters = null;
 	this.gShots = null;
 	this.gFx = null;
@@ -54,6 +56,14 @@ Level.prototype = {
 		this.gTiles.resizeWorld();
 		map.setCollision([1], true, 'Main', true);
 
+		var propsetIdx = map.getTilesetIndex('props');
+		if (!propsetIdx) {
+			console.error('No prop tileset');
+			return;
+		}
+		var propGid = map.tilesets[propsetIdx].firstgid;
+
+		this.gProps = new props.Props(this);
 		this.gMonsters = new monster.Monsters(this);
 		this.gPlayer = new player.Player(this);
 		this.gShots = new shots.Shots(this);
@@ -62,17 +72,21 @@ Level.prototype = {
 
 		var olayer = map.objects.Default;
 		for (i = 0; i < olayer.length; i++) {
-			var obj = olayer[i];
-			var func = this['spawn' + obj.type];
+			var info = olayer[i];
+			if (typeof info.gid == 'number') {
+				this.gProps.spawn(info.gid - propGid, info);
+				continue;
+			}
+			var func = this['spawn' + info.type];
 			if (func) {
-				func.call(this, obj);
+				func.call(this, info);
 				continue;
 			}
-			if (obj.type in params.MONSTERS) {
-				this.gMonsters.spawn(obj);
+			if (info.type in params.MONSTERS) {
+				this.gMonsters.spawn(info);
 				continue;
 			}
-			console.error('Unknown object type: ' + obj.type);
+			console.error('Unknown object type: ' + info.type);
 		}
 	},
 
