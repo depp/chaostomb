@@ -71,7 +71,6 @@ Chest.prototype.interact = function() {
 		true, tpre * 1000, 0, false);
 	game.sound.play('fanfare');
 	tween.onComplete.addOnce(function() {
-		console.log('FIRE');
 		level.setPaused(false);
 		treasure.destroy();
 	});
@@ -135,18 +134,20 @@ Props.prototype.update = function(index, info) {
 		this.setTarget(null);
 		return;
 	}
-	var best_dist = Infinity, best_sprite = null;
-	game.physics.arcade.overlap(
-		player, this.group, function(player_, sprite) {
-			var u = player_.position, v = sprite.position;
-			var dist = Math.max(
-				Math.abs(u.x - v.x),
-				Math.abs(u.y - v.y));
-			if (dist < best_dist) {
-				best_dist = dist;
-				best_sprite = sprite;
-			}
-		});
+	var best_dist = 32, best_sprite = null;
+	this.group.forEachAlive(function(sprite) {
+		if (!sprite.name) {
+			return;
+		}
+		var u = player.position, v = sprite.position;
+		var dist = Math.max(
+			Math.abs(u.x - v.x),
+			Math.abs(u.y - v.y));
+		if (dist < best_dist) {
+			best_dist = dist;
+			best_sprite = sprite;
+		}
+	});
 	this.setTarget(best_sprite);
 };
 
@@ -163,11 +164,10 @@ Props.prototype.setTarget = function(sprite) {
 	}
 	var obj = this.objs[sprite.name];
 	if (!obj) {
-		console.log(this.objs);
 		console.error('Invalid interaction target:', sprite);
 		return;
 	}
-	if (this.markerTarget == obj) {
+	if (this.markerTarget === obj) {
 		return;
 	}
 	this.markerTarget = obj;
@@ -201,6 +201,9 @@ Props.prototype.interact = function() {
 
 // Spawn player from the door.  Returns true if successful.
 Props.prototype.spawnPlayerFromDoor = function(source) {
+	if (!source) {
+		return false;
+	}
 	var name, obj, door = null;
 	for (name in this.objs) {
 		obj = this.objs[name];
