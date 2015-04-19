@@ -18,6 +18,7 @@ Fx.prototype = {
 		}
 		sprite.animations.add('run', [0, 1, 2, 3], 15, false, true);
 		sprite.play('run', 15, false, true);
+		game.sound.play('explosion_1');
 	},
 	update: function() {}
 };

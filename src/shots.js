@@ -86,6 +86,9 @@ Shots.prototype.spawn = function(isPlayer, type, px, py, dx, dy) {
 	this.objs[name] = {
 		sprite: sprite,
 	};
+	if (stats.sound) {
+		game.sound.play(stats.sound);
+	}
 };
 
 Shots.prototype.update = function() {
@@ -105,6 +108,7 @@ Shots.prototype.actorHit = function(target, shot, isPlayer) {
 	var cx = (target.x + shot.x) / 2;
 	var cy = (target.y + shot.y) / 2;
 	this.level.gFx.spawn('Boom', cx, cy);
+	game.sound.play('hurt');
 	var push = explosionPush(target, shot, {
 		push: 300,
 		kick: 16

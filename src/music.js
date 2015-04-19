@@ -25,7 +25,7 @@ function play(name) {
 	}
 	var audio = null;
 	if (name) {
-		audio = game.add.audio('music/' + name);
+		audio = game.add.audio('music/' + name, 1, true);
 	}
 	if (nextAudio) {
 		nextAudio = audio;

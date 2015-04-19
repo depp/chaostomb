@@ -96,10 +96,6 @@ module.exports = {
 	CORPSE_DRAG: 800,
 	CORPSE_AIR_DRAG: 50,
 
-	// Level switch transition timing
-	LEVEL_EXIT_TIME: 0.5,
-	LEVEL_ENTER_TIME: 0.5,
-
 	// Time after leaving a platform while you can still jump.
 	JUMP_SLOP: 0.2,
 
@@ -151,6 +147,7 @@ module.exports = {
 			frame: 1,
 			speed: 450,
 			size: 12,
+			sound: 'shot_2',
 		},
 	},
 };
