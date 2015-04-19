@@ -1,3 +1,7 @@
 type: grid
 width: 16
 height: 24
+animations:
+  stand: 0
+  walk: 0
+  jump: 0

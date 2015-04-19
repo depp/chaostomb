@@ -1,19 +1,18 @@
 'use strict';
 var params = require('./params');
 var walker = require('./walker');
+var loader = require('./loader');
 
 function Player(level, obj) {
 	this.level = level;
 	var sprite = game.add.sprite(
-		obj.x + obj.width / 2, obj.y + obj.height / 2, 'player');
+		obj.x + obj.width / 2, obj.y + obj.height / 2);
+	loader.setAnimations(sprite, 'player');
 	sprite.anchor.setTo(0.5, 0.5);
 	game.physics.arcade.enable(sprite);
 	sprite.body.gravity.y = params.GRAVITY;
 	sprite.body.collideWorldBounds = true;
 	sprite.body.maxVelocity.set(params.MAX_VELOCITY, params.MAX_VELOCITY);
-	sprite.animations.add('stand', [0], true)
-	sprite.animations.add('walk', [1, 2, 3, 4], 10, true);
-	sprite.animations.add('jump', [5], 10, true);
 	sprite.play('walk');
 	this.sprite = sprite;
 	this.walker = new walker.Walker(sprite, params.PLAYER_STATS);

@@ -11,6 +11,38 @@ def bad_sprite(path):
     raise build.BuildFailure(
         'Invalid sprite description: {}'.format(path))
 
+def read_animation(animation):
+    if isinstance(animation, int):
+        return {'frames': [animation], 'fps': 0, 'loop': True}
+    if isinstance(animation, str):
+        parts = animation.split()
+        frames = []
+        loop = False
+        fps = None
+        parts.reverse()
+        while parts:
+            try:
+                frame = int(parts[-1])
+            except ValueError:
+                break
+            frames.append(frame)
+            parts.pop()
+        if not frames:
+            return None
+        parts.reverse()
+        try:
+            for part in parts:
+                if parts[-1] == 'loop':
+                    loop = True
+                elif parts[-1].startswith('fps='):
+                    fps = int(parts[-1][4:])
+                else:
+                    return None
+        except ValueError:
+            return None
+        return {'frames': frames, 'fps': fps}
+    return None
+
 class App(object):
     __slots__ = ['config', 'system', 'scale']
 
@@ -88,11 +120,23 @@ class App(object):
                     bad_sprite(ypath)
                 if not isinstance(width, int) and isinstance(height, int):
                     bad_sprite(ypath)
-                spritesheets[path] = {
+                obj = {
                     'path': img_path,
                     'w': width * 2,
                     'h': height * 2,
                 }
+                if 'animations' in info:
+                    anims = {}
+                    obj['animations'] = anims
+                    for k, anim in info['animations'].items():
+                        anim_obj = read_animation(anim)
+                        if anim_obj is None:
+                            raise build.BuildFailure(
+                                'Invalid animation: {!r}'.format(anim))
+                        anims[k] = anim_obj
+                if 'frames' in info:
+                    obj['frames'] = info['frames']
+                spritesheets[path] = obj
             else:
                 bad_sprite(ypath)
 

@@ -1,3 +1,5 @@
 type: grid
 width: 64
 height: 64
+animations:
+  boom: 0 1 2 3 fps=15

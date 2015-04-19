@@ -42,6 +42,8 @@ function monster(obj) {
 		ai: {
 			pausetime: obj.pausetime || 0.3,
 		},
+		width: obj.width,
+		height: obj.height
 	};
 }
 

@@ -1,12 +1,11 @@
 'use strict';
 var params = require('./params');
 var walker = require('./walker');
+var loader = require('./loader');
 
 function Monsters(level) {
 	this.level = level;
 	this.group = level.add.group();
-	this.group.enableBody = true;
-	this.group.physicsBodyType = Phaser.Physics.ARCADE;
 	this.objs = {};
 	this.counter = 0;
 }
@@ -21,9 +20,11 @@ Monsters.prototype = {
 		var name = 'Monster ' + this.counter;
 		this.counter++;
 		var sprite = this.group.create(
-			obj.x + obj.width / 2, obj.y + obj.height / 2, obj.type.toLowerCase());
+			obj.x + obj.width / 2, obj.y + obj.height / 2);
+		loader.setAnimations(sprite, obj.type.toLowerCase());
 		sprite.anchor.setTo(0.5, 0.5);
 		sprite.name = name;
+		game.physics.arcade.enable(sprite);
 		sprite.body.collideWorldBounds = true;
 		sprite.body.gravity.y = params.GRAVITY;
 		this.objs[name] = {

@@ -1,3 +1,5 @@
 type: grid
 width: 32
 height: 32
+frames:
+  bolt: 0
