@@ -1,5 +1,7 @@
 'use strict';
 
+var WIDTH = 800;
+var HEIGHT = 480;
 var GRAVITY = 2500;
 
 // In one 60 Hz tick, don't move more than 90% of a half tile.
@@ -48,6 +50,9 @@ function monster(obj) {
 }
 
 module.exports = {
+	WIDTH: WIDTH,
+	HEIGHT: HEIGHT,
+
 	GRAVITY: GRAVITY,
 
 	MAX_VELOCITY: MAX_VELOCITY,

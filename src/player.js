@@ -19,6 +19,7 @@ function Player(level, obj) {
 	this.fireDown = true;
 	this.weapons = [];
 	this.weapon = -1;
+	this.hearts = [];
 }
 
 Player.prototype = {
@@ -28,6 +29,7 @@ Player.prototype = {
 		for (w in weapons) {
 			this.addWeapon(w);
 		}
+		this.setHearts(7);
 	},
 
 	update: function() {
@@ -80,7 +82,7 @@ Player.prototype = {
 		var x, y;
 		x = idx % rowlength;
 		y = Math.floor(idx / rowlength);
-		var size = 48, margin = 8;
+		var size = 48, margin = 4;
 		var sprite = this.level.gUi.create(
 			size / 2 + margin + (margin + size) * x,
 			size / 2 + margin + (margin + size) * y,
@@ -92,11 +94,23 @@ Player.prototype = {
 		} else {
 			info.setIcon(sprite, false);
 		}
-		console.log(sprite);
 		this.weapons.push({
 			name: weapon,
 			sprite: sprite
 		});
+	},
+
+	setHearts: function(count) {
+		var i;
+		var size = 48, margin = 4;
+		for (i = this.hearts.length; i < count; i++) {
+			var sprite = this.level.gUi.create(
+				params.WIDTH - (size / 2 + margin + (margin + size) * i),
+				size / 2 + margin,
+				'hearts', 0);
+			sprite.anchor.setTo(0.5, 0.5);
+			this.hearts.push(sprite);
+		}
 	},
 };
 
