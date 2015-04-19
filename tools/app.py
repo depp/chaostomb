@@ -30,17 +30,18 @@ def read_animation(animation):
         if not frames:
             return None
         parts.reverse()
+        print(parts)
         try:
             for part in parts:
-                if parts[-1] == 'loop':
+                if part == 'loop':
                     loop = True
-                elif parts[-1].startswith('fps='):
-                    fps = int(parts[-1][4:])
+                elif part.startswith('fps='):
+                    fps = int(part[4:])
                 else:
                     return None
         except ValueError:
             return None
-        return {'frames': frames, 'fps': fps}
+        return {'frames': frames, 'fps': fps, 'loop': loop}
     return None
 
 class App(object):
