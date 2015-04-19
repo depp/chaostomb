@@ -85,7 +85,7 @@ Level.prototype.create = function() {
 	var collide = [];
 	for (i = 1; i <= 64; i++) {
 		if (OUCH_TILES.indexOf(i) < 0) {
-			collide.push(i)
+			collide.push(i);
 		}
 	}
 	map.setCollision(collide, true, 'Main', true);
