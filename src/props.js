@@ -24,10 +24,33 @@ function Chest(level, sprite, info) {
 }
 Chest.prototype.markerOffset = 48;
 Chest.prototype.interact = function() {
+	console.log('INTERACT');
 	var level = this.level;
 	this.sprite.frame = 3;
 	level.setPaused(true);
 	level.gProps.setTarget(null);
+	var tsprite, tframe;
+	if (true) {
+		tsprite = 'hearts';
+		tframe = 0;
+	}
+	var treasure = level.add.sprite(
+		this.sprite.x,
+		this.sprite.y - 24,
+		tsprite,
+		tframe);
+	treasure.anchor.setTo(0.5, 0.5);
+	var tpre = 0.25, tmove = 1.0;
+	var tween = level.add.tween(treasure);
+	tween.to(
+		{y: this.sprite.y - 96}, tmove * 1000,
+		Phaser.Easing.Sinusoidal.InOut,
+		true, tpre * 1000, 0, false);
+	tween.onComplete.addOnce(function() {
+		console.log('FIRE');
+		level.setPaused(false);
+		treasure.destroy();
+	});
 };
 
 ////////////////////////////////////////////////////////////////////////
