@@ -27,7 +27,11 @@
 </data>
  </layer>
  <objectgroup name="Default">
-  <object gid="65" x="16" y="208"/>
+  <object gid="65" x="16" y="208">
+   <properties>
+    <property name="Target" value="entrance1"/>
+   </properties>
+  </object>
   <object gid="67" x="576" y="176"/>
   <object gid="70" x="248" y="192"/>
   <object type="Ouch" x="432" y="212" width="80" height="108"/>

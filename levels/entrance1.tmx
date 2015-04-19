@@ -32,13 +32,25 @@
 </data>
  </layer>
  <objectgroup name="Default">
-  <object gid="65" x="40" y="256"/>
+  <object gid="65" x="40" y="256">
+   <properties>
+    <property name="Target" value="exit"/>
+   </properties>
+  </object>
   <object gid="72" x="0" y="256"/>
   <object gid="72" x="80" y="256"/>
   <object gid="70" x="304" y="256"/>
   <object gid="70" x="576" y="304"/>
-  <object gid="65" x="912" y="304"/>
-  <object gid="65" x="512" y="160"/>
+  <object gid="65" x="912" y="304">
+   <properties>
+    <property name="Target" value="entrance3"/>
+   </properties>
+  </object>
+  <object gid="65" x="512" y="160">
+   <properties>
+    <property name="Target" value="entrance2"/>
+   </properties>
+  </object>
   <object gid="69" x="848" y="304"/>
   <object type="Eye" x="160" y="232" width="16" height="24"/>
   <object gid="67" x="1004" y="112"/>

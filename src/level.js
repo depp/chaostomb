@@ -178,7 +178,8 @@ Level.prototype.setPaused = function(flag) {
 // Change the current level.
 Level.prototype.changeLevel = function(target) {
 	this.state.restart(true, false, {
-		level: target
+		level: target,
+		prevLevel: this.gStartInfo.level,
 	});
 };
 

@@ -22,7 +22,7 @@
                  "name":"",
                  "properties":
                     {
-
+                     "Target":"exit"
                     },
                  "rotation":0,
                  "type":"",
@@ -97,7 +97,7 @@
                  "name":"",
                  "properties":
                     {
-
+                     "Target":"entrance3"
                     },
                  "rotation":0,
                  "type":"",
@@ -112,7 +112,7 @@
                  "name":"",
                  "properties":
                     {
-
+                     "Target":"entrance2"
                     },
                  "rotation":0,
                  "type":"",

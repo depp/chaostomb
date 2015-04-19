@@ -38,6 +38,18 @@ Door.prototype.interact = function() {
 		});
 	timer.start();
 };
+Door.prototype.spawnPlayer = function() {
+	this.level.gPlayer.spawn(this.sprite.position);
+	this.level.setPaused(true);
+	this.sprite.frame = 1;
+	var timer = game.time.create(true);
+	timer.add(
+		LEVEL_ENTER_TIME * 1000, function() {
+			this.sprite.frame = 0;
+			this.level.setPaused(false);
+		}, this);
+	timer.start();
+}
 
 ////////////////////////////////////////////////////////////////////////
 // Chest
@@ -212,7 +224,7 @@ Props.prototype.spawnPlayerFromDoor = function(source) {
 		}
 		var target = obj.target;
 		if (target && target === source) {
-
+			obj.spawnPlayer();
 			return true;
 		}
 	}
