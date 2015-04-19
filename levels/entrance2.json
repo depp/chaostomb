@@ -60,6 +60,34 @@
                  "width":0,
                  "x":248,
                  "y":192
+                }, 
+                {
+                 "height":108,
+                 "name":"",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"Ouch",
+                 "visible":true,
+                 "width":80,
+                 "x":432,
+                 "y":212
+                }, 
+                {
+                 "height":92,
+                 "name":"",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"Ouch",
+                 "visible":true,
+                 "width":80,
+                 "x":160,
+                 "y":228
                 }],
          "opacity":1,
          "type":"objectgroup",

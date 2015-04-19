@@ -25,6 +25,7 @@ function Level() {
 	this.gShots = null;
 	this.gFx = null;
 	this.gUi = null;
+	this.gOuch = null;
 	this.gPaused = false;
 }
 
@@ -103,6 +104,9 @@ Level.prototype.create = function() {
 	this.gShots = new shots.Shots(this);
 	this.gFx = new fx.Fx(this);
 	this.gUi = game.add.group();
+	this.gOuch = game.add.group();
+	this.gOuch.enableBody = true;
+	this.gOuch.physicsBodyType = Phaser.Physics.ARCADE;
 
 	var playerPos = new Phaser.Point(64, 64);
 	var olayer = map.objects.Default;
@@ -121,6 +125,10 @@ Level.prototype.create = function() {
 			continue;
 		}
 		switch (info.type) {
+		case 'Ouch':
+			var ouch = this.gOuch.create(info.x, info.y);
+			ouch.body.setSize(info.width, info.height);
+			break;
 		case 'Player':
 			playerPos.set(info.x + info.width / 2, info.y + info.height / 2);
 			break;
@@ -132,6 +140,11 @@ Level.prototype.create = function() {
 	if (!this.gProps.spawnPlayerFromDoor(this.gStartInfo.prevLevel)) {
 		this.gPlayer.spawn(playerPos);
 	}
+};
+
+Level.prototype.render = function() {
+	this.gPlayer.group.forEachAlive(game.debug.body, game.debug);
+	this.gOuch.forEachAlive(game.debug.body, game.debug);
 };
 
 Level.prototype.spawnPlayer = function(obj) {
