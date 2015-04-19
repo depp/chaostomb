@@ -46,6 +46,7 @@ Chest.prototype.interact = function() {
 		{y: this.sprite.y - 96}, tmove * 1000,
 		Phaser.Easing.Sinusoidal.InOut,
 		true, tpre * 1000, 0, false);
+	game.sound.play('fanfare');
 	tween.onComplete.addOnce(function() {
 		console.log('FIRE');
 		level.setPaused(false);
