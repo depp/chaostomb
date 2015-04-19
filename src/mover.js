@@ -40,6 +40,7 @@ function Walker(sprite, stats) {
 	this.direction = +1;
 	this.anim = null;
 	this.sloptime = params.JUMP_SLOP;
+	this.fast = false;
 }
 
 Walker.prototype.update = function(xdrive, ydrive, stunned) {
@@ -124,6 +125,9 @@ Walker.prototype.update = function(xdrive, ydrive, stunned) {
 	}
 	if (!did_jump) {
 		if (body.onFloor()) {
+			if (stats.sound && this.state !== 0 && this.fast) {
+				game.sound.play('step_1');
+			}
 			this.state = 0;
 			this.sloptime = params.JUMP_SLOP;
 		} else {
@@ -144,6 +148,7 @@ Walker.prototype.update = function(xdrive, ydrive, stunned) {
 		this.sprite.play(anim);
 		this.anim = anim;
 	}
+	this.fast = body.velocity.y > params.LAND_THRESHOLD;
 };
 
 ////////////////////////////////////////////////////////////////////////

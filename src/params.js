@@ -83,6 +83,7 @@ function monster(obj) {
 }
 
 module.exports = {
+	LAND_THRESHOLD: 400,
 	WIDTH: WIDTH,
 	HEIGHT: HEIGHT,
 	GRAVITY: GRAVITY,
@@ -117,7 +118,10 @@ module.exports = {
 		jtime: 0.5,
 		jaccel: 1800,
 		jheight: 180,
-		jdouble: true
+		jdouble: true,
+
+		// Play sounds
+		sound: true,
 	}),
 
 	MONSTERS: {
