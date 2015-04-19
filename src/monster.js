@@ -27,6 +27,7 @@ Monsters.prototype = {
 		game.physics.arcade.enable(sprite);
 		sprite.body.collideWorldBounds = true;
 		sprite.body.gravity.y = params.GRAVITY;
+		sprite.body.maxVelocity.set(params.MAX_VELOCITY, params.MAX_VELOCITY);
 		this.objs[name] = {
 			sprite: sprite,
 			stats: stats,
