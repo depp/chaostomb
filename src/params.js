@@ -95,6 +95,11 @@ module.exports = {
 	PLAYER_STUN_TIME: 0.3,
 	CORPSE_DRAG: 800,
 	CORPSE_AIR_DRAG: 50,
+
+	// Level switch transition timing
+	LEVEL_EXIT_TIME: 0.5,
+	LEVEL_ENTER_TIME: 0.5,
+
 	// Time after leaving a platform while you can still jump.
 	JUMP_SLOP: 0.2,
 

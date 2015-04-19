@@ -131,13 +131,13 @@ function Player(level, obj) {
 	this.objs = {};
 }
 
-Player.prototype.spawn = function(info) {
+Player.prototype.spawn = function(pos) {
 	if ('Player' in this.objs) {
 		console.error('Too many players');
 		return;
 	}
-	var sprite = this.group.create(
-		info.x + info.width / 2, info.y + info.height / 2);
+	var sprite = this.group.create(pos.x, pos.y);
+	this.level.camera.follow(sprite, Phaser.Camera.FOLLOW_PLATFORMER);
 	sprite.name = 'Player';
 	loader.setAnimations(sprite, 'player');
 	sprite.anchor.setTo(0.5, 0.5);

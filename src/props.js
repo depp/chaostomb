@@ -2,6 +2,9 @@
 
 var BOB_MAGNITUDE = 16;
 var BOB_TIME = 1.0;
+var LEVEL_EXIT_TIME = 0.5;
+var LEVEL_ENTER_TIME = 0.5;
+
 
 ////////////////////////////////////////////////////////////////////////
 // Door
@@ -9,18 +12,31 @@ var BOB_TIME = 1.0;
 function Door(level, sprite, info) {
 	this.level = level;
 	this.sprite = sprite;
-	this.target = info.target;
+	this.target = info.Target;
 	if (!this.target) {
 		console.error('Door has no target');
 	}
 }
 Door.prototype.markerOffset = 64;
 Door.prototype.interact = function() {
+	var target = this.target;
+	if (!this.target) {
+		game.sound.play('buzz');
+		console.log('Door has no target');
+		return;
+	}
 	var level = this.level;
 	this.sprite.frame = 1;
 	level.setPaused(true);
 	level.gProps.setTarget(null);
 	game.sound.play('door');
+	var timer = game.time.create(true);
+	timer.add(
+		LEVEL_EXIT_TIME * 1000, function() {
+			console.log('CHANGE LEVEL', target);
+			level.changeLevel(target);
+		});
+	timer.start();
 };
 
 ////////////////////////////////////////////////////////////////////////
@@ -106,7 +122,7 @@ Props.prototype.spawn = function(index, info) {
 		var name = 'Prop ' + this.counter;
 		this.counter++;
 		sprite.name = name;
-		var obj = new Constructor(this.level, sprite, info);
+		var obj = new Constructor(this.level, sprite, info.properties || {});
 		game.physics.arcade.enable(sprite);
 		this.objs[name] = obj;
 	}
@@ -181,6 +197,23 @@ Props.prototype.interact = function() {
 	} else {
 		this.markerTarget.interact(this.level);
 	}
+};
+
+// Spawn player from the door.  Returns true if successful.
+Props.prototype.spawnPlayerFromDoor = function(source) {
+	var name, obj, door = null;
+	for (name in this.objs) {
+		obj = this.objs[name];
+		if (!(obj instanceof Door)) {
+			continue;
+		}
+		var target = obj.target;
+		if (target && target === source) {
+
+			return true;
+		}
+	}
+	return false;
 };
 
 ////////////////////////////////////////////////////////////////////////

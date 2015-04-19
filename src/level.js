@@ -65,6 +65,7 @@ Level.prototype.preload = function() {
 Level.prototype.create = function() {
 	var i;
 
+	game.renderer.renderSession.roundPixels = true;
 	game.antialias = false;
 	game.stage.smoothed = false;
 	game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -89,23 +90,33 @@ Level.prototype.create = function() {
 	this.gFx = new fx.Fx(this);
 	this.gUi = game.add.group();
 
+	var playerPos = new Phaser.Point(64, 64);
 	var olayer = map.objects.Default;
+	if (!olayer) {
+		console.log('No "Default" object layer');
+		return;
+	}
 	for (i = 0; i < olayer.length; i++) {
 		var info = olayer[i];
 		if (typeof info.gid == 'number') {
 			this.gProps.spawn(info.gid - propGid, info);
 			continue;
 		}
-		var func = this['spawn' + info.type];
-		if (func) {
-			func.call(this, info);
-			continue;
-		}
 		if (info.type in params.MONSTERS) {
 			this.gMonsters.spawn(info);
 			continue;
 		}
-		console.error('Unknown object type: ' + info.type);
+		switch (info.type) {
+		case 'Player':
+			playerPos.set(info.x + info.width / 2, info.y + info.height / 2);
+			break;
+		default:
+			console.error('Unknown object type: ' + info.type);
+			break;
+		}
+	}
+	if (!this.gProps.spawnPlayerFromDoor(this.gStartInfo.prevLevel)) {
+		this.gPlayer.spawn(playerPos);
 	}
 };
 
@@ -133,6 +144,13 @@ Level.prototype.setPaused = function(flag) {
 	}
 	game.physics.arcade.isPaused = flag;
 	this.gPaused = flag;
+};
+
+// Change the current level.
+Level.prototype.changeLevel = function(target) {
+	this.state.restart(true, false, {
+		level: target
+	});
 };
 
 module.exports.Level = Level;
