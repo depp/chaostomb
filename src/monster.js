@@ -30,10 +30,11 @@ Monsters.prototype = {
 		this.objs[name] = {
 			sprite: sprite,
 			stats: stats,
+			health: stats.health,
 			walker: new walker.Walker(sprite, stats.stats),
 			state: this.statePatrol,
 			param: Math.random() > 0.5 ? 2 : 0,
-			time: 0
+			time: 0,
 		};
 	},
 
@@ -72,7 +73,18 @@ Monsters.prototype = {
 			}
 			break;
 		}
-	}
+	},
+
+	// Damage a monster.
+	damage: function(sprite, amt) {
+
+	},
+
+	// Push a monster.
+	push: function(sprite, dx, dy) {
+		console.log(dx, dy);
+		sprite.body.velocity.add(dx, dy);
+	},
 };
 
 module.exports = {

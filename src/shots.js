@@ -10,6 +10,32 @@ function Shots(level) {
 	this.counter = 0;
 }
 
+function explosionPush(target, center, info) {
+	info = info || {};
+	var dx = target.x - center.x;
+	var dy = target.y - center.y;
+	var dd = Math.hypot(dx, dy);
+	var radius = info.radius || 32;
+	var maxpush = info.maxpush || 200;
+	var minpush = info.minpush || 100;
+	var a = radius - dd;
+	if (a <= 0) {
+		return null;
+	}
+	a = minpush + a * (maxpush - minpush) / radius;
+	if (info.kick) {
+		dy -= info.kick;
+		dd = Math.hypot(dx, dy);
+	}
+	if (dd < 1) {
+		dx = 0;
+		dy = 1;
+	} else {
+		a /= dd;
+	}
+	return {x: dx * a, y: dy * a};
+}
+
 Shots.prototype = {
 	// type, position(x, y), direction(x, y)
 	spawn: function(type, px, py, dx, dy) {
@@ -63,6 +89,14 @@ Shots.prototype = {
 		var cy = (monster.y + shot.y) / 2;
 		this.level.gFx.spawn('Boom', cx, cy);
 		shot.kill();
+		var push = explosionPush(monster, shot, {
+			minpush: 500,
+			maxpush: 700,
+			kick: 16
+		});
+		if (push) {
+			this.level.gMonsters.push(monster, push.x, push.y);
+		}
 	},
 
 	// Callback when shot hits tile.
