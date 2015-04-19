@@ -36,6 +36,7 @@ Monsters.prototype = {
 			state: this.statePatrol,
 			param: Math.random() > 0.5 ? 2 : 0,
 			time: 0,
+			stuntime: 0
 		};
 	},
 
@@ -44,11 +45,18 @@ Monsters.prototype = {
 		var name, obj;
 		for (name in this.objs) {
 			obj = this.objs[name];
-			obj.state.call(this, obj);
+			if (obj.state) {
+				obj.state.call(this, obj);
+			}
 		}
 	},
 
 	statePatrol: function(obj) {
+		if (obj.stuntime > 0) {
+			obj.walker.update(0, 0, true);
+			obj.stuntime -= game.time.physicsElapsed;
+			return;
+		}
 		switch (obj.param) {
 		case 0:
 			obj.walker.update(-1, 0);
@@ -77,24 +85,64 @@ Monsters.prototype = {
 		}
 	},
 
+	stateDead: function(obj) {
+		if (obj.time > 0) {
+			obj.time -= game.time.physicsElapsed;
+		}
+		if (obj.time <= 0 && obj.sprite.body.blocked.down) {
+			obj.state = null;
+			obj.sprite.body.enable = false;
+			obj.sprite.play('dead');
+			return;
+		}
+		obj.walker.update(0, 0, true);
+	},
+
+	kill: function(obj) {
+		obj.state = this.stateDead;
+		obj.time = params.MONSTER_DEATH_TIME;
+	},
+
 	// Damage a monster.
 	damage: function(sprite, amt) {
-		var name = sprite.name;
-		var obj = this.objs[name];
-		if (!obj) {
-			console.error('Not a monster:', sprite);
+		var obj = this.find(sprite);
+		if (!obj || obj.health <= 0) {
 			return;
 		}
 		obj.health--;
-		if (obj.health <= 0) {
-
+		if (obj.health > 0) {
+			obj.stuntime = params.MONSTER_STUN_TIME;
+		} else {
+			this.kill(obj);
 		}
 	},
 
 	// Push a monster.
-	push: function(sprite, dx, dy) {
-		sprite.body.velocity.add(dx, dy);
+	push: function(sprite, push) {
+		var obj = this.find(sprite);
+		if (!obj) {
+			return;
+		}
+		var vel = sprite.body.velocity;
+		if (obj.health <= 0) {
+			var d = vel.dot(push);
+			if (d <= 0) {
+				vel.setTo(push.x, push.y);
+				return;
+			}
+		}
+		Phaser.Point.add(vel, push, vel);
 	},
+
+	find: function(sprite) {
+		var name = sprite.name;
+		var obj = this.objs[name];
+		if (!obj) {
+			console.error('Not a monster:', sprite);
+			return null;
+		}
+		return obj;
+	}
 };
 
 module.exports = {

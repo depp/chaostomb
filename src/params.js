@@ -45,19 +45,19 @@ function monster(obj) {
 			pausetime: obj.pausetime || 0.3,
 		},
 		width: obj.width,
-		height: obj.height
+		height: obj.height,
+		health: obj.health
 	};
 }
 
 module.exports = {
 	WIDTH: WIDTH,
 	HEIGHT: HEIGHT,
-
 	GRAVITY: GRAVITY,
-
 	MAX_VELOCITY: MAX_VELOCITY,
-
 	WALK_THRESHOLD: WALK_THRESHOLD,
+	MONSTER_DEATH_TIME: 0.5,
+	MONSTER_STUN_TIME: 0.5,
 
 	PLAYER_STATS: stats({
 		bounce: 0.2,
@@ -86,7 +86,8 @@ module.exports = {
 		Eye: monster({
 			speed: 200,
 			accel: 1,
-			jheight: 180
+			jheight: 180,
+			health: 2
 		})
 	},
 

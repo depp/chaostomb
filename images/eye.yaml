@@ -5,3 +5,5 @@ animations:
   stand: 0
   walk: 1 2 3 4 fps=10 loop
   jump: 5
+  hurt: 6
+  dead: 7

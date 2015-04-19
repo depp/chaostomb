@@ -14,7 +14,7 @@ function Walker(sprite, stats) {
 }
 
 Walker.prototype = {
-	update: function(xdrive, ydrive) {
+	update: function(xdrive, ydrive, stunned) {
 		var body = this.sprite.body;
 		var stats = this.stats;
 		var direction = this.direction;
@@ -29,6 +29,10 @@ Walker.prototype = {
 			drag = stats.adrag;
 			accel = stats.aaccel;
 			speed = stats.aspeed;
+		}
+		if (stunned) {
+			drag *= 0.3;
+			accel *= 0.3;
 		}
 
 		// The target speed
@@ -93,6 +97,9 @@ Walker.prototype = {
 			anim = 'jump';
 		}
 
+		if (stunned) {
+			anim = 'hurt';
+		}
 		if (this.anim != anim) {
 			this.sprite.play(anim);
 			this.anim = anim;

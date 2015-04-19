@@ -10,19 +10,24 @@ function Shots(level) {
 	this.counter = 0;
 }
 
-function explosionPush(target, center, info) {
+function explosionPush(target, center, info, fixed) {
 	info = info || {};
 	var dx = target.x - center.x;
 	var dy = target.y - center.y;
-	var dd = Math.hypot(dx, dy);
-	var radius = info.radius || 32;
-	var maxpush = info.maxpush || 200;
-	var minpush = info.minpush || 100;
-	var a = radius - dd;
-	if (a <= 0) {
-		return null;
+	var a, dd;
+	if (info.push) {
+		a = info.push;
+	} else {
+		var maxpush = info.maxpush || 200;
+		var minpush = info.minpush || 100;
+		var dd = Math.hypot(dx, dy);
+		var radius = info.radius || 32;
+		var a = radius - dd;
+		if (a <= 0) {
+			return null;
+		}
+		a = minpush + a * (maxpush - minpush) / radius;
 	}
-	a = minpush + a * (maxpush - minpush) / radius;
 	if (info.kick) {
 		dy -= info.kick;
 		dd = Math.hypot(dx, dy);
@@ -33,7 +38,7 @@ function explosionPush(target, center, info) {
 	} else {
 		a /= dd;
 	}
-	return {x: dx * a, y: dy * a};
+	return new Phaser.Point(dx * a, dy * a);
 }
 
 Shots.prototype = {
@@ -85,18 +90,18 @@ Shots.prototype = {
 
 	// Callback when shot hits monster.
 	monsterHit: function(shot, monster) {
+		this.level.gMonsters.damage(monster, 1);
 		var cx = (monster.x + shot.x) / 2;
 		var cy = (monster.y + shot.y) / 2;
 		this.level.gFx.spawn('Boom', cx, cy);
-		shot.kill();
 		var push = explosionPush(monster, shot, {
-			minpush: 500,
-			maxpush: 700,
+			push: 300,
 			kick: 16
 		});
 		if (push) {
-			this.level.gMonsters.push(monster, push.x, push.y);
+			this.level.gMonsters.push(monster, push);
 		}
+		shot.kill();
 	},
 
 	// Callback when shot hits tile.
