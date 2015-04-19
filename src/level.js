@@ -7,6 +7,14 @@ var props = require('./props');
 var player = require('./player');
 var shots = require('./shots');
 
+// All other tiles in 1-64 are solid, but these kill you.
+var OUCH_TILES = [
+	// Water
+	41, 49, 57,
+	// Lava
+	23, 24, 31, 32,
+];
+
 function Level() {
 	this.gStartInfo = null;
 	this.gInput = null;
@@ -74,7 +82,13 @@ Level.prototype.create = function() {
 	map.addTilesetImage('tiles', 'tiles');
 	this.gTiles = map.createLayer('Main');
 	this.gTiles.resizeWorld();
-	map.setCollision([1], true, 'Main', true);
+	var collide = [];
+	for (i = 1; i <= 64; i++) {
+		if (OUCH_TILES.indexOf(i) < 0) {
+			collide.push(i)
+		}
+	}
+	map.setCollision(collide, true, 'Main', true);
 
 	var propsetIdx = map.getTilesetIndex('props');
 	if (!propsetIdx) {
