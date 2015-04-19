@@ -60,6 +60,11 @@ Behavior.prototype.push = function(push) {
 	Phaser.Point.add(vel, push, vel);
 };
 Behavior.prototype.kill = function() {
+	var i;
+	var w = this.obj.player.weapons;
+	for (i = 0; i < w.length; i++) {
+		w[i].sprite.kill();
+	}
 	this.obj.behavior = new Die(this.obj);
 };
 
