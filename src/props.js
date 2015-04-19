@@ -6,43 +6,46 @@ var BOB_TIME = 1.0;
 ////////////////////////////////////////////////////////////////////////
 // Door
 
-function Door(sprite, info) {
+function Door(level, sprite, info) {
+	this.level = level;
 	this.sprite = sprite;
 }
 Door.prototype.markerOffset = 64;
 Door.prototype.interact = function() {
-
+	console.log('Door');
 };
 
 ////////////////////////////////////////////////////////////////////////
-// Door
+// Chest
 
-function Chest(sprite, info) {
+function Chest(level, sprite, info) {
+	this.level = level;
 	this.sprite = sprite;
 }
 Chest.prototype.markerOffset = 48;
 Chest.prototype.interact = function() {
-
+	console.log('Chest');
 };
 
 ////////////////////////////////////////////////////////////////////////
 // Save point
 
-function SavePoint(sprite, info) {
+function SavePoint(level, sprite, info) {
+	this.level = level;
 	this.sprite = sprite;
 }
 SavePoint.prototype.markerOffset = 48;
 SavePoint.prototype.interact = function() {
-
+	console.log('Save Point');
 };
 
 ////////////////////////////////////////////////////////////////////////
 // Prop factories
 
 var PROP_TYPES = {
-	0: function(sprite, info) { return new Door(sprite, info); },
-	2: function(sprite, info) { return new Chest(sprite, info); },
-	4: function(sprite, info) { return new Chest(sprite, info); },
+	0: Door,
+	2: Chest,
+	4: SavePoint,
 };
 
 ////////////////////////////////////////////////////////////////////////
@@ -60,16 +63,16 @@ function Props(level) {
 
 // Spawn a prop from the map.
 Props.prototype.spawn = function(index, info) {
-	var factory = PROP_TYPES[index];
+	var Constructor = PROP_TYPES[index];
 	var sprite = this.group.create(
 		info.x + 32, info.y - 32,
 		'props', index);
 	sprite.anchor.set(0.5, 0.5);
-	if (factory) {
+	if (Constructor) {
 		var name = 'Prop ' + this.counter;
 		this.counter++;
 		sprite.name = name;
-		var obj = factory(sprite, info);
+		var obj = new Constructor(this.level, sprite, info);
 		game.physics.arcade.enable(sprite);
 		this.objs[name] = obj;
 	}
@@ -135,6 +138,15 @@ Props.prototype.setTarget = function(sprite) {
 	this.markerTween.to(
 		{x: tx, y: ty1}, BOB_TIME * 500, Phaser.Easing.Sinusoidal.InOut,
 		true, 0, -1, true);
+};
+
+// Try to interact with something, as the player.
+Props.prototype.interact = function() {
+	if (!this.markerTarget) {
+		console.log('Cannot interact');
+	} else {
+		this.markerTarget.interact(this.level);
+	}
 };
 
 ////////////////////////////////////////////////////////////////////////

@@ -12,9 +12,9 @@ function Behavior(obj) {
 	this.stuntime = 0;
 }
 Behavior.prototype.update = function() {
-	var level = this.obj.player.level;
+	var level = this.obj.level;
 	var input = level.gInput;
-	var xdrive = 0, ydrive = 0, fire = false;
+	var xdrive = 0, ydrive = 0, fire = false, interact = false;
 	if (input.left !== 0) {
 		xdrive += -1;
 	}
@@ -24,8 +24,8 @@ Behavior.prototype.update = function() {
 	if (input.up !== 0) {
 		ydrive += -1;
 	}
-	if (input.down !== 0) {
-		ydrive += +1;
+	if (input.down === 1) {
+		interact = true;
 	}
 	if (input.fire === 1) {
 		fire = true;
@@ -36,6 +36,9 @@ Behavior.prototype.update = function() {
 			true, 'Bolt',
 			pos.x, pos.y,
 			this.obj.mover.direction, 0);
+	}
+	if (interact) {
+		level.gProps.interact();
 	}
 	if (this.stuntime > 0) {
 		this.stuntime -= game.time.physicsElapsed;
@@ -142,6 +145,7 @@ Player.prototype.spawn = function(info) {
 	sprite.body.maxVelocity.set(params.MAX_VELOCITY, params.MAX_VELOCITY);
 	sprite.play('walk');
 	var obj = {
+		level: this.level,
 		player: this,
 		sprite: sprite,
 		behavior: null,
