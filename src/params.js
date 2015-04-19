@@ -30,7 +30,7 @@ var MON_DEFAULTS = {
 	patrolpause: 0.3,
 	scaninterval: 2,
 	shotdelay: 0.2,
-	shotinterval: 0.1,
+	shotinterval: 0.5,
 	shotrecover: 0.2,
 	shotcount: 1,
 };

@@ -138,17 +138,18 @@ Patrol.prototype.scan = function() {
 	if (!target) {
 		return;
 	}
-	this.obj.behavior = new Shoot(this.obj);
+	this.obj.behavior = new Shoot(this.obj, target);
 };
 
 ////////////////////////////////////////////////////////////////////////
 // Shoot
 
-function Shoot(obj) {
+function Shoot(obj, target) {
 	this.obj = obj;
 	this.time = obj.stats.shotdelay;
 	this.count = obj.stats.shotcount;
 	this.previous = obj.behavior;
+	this.target = target;
 }
 Shoot.prototype = Object.create(Behavior.prototype);
 Shoot.prototype.update = function() {
@@ -163,15 +164,21 @@ Shoot.prototype.update = function() {
 	}
 	var target = this.obj.level.gPlayer.getPosition();
 	if (!target) {
-		this.obj.behavior = this.previous;
-		return;
+		target = this.target;
+	} else {
+		this.target = target;
 	}
 	var pos = this.obj.sprite.position;
 	this.obj.level.gShots.spawn(
-		this.obj.stats.shot,
+		false, this.obj.stats.shot,
 		pos.x, pos.y,
 		target.x - pos.x, target.y - pos.y);
 	this.count--;
+	if (this.count <= 0) {
+		this.time = this.obj.stats.shotrecover;
+	} else {
+		this.time = this.obj.stats.shotinterval;
+	}
 };
 
 ////////////////////////////////////////////////////////////////////////

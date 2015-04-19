@@ -6,9 +6,14 @@ var params = require('./params');
 
 function Shots(level) {
 	this.level = level;
-	this.group = level.add.group();
-	this.group.enableBody = true;
-	this.group.physicsBodyType = Phaser.Physics.ARCADE;
+	// Monster shots always in front so player can dodge better.
+	this.pgroup = level.add.group();
+	this.pgroup.enableBody = true;
+	this.pgroup.physicsBodyType = Phaser.Physics.ARCADE;
+	this.mgroup = level.add.group();
+	this.mgroup.enableBody = true;
+	this.mgroup.physicsBodyType = Phaser.Physics.ARCADE;
+	this.groups = [this.pgroup, this.mgroup];
 	this.objs = {};
 	this.counter = 0;
 }
@@ -45,21 +50,22 @@ function explosionPush(target, center, info, fixed) {
 }
 
 // type, position(x, y), direction(x, y)
-Shots.prototype.spawn = function(type, px, py, dx, dy) {
+Shots.prototype.spawn = function(isPlayer, type, px, py, dx, dy) {
+	var group = isPlayer ? this.pgroup : this.mgroup;
 	var stats = params.SHOTS[type];
 	if (!stats) {
 		console.error('Unknown shot:', type);
 		return;
 	}
 	var sprite, name;
-	sprite = this.group.getFirstDead();
+	sprite = group.getFirstDead();
 	if (sprite) {
 		name = sprite.name;
 		sprite.reset(px, py);
 		sprite.frame = stats.frame;
 	} else {
-		name = 'P' + this.counter;
-		sprite = this.group.create(px, py, 'shots', stats.frame);
+		name = (isPlayer ? 'P' : 'M') + group.length;
+		sprite = group.create(px, py, 'shots', stats.frame);
 		sprite.name = name;
 		sprite.anchor.setTo(0.5, 0.5);
 		sprite.checkWorldBounds = true;
@@ -83,30 +89,53 @@ Shots.prototype.spawn = function(type, px, py, dx, dy) {
 };
 
 Shots.prototype.update = function() {
+	var i, group;
 	game.physics.arcade.overlap(
-		this.group, this.level.gMonsters.group, this.monsterHit, null, this);
-	this.group.forEachAlive(function(shot) {
-		game.physics.arcade.overlap(
-			shot, this.level.gTiles, this.tileHit, null, this);
-	}, this);
+		this.level.gMonsters.group, this.pgroup, this.monsterHit, null, this);
+	game.physics.arcade.overlap(
+		this.level.gPlayer.sprite, this.mgroup, this.playerHit, null, this);
+	for (i = 0; i < this.groups.length; i++) {
+		group = this.groups[i];
+		group.forEachAlive(this.tileTest, this);
+	}
 };
 
-// Callback when shot hits monster.
-Shots.prototype.monsterHit = function(shot, monster) {
-	var cx = (monster.x + shot.x) / 2;
-	var cy = (monster.y + shot.y) / 2;
+// Callback when shot hits monster or player.
+Shots.prototype.actorHit = function(target, shot, isPlayer) {
+	var cx = (target.x + shot.x) / 2;
+	var cy = (target.y + shot.y) / 2;
 	this.level.gFx.spawn('Boom', cx, cy);
-	var push = explosionPush(monster, shot, {
+	var push = explosionPush(target, shot, {
 		push: 300,
 		kick: 16
 	});
-	this.level.gMonsters.invoke(monster, function(obj) {
-		obj.damage(1);
-		if (push) {
-			obj.push(push);
-		}
-	});
+	if (isPlayer) {
+		console.log("PLAYER HIT");
+	} else {
+		this.level.gMonsters.invoke(target, function(obj) {
+			obj.damage(1);
+			if (push) {
+				obj.push(push);
+			}
+		});
+	}
 	shot.kill();
+};
+
+// Callback when shot hits player.
+Shots.prototype.playerHit = function(player, shot) {
+	this.actorHit(player, shot, true);
+};
+
+// Callback when shot hits monster.
+Shots.prototype.monsterHit = function(monster, shot) {
+	this.actorHit(monster, shot, false);
+};
+
+// Test hit against tiles.
+Shots.prototype.tileTest = function(shot, tile) {
+	game.physics.arcade.overlap(
+		shot, this.level.gTiles, this.tileHit, null, this);
 };
 
 // Callback when shot hits tile.
