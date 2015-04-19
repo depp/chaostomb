@@ -6,6 +6,9 @@ var params = require('./params');
 var props = require('./props');
 var player = require('./player');
 var shots = require('./shots');
+var music = require('./music');
+
+var MUSIC_FADE_TIME = 1;
 
 // All other tiles in 1-64 are solid, but these kill you.
 var OUCH_TILES = [
@@ -60,6 +63,15 @@ function loadCommonAssets() {
 		}
 		game.load.audio(x, uris);
 	}
+	var music = PATH_MAP.music;
+	for (x in music) {
+		s = music[x];
+		uris = [];
+		for (i = 0; i < s.length; i++) {
+			uris.push('music/' + s[i]);
+		}
+		game.load.audio('music/' + x, uris);
+	}
 }
 
 Level.prototype.preload = function() {
@@ -80,6 +92,7 @@ Level.prototype.create = function() {
 	game.physics.startSystem(Phaser.Physics.ARCADE);
 
 	var map = game.add.tilemap(this.gStartInfo.level);
+	music.play(map.properties.Music);
 	map.addTilesetImage('tiles', 'tiles');
 	this.gTiles = map.createLayer('Main');
 	this.gTiles.resizeWorld();
