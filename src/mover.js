@@ -114,6 +114,9 @@ Walker.prototype.update = function(xdrive, ydrive, stunned) {
 				if (body.velocity.y >= -stats.jspeed) {
 					body.velocity.y = -stats.jspeed;
 				}
+				if (stats.sound) {
+					game.sound.play('jump');
+				}
 				did_jump = true;
 			}
 		}
