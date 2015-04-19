@@ -60,6 +60,8 @@ module.exports = {
 	MONSTER_STUN_TIME: 0.5,
 	CORPSE_DRAG: 800,
 	CORPSE_AIR_DRAG: 50,
+	// Time after leaving a platform while you can still jump.
+	JUMP_SLOP: 0.2,
 
 	PLAYER_STATS: stats({
 		bounce: 0.2,

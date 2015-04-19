@@ -39,6 +39,7 @@ function Walker(sprite, stats) {
 	this.stepdistance = 0;
 	this.direction = +1;
 	this.anim = null;
+	this.sloptime = params.JUMP_SLOP;
 }
 
 Walker.prototype.update = function(xdrive, ydrive, stunned) {
@@ -100,10 +101,14 @@ Walker.prototype.update = function(xdrive, ydrive, stunned) {
 			this.jumptime -= game.time.physicsElapsed;
 			body.acceleration.y = stats.jaccel * ydrive;
 		} else {
+			var state = this.state;
+			if (state === 1 && this.sloptime > 0) {
+				state = 0;
+			}
 			var can_jump = !this.jumpdown &&
-					(this.state === 0 || this.state === 1 && stats.jdouble);
+					(state === 0 || state === 1 && stats.jdouble);
 			if (can_jump) {
-				this.state++;
+				this.state = state + 1;
 				this.jumptime = stats.jtime;
 				if (body.velocity.y >= -stats.jspeed) {
 					body.velocity.y = -stats.jspeed;
@@ -117,8 +122,16 @@ Walker.prototype.update = function(xdrive, ydrive, stunned) {
 		body.acceleration.y = 0;
 		this.jumptime = 0;
 	}
-	if (!did_jump && body.onFloor()) {
-		this.state = 0;
+	if (!did_jump) {
+		if (body.onFloor()) {
+			this.state = 0;
+			this.sloptime = params.JUMP_SLOP;
+		} else {
+			if (this.state === 0) {
+				this.state = 1;
+			}
+			this.sloptime -= game.time.physicsElapsed;
+		}
 	}
 	if (this.state !== 0) {
 		anim = 'jump';
