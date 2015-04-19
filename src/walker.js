@@ -10,12 +10,15 @@ function Walker(sprite, stats) {
 	this.jumpdown = false;
 	this.stepdistance = 0;
 	this.direction = +1;
+	this.anim = null;
 }
 
 Walker.prototype = {
 	update: function(xdrive, ydrive) {
 		var body = this.sprite.body;
 		var stats = this.stats;
+		var direction = this.direction;
+		var anim = null;
 
 		var drag, accel, speed;
 		if (this.state === 0) {
@@ -35,7 +38,8 @@ Walker.prototype = {
 		// Final X acceleration
 		var xaccel;
 		if (Math.abs(xdrive) > 0.1) {
-			if (body.velocity.x * Math.sign(xdrive) >= params.FLIP_SPEED) {
+			anim = 'walk';
+			if (body.velocity.x * Math.sign(xdrive) >= -params.WALK_THRESHOLD) {
 				this.sprite.scale.x = this.direction = Math.sign(xdrive);
 			}
 			xaccel = accel;
@@ -44,6 +48,11 @@ Walker.prototype = {
 				xaccel *= 0.5;
 			}
 		} else {
+			if (Math.abs(body.velocity.x) >= params.WALK_THRESHOLD) {
+				anim = 'walk';
+			} else {
+				anim = 'stand';
+			}
 			xaccel = drag;
 		}
 		if (Math.abs(xdel) <= xaccel * game.time.physicsElapsed) {
@@ -79,6 +88,11 @@ Walker.prototype = {
 		}
 		if (!did_jump && body.onFloor()) {
 			this.state = 0;
+		}
+
+		if (this.anim != anim) {
+			this.sprite.play(anim);
+			this.anim = anim;
 		}
 	},
 };
