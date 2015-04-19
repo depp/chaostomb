@@ -31,7 +31,7 @@ Behavior.prototype.update = function() {
 		fire = true;
 	}
 	if (fire) {
-		var pos = this.sprite.position;
+		var pos = this.obj.sprite.position;
 		level.gShots.spawn(
 			true, 'Bolt',
 			pos.x, pos.y,
