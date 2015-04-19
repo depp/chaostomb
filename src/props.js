@@ -9,10 +9,18 @@ var BOB_TIME = 1.0;
 function Door(level, sprite, info) {
 	this.level = level;
 	this.sprite = sprite;
+	this.target = info.target;
+	if (!this.target) {
+		console.error('Door has no target');
+	}
 }
 Door.prototype.markerOffset = 64;
 Door.prototype.interact = function() {
-	console.log('Door');
+	var level = this.level;
+	this.sprite.frame = 1;
+	level.setPaused(true);
+	level.gProps.setTarget(null);
+	game.sound.play('door');
 };
 
 ////////////////////////////////////////////////////////////////////////
@@ -24,7 +32,6 @@ function Chest(level, sprite, info) {
 }
 Chest.prototype.markerOffset = 48;
 Chest.prototype.interact = function() {
-	console.log('INTERACT');
 	var level = this.level;
 	this.sprite.frame = 3;
 	level.setPaused(true);
@@ -170,7 +177,7 @@ Props.prototype.setTarget = function(sprite) {
 // Try to interact with something, as the player.
 Props.prototype.interact = function() {
 	if (!this.markerTarget) {
-		console.log('Cannot interact');
+		game.sound.play('buzz');
 	} else {
 		this.markerTarget.interact(this.level);
 	}
