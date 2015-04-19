@@ -3,6 +3,10 @@ var params = require('./params');
 var mover = require('./mover');
 var loader = require('./loader');
 
+function randAdjust() {
+	return (Math.random() + 1) * (2 / 3);
+}
+
 ////////////////////////////////////////////////////////////////////////
 // Behavior
 
@@ -101,7 +105,7 @@ Patrol.prototype.update = function() {
 		this.obj.mover.update(-1, 0);
 		if (this.obj.sprite.body.blocked.left) {
 			this.state = 1;
-			this.time = (Math.random() + 0.5) * this.obj.stats.ai.pausetime;
+			this.time = randAdjust() * this.obj.stats.ai.pausetime;
 		}
 		break;
 
@@ -109,7 +113,7 @@ Patrol.prototype.update = function() {
 		this.obj.mover.update(+1, 0);
 		if (this.obj.sprite.body.blocked.right) {
 			this.state = 3;
-			this.time = (Math.random() + 0.5) * this.obj.stats.ai.pausetime;
+			this.time = randAdjust() * this.obj.stats.ai.pausetime;
 		}
 		break;
 
