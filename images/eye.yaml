@@ -3,5 +3,5 @@ width: 16
 height: 24
 animations:
   stand: 0
-  walk: 0
-  jump: 0
+  walk: 1 2 3 4 fps=10 loop
+  jump: 5

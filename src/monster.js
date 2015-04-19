@@ -68,6 +68,7 @@ Monsters.prototype = {
 
 		case 1:
 		case 3:
+			obj.walker.update(0, 0);
 			obj.time -= game.time.physicsElapsed;
 			if (obj.time <= 0) {
 				obj.param = (obj.param + 1) & 3;
@@ -78,7 +79,16 @@ Monsters.prototype = {
 
 	// Damage a monster.
 	damage: function(sprite, amt) {
+		var name = sprite.name;
+		var obj = this.objs[name];
+		if (!obj) {
+			console.error('Not a monster:', sprite);
+			return;
+		}
+		obj.health--;
+		if (obj.health <= 0) {
 
+		}
 	},
 
 	// Push a monster.
