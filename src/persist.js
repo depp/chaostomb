@@ -22,9 +22,10 @@ function decode() {
 	} catch (e) {
 		return null;
 	}
-	if (typeof save != 'object') {
+	if (!save || typeof save != 'object') {
 		return null;
 	}
+	console.log(save);
 	st.hearts = save.hearts;
 	st.chests = save.chests;
 	st.weapons = save.weapons;
@@ -36,7 +37,7 @@ function decode() {
 	};
 }
 
-function load() {
+function loadSave() {
 	if (!loaded) {
 		if (hasLocalStorage) {
 			saveData = window.localStorage.getItem('save');
@@ -85,5 +86,6 @@ GameState.prototype.save = function(levelName, savePointId) {
 
 module.exports = {
 	hasLocalStorage: hasLocalStorage,
+	loadSave: loadSave,
 	GameState: GameState,
 };

@@ -72,7 +72,7 @@ function loadBindings() {
 	} catch (e) {
 		return;
 	}
-	if (typeof data !== 'object') {
+	if (!data || typeof data !== 'object') {
 		return;
 	}
 	userbindings = data;
@@ -88,7 +88,7 @@ function loadKeys() {
 	var i;
 	for (i = 0; i < objs.length; i++) {
 		var obj = objs[i].keys;
-		if (typeof obj !== 'object') {
+		if (!obj || typeof obj !== 'object') {
 			continue;
 		}
 		for (cmd in COMMANDS) {
