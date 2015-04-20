@@ -7,6 +7,10 @@ function randAdjust() {
 	return (Math.random() + 1) * (2 / 3);
 }
 
+var MONSTER_TYPES = {
+	0: 'Eye',
+};
+
 ////////////////////////////////////////////////////////////////////////
 // Behavior
 
@@ -192,17 +196,23 @@ function Monsters(level) {
 	this.counter = 0;
 }
 
-Monsters.prototype.spawn = function(info) {
-	var stats = params.MONSTERS[info.type];
+Monsters.prototype.spawn = function(gid, info) {
+	var type = MONSTER_TYPES[gid];
+	if (!type) {
+		console.error('Unknown monster GID');
+		return;
+	}
+	var stats = params.MONSTERS[type];
 	if (!stats) {
 		console.error('Unknown monster:', info.type);
 		return;
 	}
 	var name = 'Monster ' + this.counter;
 	this.counter++;
+	console.log(info);
 	var sprite = this.group.create(
-		info.x + info.width / 2, info.y + info.height / 2);
-	assets.setAnimations(sprite, info.type.toLowerCase());
+		info.x + 32, info.y - stats.height / 2);
+	assets.setAnimations(sprite, type.toLowerCase());
 	sprite.anchor.setTo(0.5, 0.5);
 	sprite.name = name;
 	game.physics.arcade.enable(sprite);
@@ -244,5 +254,6 @@ Monsters.prototype.invoke = function(sprite, func, context) {
 // Exports
 
 module.exports = {
-	Monsters: Monsters
+	Monsters: Monsters,
+	MONSTER_TYPES: MONSTER_TYPES
 };

@@ -65,6 +65,8 @@ function monster(obj) {
 		shotinterval: obj.shotinterval,
 		shotrecover: obj.shotrecover,
 		shotcount: obj.shotcount,
+		width: obj.width,
+		height: obj.height,
 	};
 	for (key in result) {
 		var val = result[key];
@@ -137,6 +139,8 @@ module.exports = {
 			scanperiod: 2,
 			shot: 'Eye',
 			shotcount: 2,
+			width: 32,
+			height: 48,
 		})
 	},
 
