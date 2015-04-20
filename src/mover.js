@@ -30,7 +30,8 @@ Corpse.prototype.update = function(xdrive, ydrive, stunned) {
 // Walker
 
 function Walker(sprite, stats) {
-	sprite.body.bounce.y = stats.bounce;
+	// Annoying, but cool
+	// sprite.body.bounce.y = stats.bounce;
 	this.sprite = sprite;
 	this.stats = stats;
 	this.state = 0;
