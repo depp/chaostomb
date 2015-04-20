@@ -274,7 +274,6 @@ Player.prototype.spawnHex = function() {
 	if (!pos) {
 		return false;
 	}
-	console.log(pos);
 	sprite.reset(pos.x, pos.y);
 	var obj = {
 		level: this.level,
