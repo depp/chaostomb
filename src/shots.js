@@ -2,18 +2,109 @@
 var params = require('./params');
 
 ////////////////////////////////////////////////////////////////////////
+// Shot
+
+// needs level, sprite, isPlayerShot attributes
+function Shot() {}
+Shot.prototype.kill = function(tile) {
+	var shot = this.sprite;
+	delete this.level.gShots.objs[this.sprite.name];
+	shot.kill();
+};
+Shot.prototype.hitTile = function(tile) {
+	var shot = this.sprite;
+	this.level.gFx.spawn('Boom', shot.x, shot.y);
+	this.kill();
+};
+Shot.prototype.hitMonster = function(monster) {
+	if (this.isPlayerShot) {
+		this.hitActor(monster, this.level.gMonsters);
+	}
+};
+Shot.prototype.hitPlayer = function(player) {
+	if (!this.isPlayerShot) {
+		this.hitActor(player, this.level.gPlayer);
+	}
+};
+Shot.prototype.hitActor = function(target, team) {
+	var shot = this.sprite;
+	var cx = (target.x + shot.x) / 2;
+	var cy = (target.y + shot.y) / 2;
+	this.level.gFx.spawn('Boom', cx, cy);
+	game.sound.play('hurt');
+	var push = explosionPush(target, shot, {
+		push: 300,
+		kick: 16
+	});
+	team.invoke(target, function(obj) {
+		obj.damage(1);
+		if (push) {
+				obj.push(push);
+		}
+	});
+	shot.kill();
+};
+
+function shotClass(attr) {
+	var proto = Object.create(Shot.prototype);
+	var name;
+	for (name in attr) {
+		proto[name] = attr[name];
+	}
+	return proto;
+}
+
+////////////////////////////////////////////////////////////////////////
+// Bolt
+
+function Bolt() {}
+Bolt.prototype = shotClass({
+	frame: 0,
+	speed: 900,
+	size: 12,
+	sound: 'shot_short',
+});
+
+////////////////////////////////////////////////////////////////////////
+// Eye
+
+function Eye() {}
+Eye.prototype = shotClass({
+	frame: 1,
+	speed: 450,
+	size: 12,
+	sound: 'shot_2',
+});
+
+////////////////////////////////////////////////////////////////////////
+// Ball
+
+function Ball() {}
+Ball.prototype = shotClass({
+	frame: 4,
+	speed: 700,
+	size: 16,
+	sound: 'dink',
+});
+
+////////////////////////////////////////////////////////////////////////
+// Shots
+
+var SHOTS = {
+	Bolt: Bolt,
+	Eye: Eye,
+	Ball: Ball,
+};
+
+////////////////////////////////////////////////////////////////////////
 // Shot manager
 
 function Shots(level) {
 	this.level = level;
 	// Monster shots always in front so player can dodge better.
-	this.pgroup = level.add.group();
-	this.pgroup.enableBody = true;
-	this.pgroup.physicsBodyType = Phaser.Physics.ARCADE;
-	this.mgroup = level.add.group();
-	this.mgroup.enableBody = true;
-	this.mgroup.physicsBodyType = Phaser.Physics.ARCADE;
-	this.groups = [this.pgroup, this.mgroup];
+	this.group = level.add.group();
+	this.group.enableBody = true;
+	this.group.physicsBodyType = Phaser.Physics.ARCADE;
 	this.objs = {};
 	this.counter = 0;
 }
@@ -51,21 +142,21 @@ function explosionPush(target, center, info, fixed) {
 
 // type, position(x, y), direction(x, y)
 Shots.prototype.spawn = function(isPlayer, type, px, py, dx, dy) {
-	var group = isPlayer ? this.pgroup : this.mgroup;
-	var stats = params.SHOTS[type];
-	if (!stats) {
+	var Constructor = SHOTS[type];
+	if (!Constructor) {
 		console.error('Unknown shot:', type);
 		return;
 	}
 	var sprite, name;
-	sprite = group.getFirstDead();
+	var obj = new Constructor();
+	sprite = this.group.getFirstDead();
 	if (sprite) {
 		name = sprite.name;
 		sprite.reset(px, py);
-		sprite.frame = stats.frame;
+		sprite.frame = obj.frame;
 	} else {
-		name = (isPlayer ? 'P' : 'M') + group.length;
-		sprite = group.create(px, py, 'shots', stats.frame);
+		name = 'Shot ' + this.group.length;
+		sprite = this.group.create(px, py, 'shots', obj.frame);
 		sprite.name = name;
 		sprite.anchor.setTo(0.5, 0.5);
 		sprite.checkWorldBounds = true;
@@ -80,69 +171,57 @@ Shots.prototype.spawn = function(isPlayer, type, px, py, dx, dy) {
 	} else {
 		dfac = 1 / dmag;
 	}
-	dfac *= stats.speed;
+	dfac *= obj.speed;
 	sprite.body.velocity.set(dx * dfac, dy * dfac);
-	sprite.body.setSize(stats.size, stats.size);
-	this.objs[name] = {
-		sprite: sprite,
-	};
-	if (stats.sound) {
-		game.sound.play(stats.sound);
+	sprite.body.setSize(obj.size, obj.size);
+	obj.level = this.level;
+	obj.sprite = sprite;
+	obj.isPlayerShot = isPlayer;
+	this.objs[name] = obj;
+	if (obj.sound) {
+		game.sound.play(obj.sound);
 	}
 };
 
 Shots.prototype.update = function() {
-	var i, group;
 	game.physics.arcade.overlap(
-		this.level.gMonsters.group, this.pgroup, this.monsterHit, null, this);
+		this.level.gMonsters.group, this.group, this.hitMonster, null, this);
 	game.physics.arcade.overlap(
-		this.level.gPlayer.group, this.mgroup, this.playerHit, null, this);
-	for (i = 0; i < this.groups.length; i++) {
-		group = this.groups[i];
-		group.forEachAlive(this.tileTest, this);
-	}
-};
-
-// Callback when shot hits monster or player.
-Shots.prototype.actorHit = function(target, shot, isPlayer) {
-	var cx = (target.x + shot.x) / 2;
-	var cy = (target.y + shot.y) / 2;
-	this.level.gFx.spawn('Boom', cx, cy);
-	game.sound.play('hurt');
-	var push = explosionPush(target, shot, {
-		push: 300,
-		kick: 16
-	});
-	var team = isPlayer ? this.level.gPlayer : this.level.gMonsters;
-	team.invoke(target, function(obj) {
-		obj.damage(1);
-		if (push) {
-				obj.push(push);
-		}
-	});
-	shot.kill();
+		this.level.gPlayer.group, this.group, this.hitPlayer, null, this);
+	game.physics.arcade.overlap(
+		this.group, this.level.gTiles, this.tileHit, null, this);
 };
 
 // Callback when shot hits player.
-Shots.prototype.playerHit = function(player, shot) {
-	this.actorHit(player, shot, true);
+Shots.prototype.hitPlayer = function(player, shot) {
+	if (!player.name) {
+		return;
+	}
+	this.invoke(shot, function(obj) { obj.hitPlayer(player); });
 };
 
 // Callback when shot hits monster.
-Shots.prototype.monsterHit = function(monster, shot) {
-	this.actorHit(monster, shot, false);
-};
-
-// Test hit against tiles.
-Shots.prototype.tileTest = function(shot, tile) {
-	game.physics.arcade.overlap(
-		shot, this.level.gTiles, this.tileHit, null, this);
+Shots.prototype.hitMonster = function(monster, shot) {
+	if (!monster.name) {
+		return;
+	}
+	this.invoke(shot, function(obj) { obj.hitMonster(monster); });
 };
 
 // Callback when shot hits tile.
 Shots.prototype.tileHit = function(shot, tile) {
-	this.level.gFx.spawn('Boom', shot.x, shot.y);
-	shot.kill();
+	this.invoke(shot, function(obj) { obj.hitTile(tile); });
+};
+
+// Call a function on a shot object.
+Shots.prototype.invoke = function(sprite, func, context) {
+	var name = sprite.name;
+	var obj = this.objs[name];
+	if (!obj) {
+		console.error('Not a shot:', sprite);
+		return;
+	}
+	func.call(context, obj);
 };
 
 ////////////////////////////////////////////////////////////////////////

@@ -73,6 +73,10 @@ var WEAPONS = {
 	Breakout: {
 		icon: 7,
 		name: 'Brick Breaker',
+		fire: function(level) {
+			var face = level.gPlayer.getFacing();
+			level.gShots.spawn(true, 'Ball', face.x, face.y, face.direction, -3);
+		}
 	},
 	Billiards: {
 		icon: 8,
@@ -95,7 +99,6 @@ var WEAPONS = {
 		name: 'Gun',
 		fire: function(level) {
 			var face = level.gPlayer.getFacing();
-			console.log(face);
 			level.gShots.spawn(true, 'Bolt', face.x, face.y, face.direction, 0);
 			game.sound.play('shot_short');
 		}
