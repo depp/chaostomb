@@ -4,6 +4,7 @@ var params = require('./params');
 function start() {
 	var game = new Phaser.Game(params.WIDTH, params.HEIGHT, Phaser.AUTO, 'game');
 	global.game = game;
+	require('./cheat');
 	var assets = require('./assets');
 	var menu = require('./menu');
 	var level = require('./level');
