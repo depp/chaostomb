@@ -12,7 +12,7 @@ function itemExit() {
 	return {
 		text: 'Exit',
 		func: function() {
-			game.state.start('Menu', true, false)
+			game.state.start('Menu', true, false);
 		}
 	};
 }
@@ -133,21 +133,21 @@ Menu.prototype.select = function(index) {
 	var it = this.items[index];
 	this.pointer.position.set(it.x, it.y);
 	this.selection = index;
-}
+};
 
 ////////////////////////////////////////////////////////////////////////
 // Main Menu (state)
 
 function MainMenu() {
 	this.menu = null;
-};
+}
 
 MainMenu.prototype.create = function() {
 	this.menu = new Menu([
 		itemNewGame(),
 		itemSavedGame(),
 	]);
-}
+};
 
 MainMenu.prototype.update = function() {
 	input.update();
