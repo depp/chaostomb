@@ -33,15 +33,14 @@
    </properties>
   </object>
   <object gid="65" x="592" y="112"/>
-  <object gid="67" x="400" y="112">
+  <object gid="68" x="400" y="112">
    <properties>
     <property name="Id" value="1"/>
-    <property name="Object" value="Weapon"/>
    </properties>
   </object>
   <object gid="70" x="248" y="128"/>
-  <object gid="73" x="208" y="224"/>
-  <object gid="73" x="488" y="208"/>
-  <object gid="73" x="352" y="256"/>
+  <object gid="75" x="208" y="224"/>
+  <object gid="75" x="488" y="208"/>
+  <object gid="75" x="352" y="256"/>
  </objectgroup>
 </map>

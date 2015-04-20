@@ -99,10 +99,10 @@ Level.prototype.create = function() {
 		var info = olayer[i];
 		if (typeof info.gid == 'number') {
 			var gid = info.gid - propGid;
-			if (gid < 8) {
+			if (gid < 10) {
 				this.gProps.spawn(gid, info);
 			} else {
-				this.gMonsters.spawn(gid - 8, info);
+				this.gMonsters.spawn(gid - 10, info);
 			}
 			continue;
 		}

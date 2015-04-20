@@ -75,15 +75,6 @@ function Chest(level, sprite, info) {
 			sprite.name = null;
 		}
 	}
-	switch (this.object) {
-	case 'Heart':
-	case 'Weapon':
-		break;
-	default:
-		console.error('Chest has bad Object property:', this.object);
-		this.object = 'Heart';
-		break;
-	}
 }
 Chest.prototype.markerOffset = 48;
 Chest.prototype.interact = function() {
@@ -96,20 +87,22 @@ Chest.prototype.interact = function() {
 	chests[this.ident] = 0;
 
 	var level = this.level;
-	this.sprite.frame = 3;
 	level.setPaused(true);
 	level.gProps.setTarget(null);
-	var tsprite, tframe, tfunc;
-	var weapon = this.object == 'Weapon' ?
-			this.level.gPlayer.getNextWeapon() : null;
+	var tsprite, tframe, tfunc, weapon = null;
+	if (this.sprite.frame == 3) {
+		weapon = this.level.gPlayer.getNextWeapon();
+	}
 	if (weapon) {
 		tsprite = 'icons';
 		tframe = weapons[weapon].getFrame(true);
 		tfunc = function(player) { player.addWeapon(weapon); };
+		this.sprite.frame = 9;
 	} else {
 		tsprite = 'hearts';
 		tframe = 0;
 		tfunc = function(player) { player.addHeart(); };
+		this.sprite.frame = 8;
 	}
 	var treasure = level.add.sprite(
 		this.sprite.x,
@@ -162,6 +155,7 @@ SavePoint.prototype.spawnPlayer = function() {
 var PROP_TYPES = {
 	0: Door,
 	2: Chest,
+	3: Chest,
 	4: SavePoint,
 };
 

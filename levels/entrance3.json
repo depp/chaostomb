@@ -13,7 +13,7 @@
         }, 
         {
          "draworder":"topdown",
-         "height":20,
+         "height":0,
          "name":"Default",
          "objects":[
                 {
@@ -47,13 +47,12 @@
                  "y":112
                 }, 
                 {
-                 "gid":67,
+                 "gid":68,
                  "height":0,
                  "name":"",
                  "properties":
                     {
-                     "Id":"1",
-                     "Object":"Weapon"
+                     "Id":"1"
                     },
                  "rotation":0,
                  "type":"",
@@ -78,7 +77,7 @@
                  "y":128
                 }, 
                 {
-                 "gid":73,
+                 "gid":75,
                  "height":0,
                  "name":"",
                  "properties":
@@ -93,7 +92,7 @@
                  "y":224
                 }, 
                 {
-                 "gid":73,
+                 "gid":75,
                  "height":0,
                  "name":"",
                  "properties":
@@ -108,7 +107,7 @@
                  "y":208
                 }, 
                 {
-                 "gid":73,
+                 "gid":75,
                  "height":0,
                  "name":"",
                  "properties":
@@ -125,7 +124,7 @@
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
-         "width":40,
+         "width":0,
          "x":0,
          "y":0
         }],
