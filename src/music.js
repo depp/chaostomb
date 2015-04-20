@@ -80,5 +80,3 @@ function play(name) {
 module.exports = {
 	play: play,
 };
-
-global.play = play;
