@@ -41,7 +41,7 @@
    </properties>
   </object>
   <object gid="70" x="248" y="192"/>
-  <object type="Ouch" x="432" y="212" width="80" height="108"/>
-  <object type="Ouch" x="160" y="228" width="80" height="92"/>
+  <object type="Water" x="432" y="212" width="80" height="108"/>
+  <object type="Water" x="160" y="228" width="80" height="92"/>
  </objectgroup>
 </map>

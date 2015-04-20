@@ -66,6 +66,6 @@
    </properties>
   </object>
   <object gid="70" x="480" y="160"/>
-  <object type="Ouch" x="656" y="324" width="176" height="76"/>
+  <object type="Water" x="656" y="324" width="176" height="76"/>
  </objectgroup>
 </map>

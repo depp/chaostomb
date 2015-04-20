@@ -69,7 +69,7 @@
 
                     },
                  "rotation":0,
-                 "type":"Ouch",
+                 "type":"Water",
                  "visible":true,
                  "width":80,
                  "x":432,
@@ -83,7 +83,7 @@
 
                     },
                  "rotation":0,
-                 "type":"Ouch",
+                 "type":"Water",
                  "visible":true,
                  "width":80,
                  "x":160,

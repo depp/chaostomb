@@ -10,6 +10,7 @@ function start() {
 	game.state.add('Load', assets.LoadScreen);
 	game.state.add('Menu', menu.MainMenu);
 	game.state.add('Level', level.Level);
+	game.state.add('Dummy', Dummy);
 	game.state.start('Load', true, false);
 	/*
 	game.state.start('Level', true, false, {
@@ -17,5 +18,8 @@ function start() {
 	});
   */
 }
+
+function Dummy() {}
+Dummy.prototype.create = function() {};
 
 start();

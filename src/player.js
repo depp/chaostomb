@@ -77,7 +77,7 @@ Behavior.prototype.kill = function(reason) {
 		w[i].sprite.kill();
 	}
 	switch (reason) {
-	case 'drown':
+	case 'Water':
 		this.obj.behavior = new Drown(this.obj);
 		break;
 	default:
@@ -116,6 +116,7 @@ Die.prototype.update = function() {
 	this.obj.mover.update(0, 0, true);
 	this.time -= game.time.physicsElapsed;
 	if (this.time <= 0) {
+		this.obj.level.lose('You died.');
 		this.obj.behavior = new Dead(this.obj);
 	}
 };
@@ -145,6 +146,7 @@ Drown.prototype.update = function() {
 	if (body.blocked.down) {
 		body.collideWorldBounds = false;
 		body.velocity.set(0, -params.DROWN_JUMP_SPEED);
+		this.obj.level.lose('You drowned.');
 		this.obj.behavior = new Dead(this.obj);
 	}
 };
@@ -209,7 +211,7 @@ Player.prototype.update = function() {
 
 // Handle an overlap between a player and an ouch region.
 Player.prototype.playerOuch = function(player, ouch) {
-	this.invoke(player, function(obj) { obj.kill('drown'); });
+	this.invoke(player, function(obj) { obj.kill(ouch.name); });
 };
 
 // Add a weapon to the player's inventory.

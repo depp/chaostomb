@@ -61,11 +61,14 @@ function play(name) {
 		curAudio.onFadeComplete.addOnce(fadeComplete);
 		fading = true;
 	}
+	nextKey = key;
+	if (!key) {
+		return;
+	}
 	if (!loaded) {
 		loaded = {};
 		game.load.onFileComplete.add(fileComplete);
 	}
-	nextKey = key;
 	if (!loaded[key]) {
 		var uris = [], i;
 		for (i = 0; i < paths.length; i++) {

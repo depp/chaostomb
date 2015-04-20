@@ -8,6 +8,7 @@ var player = require('./player');
 var shots = require('./shots');
 var music = require('./music');
 var persist = require('./persist');
+var menu = require('./menu');
 
 // All other tiles in 1-64 are solid, but these kill you.
 var OUCH_TILES = [
@@ -31,6 +32,7 @@ function Level() {
 	this.gUi = null;
 	this.gOuch = null;
 	this.gPaused = false;
+	this.gMenu = null;
 }
 
 Level.prototype.init = function(startInfo) {
@@ -39,6 +41,7 @@ Level.prototype.init = function(startInfo) {
 	this.gInput = input.getKeys();
 	this.gStartInfo = startInfo;
 	this.gPaused = false;
+	this.gMenu = null;
 };
 
 Level.prototype.create = function() {
@@ -93,9 +96,11 @@ Level.prototype.create = function() {
 			continue;
 		}
 		switch (info.type) {
-		case 'Ouch':
+		case 'Lava':
+		case 'Water':
 			var ouch = this.gOuch.create(info.x, info.y);
 			ouch.body.setSize(info.width, info.height);
+			ouch.name = info.type;
 			break;
 		case 'Player':
 			playerPos.set(info.x + info.width / 2, info.y + info.height / 2);
@@ -129,6 +134,9 @@ Level.prototype.spawnPlayer = function(obj) {
 
 Level.prototype.update = function() {
 	input.update();
+	if (this.gMenu) {
+		this.gMenu.update();
+	}
 	if (!this.gPaused) {
 		this.gProps.update();
 		this.gPlayer.update();
@@ -136,6 +144,20 @@ Level.prototype.update = function() {
 		this.gShots.update();
 		this.gFx.update();
 	}
+};
+
+// Lose the game.
+Level.prototype.lose = function(message) {
+	if (this.gMenu) {
+		return;
+	}
+	if (!message) {
+		message = 'You died.';
+	}
+	this.gMenu = new menu.Menu([
+		menu.itemSavedGame(),
+		menu.itemExit(),
+	], message);
 };
 
 // Set whether level action is paused.
