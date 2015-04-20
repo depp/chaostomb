@@ -3,17 +3,15 @@ var params = require('./params');
 
 function Weapon() {}
 
-Weapon.prototype = {
-	setIcon: function(sprite, selected) {
-		// sprite.setTexture('icons');
-		var icon = this.icon;
-		var x = icon & 3, y = icon >> 2;
-		if (selected) {
-			x += 4;
-		}
-		// sprite.frame = 0;
-		sprite.frame = x + y * 8;
-	},
+Weapon.prototype.setIcon = function(sprite, selected) {
+	// sprite.setTexture('icons');
+	var icon = this.icon;
+	var x = icon & 3, y = icon >> 2;
+	if (selected) {
+		x += 4;
+	}
+	// sprite.frame = 0;
+	sprite.frame = x + y * 8;
 };
 
 var WEAPONS = {

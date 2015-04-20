@@ -192,54 +192,52 @@ function Monsters(level) {
 	this.counter = 0;
 }
 
-Monsters.prototype = {
-	spawn: function(info) {
-		var stats = params.MONSTERS[info.type];
-		if (!stats) {
-			console.error('Unknown monster:', info.type);
-			return;
-		}
-		var name = 'Monster ' + this.counter;
-		this.counter++;
-		var sprite = this.group.create(
-			info.x + info.width / 2, info.y + info.height / 2);
-		loader.setAnimations(sprite, info.type.toLowerCase());
-		sprite.anchor.setTo(0.5, 0.5);
-		sprite.name = name;
-		game.physics.arcade.enable(sprite);
-		sprite.body.collideWorldBounds = true;
-		sprite.body.gravity.y = params.GRAVITY;
-		sprite.body.maxVelocity.set(params.MAX_VELOCITY, params.MAX_VELOCITY);
-		var obj = {
-			level: this.level,
-			sprite: sprite,
-			stats: stats,
-			health: stats.health,
-			behavior: null,
-			mover: new mover.Walker(sprite, stats.stats),
-		};
-		obj.behavior = new Patrol(obj);
-		this.objs[name] = obj;
-	},
-
-	update: function() {
-		game.physics.arcade.collide(this.group, this.level.gTiles);
-		var name;
-		for (name in this.objs) {
-			this.objs[name].behavior.update();
-		}
-	},
-
-	// Call a function on a monster object.
-	invoke: function(sprite, func, context) {
-		var name = sprite.name;
-		var obj = this.objs[name];
-		if (!obj) {
-			console.error('Not a monster:', sprite);
-			return;
-		}
-		func.call(context, obj.behavior);
+Monsters.prototype.spawn = function(info) {
+	var stats = params.MONSTERS[info.type];
+	if (!stats) {
+		console.error('Unknown monster:', info.type);
+		return;
 	}
+	var name = 'Monster ' + this.counter;
+	this.counter++;
+	var sprite = this.group.create(
+		info.x + info.width / 2, info.y + info.height / 2);
+	loader.setAnimations(sprite, info.type.toLowerCase());
+	sprite.anchor.setTo(0.5, 0.5);
+	sprite.name = name;
+	game.physics.arcade.enable(sprite);
+	sprite.body.collideWorldBounds = true;
+	sprite.body.gravity.y = params.GRAVITY;
+	sprite.body.maxVelocity.set(params.MAX_VELOCITY, params.MAX_VELOCITY);
+	var obj = {
+		level: this.level,
+		sprite: sprite,
+		stats: stats,
+		health: stats.health,
+		behavior: null,
+		mover: new mover.Walker(sprite, stats.stats),
+	};
+	obj.behavior = new Patrol(obj);
+	this.objs[name] = obj;
+};
+
+Monsters.prototype.update = function() {
+	game.physics.arcade.collide(this.group, this.level.gTiles);
+	var name;
+	for (name in this.objs) {
+		this.objs[name].behavior.update();
+	}
+};
+
+// Call a function on a monster object.
+Monsters.prototype.invoke = function(sprite, func, context) {
+	var name = sprite.name;
+	var obj = this.objs[name];
+	if (!obj) {
+		console.error('Not a monster:', sprite);
+		return;
+	}
+	func.call(context, obj.behavior);
 };
 
 ////////////////////////////////////////////////////////////////////////
