@@ -91,7 +91,7 @@ Chest.prototype.interact = function() {
 	level.gProps.setTarget(null);
 	this.sprite.frame += 4;
 	var tsprite, tframe, tfunc, weapon = null;
-	if (this.sprite.frame == 3) {
+	if (this.sprite.frame == 9) {
 		weapon = this.level.gPlayer.getNextWeapon();
 	}
 	if (weapon) {
