@@ -52,7 +52,8 @@ var WEAPONS = {
 			if (!target) {
 				return;
 			}
-			console.log(target);
+			game.sound.play('warp');
+			level.gFx.emitSparks(target.x, target.y);
 			var body = target.body;
 			var range = new Phaser.Rectangle(
 				view.x + body.halfWidth,
@@ -69,6 +70,7 @@ var WEAPONS = {
 				if (!level.testTileRect(hitRect)) {
 					target.x = x;
 					target.y = y;
+					level.gFx.emitSparks(x, y);
 					break;
 				}
 			}
