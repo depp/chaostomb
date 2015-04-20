@@ -27,7 +27,6 @@ Fx.prototype.spawn = function(type, px, py) {
 Fx.prototype.update = function() {};
 
 Fx.prototype.emitSparks = function(x, y) {
-	console.log("EMIT");
 	this.sparks.x = x;
 	this.sparks.y = y;
 	this.sparks.start(true, 500, null, 10);
