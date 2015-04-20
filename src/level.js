@@ -274,4 +274,25 @@ Level.prototype.alert = function(message, noPause) {
 	timer.start();
 };
 
+Level.prototype.findEmptySpace = function(width, height) {
+	var view = game.camera.view;
+	var range = new Phaser.Rectangle(
+		view.x + width / 2,
+		view.y + height / 2,
+		view.width - width,
+		view.height - height);
+	var hitRect = new Phaser.Rectangle(0, 0, width, height);
+	var i, x, y, margin = 32;
+	for (i = 0; i < 15; i++) {
+		x = range.x + Math.floor(Math.random() * range.width);
+		y = range.y + Math.floor(Math.random() * range.height);
+		hitRect.x = x - width / 2;
+		hitRect.y = y - height / 2;
+		if (!this.testTileRect(hitRect)) {
+			return new Phaser.Point(x, y);
+		}
+	}
+	return null;
+};
+
 module.exports.Level = Level;

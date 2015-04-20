@@ -54,25 +54,11 @@ var WEAPONS = {
 			}
 			game.sound.play('warp');
 			level.gFx.emitSparks(target.x, target.y);
-			var body = target.body;
-			var range = new Phaser.Rectangle(
-				view.x + body.halfWidth,
-				view.y + body.halfHeight,
-				view.width - body.width,
-				view.height - body.height);
-			var hitRect = new Phaser.Rectangle(0, 0, body.width, body.height);
-			var i, x, y, margin = 32;
-			for (i = 0; i < 15; i++) {
-				x = range.x + Math.floor(Math.random() * range.width);
-				y = range.y + Math.floor(Math.random() * range.height);
-				hitRect.x = x - body.halfWidth;
-				hitRect.y = y - body.halfHeight;
-				if (!level.testTileRect(hitRect)) {
-					target.x = x;
-					target.y = y;
-					level.gFx.emitSparks(x, y);
-					break;
-				}
+			var pos = level.findEmptySpace(target.body.width, target.body.height);
+			if (pos !== null) {
+				target.x = pos.x;
+				target.y = pos.y;
+				level.gFx.emitSparks(pos.x, pos.y);
 			}
 		}
 	},
