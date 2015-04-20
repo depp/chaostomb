@@ -15,7 +15,7 @@ function Door(level, sprite, info) {
 	this.sprite = sprite;
 	this.target = info.Target;
 	if (!this.target) {
-		console.error('Door has no target');
+		console.warn('Door has no target');
 	} else {
 		level.gProps.doors[this.target] = this;
 	}
@@ -25,7 +25,7 @@ Door.prototype.interact = function() {
 	var target = this.target;
 	if (!this.target) {
 		game.sound.play('buzz');
-		console.error('Door has no target');
+		console.warn('Door has no target');
 		return;
 	}
 	var level = this.level;
@@ -62,10 +62,10 @@ function Chest(level, sprite, info) {
 	this.ident = info.Id;
 	this.object = info.Object;
 	if (typeof this.ident == 'undefined') {
-		console.error('Chest has no Id');
+		console.warn('Chest has no Id');
 	} else {
 		if (this.ident in level.gProps.chests) {
-			console.error('Duplicate chest:', this.ident);
+			console.warn('Duplicate chest:', this.ident);
 		} else {
 			level.gProps.chests[this.ident] = this;
 		}
@@ -131,9 +131,9 @@ function SavePoint(level, sprite, info) {
 	this.sprite = sprite;
 	this.ident = info.Id;
 	if (typeof this.ident == 'undefined') {
-		console.error('Save point has no Id');
+		console.warn('Save point has no Id');
 	} else if (this.ident in level.gProps.savePoints) {
-		console.error('Duplicate save point:', this.ident);
+		console.warn('Duplicate save point:', this.ident);
 	} else {
 		level.gProps.savePoints[this.ident] = this;
 	}
@@ -267,7 +267,7 @@ Props.prototype.interact = function() {
 Props.prototype.spawnPlayerFromDoor = function(ident) {
 	var obj = this.doors[ident];
 	if (!obj) {
-		console.error('Missing door:', ident);
+		console.warn('Missing door:', ident);
 	} else {
 		obj.spawnPlayer();
 	}
@@ -277,7 +277,7 @@ Props.prototype.spawnPlayerFromDoor = function(ident) {
 Props.prototype.spawnPlayerFromSavePoint = function(ident) {
 	var obj = this.savePoints[ident];
 	if (!obj) {
-		console.error('Missing save point:', ident);
+		console.warn('Missing save point:', ident);
 	} else {
 		obj.spawnPlayer();
 	}
