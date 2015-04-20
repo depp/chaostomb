@@ -7,6 +7,7 @@ var props = require('./props');
 var player = require('./player');
 var shots = require('./shots');
 var music = require('./music');
+var persist = require('./persist');
 
 // All other tiles in 1-64 are solid, but these kill you.
 var OUCH_TILES = [
@@ -17,6 +18,8 @@ var OUCH_TILES = [
 ];
 
 function Level() {
+	this.gLevelName = null;
+	this.gState = null;
 	this.gStartInfo = null;
 	this.gInput = null;
 	this.gPlayer = null;
@@ -31,6 +34,8 @@ function Level() {
 }
 
 Level.prototype.init = function(startInfo) {
+	this.gLevelName = startInfo.level;
+	this.gState = startInfo.state || new persist.GameState();
 	this.gInput = input.getKeys();
 	this.gStartInfo = startInfo;
 	this.gPaused = false;
@@ -40,7 +45,7 @@ Level.prototype.create = function() {
 	var i;
 	game.physics.startSystem(Phaser.Physics.ARCADE);
 
-	var map = game.add.tilemap(this.gStartInfo.level);
+	var map = game.add.tilemap(this.gLevelName);
 	music.play(map.properties.Music);
 	map.addTilesetImage('tiles', 'tiles');
 	this.gTiles = map.createLayer('Main');
@@ -74,7 +79,7 @@ Level.prototype.create = function() {
 	var playerPos = new Phaser.Point(64, 64);
 	var olayer = map.objects.Default;
 	if (!olayer) {
-		console.log('No "Default" object layer');
+		console.error('No "Default" object layer');
 		return;
 	}
 	for (i = 0; i < olayer.length; i++) {
@@ -100,9 +105,15 @@ Level.prototype.create = function() {
 			break;
 		}
 	}
-	if (!this.gProps.spawnPlayerFromDoor(this.gStartInfo.prevLevel)) {
-		this.gPlayer.spawn(playerPos);
+	switch (this.gStartInfo.source) {
+	case 'door':
+		this.gProps.spawnPlayerFromDoor(this.gStartInfo.sourceId);
+		break;
+	case 'save':
+		this.gProps.spawnPlayerFromSavePoint(this.gStartInfo.sourceId);
+		break;
 	}
+	this.gPlayer.spawn(playerPos);
 };
 
 /*
@@ -141,8 +152,10 @@ Level.prototype.setPaused = function(flag) {
 // Change the current level.
 Level.prototype.changeLevel = function(target) {
 	this.state.restart(true, false, {
+		state: this.gState,
 		level: target,
-		prevLevel: this.gStartInfo.level,
+		source: 'door',
+		sourceId: this.gStartInfo.level,
 	});
 };
 

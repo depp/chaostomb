@@ -54,9 +54,17 @@
     <property name="Target" value="entrance2"/>
    </properties>
   </object>
-  <object gid="69" x="848" y="304"/>
+  <object gid="69" x="848" y="304">
+   <properties>
+    <property name="Id" value="1"/>
+   </properties>
+  </object>
   <object type="Player" x="160" y="232" width="16" height="24"/>
-  <object gid="67" x="1004" y="112"/>
+  <object gid="67" x="1004" y="112">
+   <properties>
+    <property name="Id" value="1"/>
+   </properties>
+  </object>
   <object gid="70" x="480" y="160"/>
   <object type="Ouch" x="656" y="324" width="176" height="76"/>
  </objectgroup>

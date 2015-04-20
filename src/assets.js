@@ -78,7 +78,7 @@ LoadScreen.prototype.update = function() {
 	if (game.load.hasLoaded) {
 		this.gRect.width = w;
 		game.state.start('Level', true, false, {
-			level: 'test'
+			level: 'test',
 		});
 	} else {
 		this.gRect.width = margin + (w - margin * 2) * (game.load.progress / 100);

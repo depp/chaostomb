@@ -164,7 +164,6 @@ function Player(level, obj) {
 
 Player.prototype.spawn = function(pos) {
 	if ('Player' in this.objs) {
-		console.error('Too many players');
 		return;
 	}
 	var sprite = this.group.create(pos.x, pos.y);
@@ -187,12 +186,15 @@ Player.prototype.spawn = function(pos) {
 	obj.behavior = new Behavior(obj);
 	this.objs.Player = obj;
 
-	var w;
-	for (w in weapons) {
-		this.addWeapon(w);
+	var st = this.level.gState, i;
+	if (st.weapons.length !== 0) {
+		for (i = 0; i < st.weapons; i++) {
+			this.addWeapon(st.weapons[i], true);
+		}
+		this.setWeapon(st.currentWeapon, true);
 	}
-	this.setHearts(7);
-	this.setHealth(11);
+	this.setHearts(st.hearts, true);
+	this.setHealth(st.health, true);
 };
 
 Player.prototype.update = function() {
@@ -212,7 +214,7 @@ Player.prototype.playerOuch = function(player, ouch) {
 
 // Add a weapon to the player's inventory.
 // Returns true if succesful, false otherwise.
-Player.prototype.addWeapon = function(weapon) {
+Player.prototype.addWeapon = function(weapon, silent) {
 	var i;
 	for (i = 0; i < this.weapons.length; i++) {
 		if (this.weapons[i].name === weapon) {
@@ -246,19 +248,30 @@ Player.prototype.addWeapon = function(weapon) {
 		info: info,
 		sprite: sprite
 	});
+	if (!silent) {
+		this.level.gState.weapons.push(weapon);
+	}
 };
 
 // Set the current weapon.
-Player.prototype.setWeapon = function(weapon) {
+Player.prototype.setWeapon = function(weapon, silent) {
+	if (typeof weapon != 'number') {
+		weapon = 0;
+	}
 	if (this.weapon < 0) {
-		game.sound.play('buzz');
+		if (!silent) {
+			game.sound.play('buzz');
+		}
+		return;
 	}
 	if (weapon < 0) {
 		weapon = this.weapons.length - 1;
 	} else if (weapon >= this.weapons.length) {
 		weapon = 0;
 	}
-	game.sound.play('clack');
+	if (!silent) {
+		game.sound.play('clack');
+	}
 	if (this.weapon === weapon) {
 		return;
 	}
@@ -267,10 +280,13 @@ Player.prototype.setWeapon = function(weapon) {
 	this.weapon = weapon;
 	w = this.weapons[this.weapon];
 	w.info.setIcon(w.sprite, true);
+	if (!silent) {
+		this.level.gState.currentWeapon = weapon;
+	}
 };
 
 // Set the number of hearts (equal to half health capacity).
-Player.prototype.setHearts = function(count) {
+Player.prototype.setHearts = function(count, silent) {
 	var i;
 	var size = 48, margin = 4;
 	if (count === this.hearts.length) {
@@ -280,15 +296,24 @@ Player.prototype.setHearts = function(count) {
 		var sprite = this.level.gUi.create(
 			params.WIDTH - (size / 2 + margin + (margin + size) * i),
 			size / 2 + margin,
-			'hearts', 0);
+			'hearts', 2);
 		sprite.anchor.setTo(0.5, 0.5);
 		this.hearts.push(sprite);
 	}
-	this.setHealth(this.health);
+	if (!silent) {
+		this.level.gState.hearts = count;
+	}
+};
+
+// Increase the number of hearts by one.
+Player.prototype.addHeart = function(count) {
+	var health = this.health;
+	this.setHearts(this.hearts.length + 1);
+	this.setHealth(health + 2);
 };
 
 // Set the player's current health.
-Player.prototype.setHealth = function(amt) {
+Player.prototype.setHealth = function(amt, silent) {
 	var i;
 	var newHealth = Math.max(0, Math.min(this.hearts.length * 2, amt));
 	for (i = 0; i < this.hearts.length; i++) {
@@ -296,6 +321,14 @@ Player.prototype.setHealth = function(amt) {
 		heart.frame = newHealth <= i * 2 ? 2 : (newHealth <= i * 2 + 1 ? 1 : 0);
 	}
 	this.health = newHealth;
+	if (!silent) {
+		this.level.gState.health = newHealth;
+	}
+};
+
+// Heal the player to full health.
+Player.prototype.healFull = function(amt) {
+	this.setHealth(this.hearts.length * 2);
 };
 
 // Get the current player position, for monster targeting purposes.

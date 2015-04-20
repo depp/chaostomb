@@ -32,7 +32,15 @@
   </object>
   <object gid="70" x="240" y="128"/>
   <object gid="72" x="80" y="160"/>
-  <object gid="69" x="112" y="224"/>
-  <object gid="67" x="344" y="224"/>
+  <object gid="69" x="112" y="224">
+   <properties>
+    <property name="Id" value="1"/>
+   </properties>
+  </object>
+  <object gid="67" x="344" y="224">
+   <properties>
+    <property name="Id" value="1"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

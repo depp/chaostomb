@@ -15,6 +15,8 @@ function Door(level, sprite, info) {
 	this.target = info.Target;
 	if (!this.target) {
 		console.error('Door has no target');
+	} else {
+		level.gProps.doors[this.target] = this;
 	}
 }
 Door.prototype.markerOffset = 64;
@@ -22,7 +24,7 @@ Door.prototype.interact = function() {
 	var target = this.target;
 	if (!this.target) {
 		game.sound.play('buzz');
-		console.log('Door has no target');
+		console.error('Door has no target');
 		return;
 	}
 	var level = this.level;
@@ -33,7 +35,6 @@ Door.prototype.interact = function() {
 	var timer = game.time.create(true);
 	timer.add(
 		LEVEL_EXIT_TIME * 1000, function() {
-			console.log('CHANGE LEVEL', target);
 			level.changeLevel(target);
 		});
 	timer.start();
@@ -57,6 +58,14 @@ Door.prototype.spawnPlayer = function() {
 function Chest(level, sprite, info) {
 	this.level = level;
 	this.sprite = sprite;
+	this.ident = info.Id;
+	if (typeof this.ident == 'undefined') {
+		console.error('Chest has no Id');
+	} else if (this.ident in level.gProps.chests) {
+		console.error('Duplicate chest:', this.ident);
+	} else {
+		level.gProps.chests[this.ident] = this;
+	}
 }
 Chest.prototype.markerOffset = 48;
 Chest.prototype.interact = function() {
@@ -94,10 +103,22 @@ Chest.prototype.interact = function() {
 function SavePoint(level, sprite, info) {
 	this.level = level;
 	this.sprite = sprite;
+	this.ident = info.Id;
+	if (typeof this.ident == 'undefined') {
+		console.error('Save point has no Id');
+	} else if (this.ident in level.gProps.savePoints) {
+		console.error('Duplicate save point:', this.ident);
+	} else {
+		level.gProps.savePoints[this.ident] = this;
+	}
 }
 SavePoint.prototype.markerOffset = 48;
 SavePoint.prototype.interact = function() {
-	console.log('Save Point');
+	this.level.gPlayer.healFull();
+	this.level.gState.save(this.level.gLevelName, this.ident);
+};
+SavePoint.prototype.spawnPlayer = function() {
+	this.level.gPlayer.spawn(this.sprite.position);
 };
 
 ////////////////////////////////////////////////////////////////////////
@@ -120,6 +141,9 @@ function Props(level) {
 	this.markerSprite = null;
 	this.markerTarget = null;
 	this.markerTween = null;
+	this.doors = {};
+	this.chests = {};
+	this.savePoints = {};
 }
 
 // Spawn a prop from the map.
@@ -211,24 +235,24 @@ Props.prototype.interact = function() {
 	}
 };
 
-// Spawn player from the door.  Returns true if successful.
-Props.prototype.spawnPlayerFromDoor = function(source) {
-	if (!source) {
-		return false;
+// Spawn player from a door.
+Props.prototype.spawnPlayerFromDoor = function(ident) {
+	var obj = this.doors[ident];
+	if (!obj) {
+		console.error('Missing door:', ident);
+	} else {
+		obj.spawnPlayer();
 	}
-	var name, obj, door = null;
-	for (name in this.objs) {
-		obj = this.objs[name];
-		if (!(obj instanceof Door)) {
-			continue;
-		}
-		var target = obj.target;
-		if (target && target === source) {
-			obj.spawnPlayer();
-			return true;
-		}
+};
+
+// Spawn player from a spawn point.
+Props.prototype.spawnPlayerFromSpawnPoint = function(ident) {
+	var obj = this.spawnPoints[ident];
+	if (!obj) {
+		console.error('Missing spawn point:', ident);
+	} else {
+		obj.spawnPlayer();
 	}
-	return false;
 };
 
 ////////////////////////////////////////////////////////////////////////

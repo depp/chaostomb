@@ -35,7 +35,11 @@
     <property name="Target" value="entrance1"/>
    </properties>
   </object>
-  <object gid="67" x="576" y="176"/>
+  <object gid="67" x="576" y="176">
+   <properties>
+    <property name="Id" value="1"/>
+   </properties>
+  </object>
   <object gid="70" x="248" y="192"/>
   <object type="Ouch" x="432" y="212" width="80" height="108"/>
   <object type="Ouch" x="160" y="228" width="80" height="92"/>
