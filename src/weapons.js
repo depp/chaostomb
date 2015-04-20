@@ -32,9 +32,46 @@ var WEAPONS = {
 	Teleport: {
 		icon: 4,
 		name: 'Transmat',
-		cooldown: 1,
+		cooldown: 0,
 		fire: function(level) {
-			game.sound.play('guitar');
+			var targets = [], view = game.camera.view;
+			level.gMonsters.group.forEachAlive(function(monster) {
+				var pos = monster.position;
+				if (monster.name && view.contains(pos.x, pos.y)) {
+					targets.push(monster);
+				}
+			});
+			var target;
+			if (targets.length > 1) {
+				target = targets[Math.floor(Math.random() * targets.length)];
+			} else if (targets.length > 0) {
+				target = targets[0];
+			} else {
+				target = level.gPlayer.getSprite();
+			}
+			if (!target) {
+				return;
+			}
+			console.log(target);
+			var body = target.body;
+			var range = new Phaser.Rectangle(
+				view.x + body.halfWidth,
+				view.y + body.halfHeight,
+				view.width - body.width,
+				view.height - body.height);
+			var hitRect = new Phaser.Rectangle(0, 0, body.width, body.height);
+			var i, x, y, margin = 32;
+			for (i = 0; i < 15; i++) {
+				x = range.x + Math.floor(Math.random() * range.width);
+				y = range.y + Math.floor(Math.random() * range.height);
+				hitRect.x = x - body.halfWidth;
+				hitRect.y = y - body.halfHeight;
+				if (!level.testTileRect(hitRect)) {
+					target.x = x;
+					target.y = y;
+					break;
+				}
+			}
 		}
 	},
 	Wind: {

@@ -388,6 +388,15 @@ Player.prototype.getInteractSprite = function() {
 	return obj.sprite;
 };
 
+// Get the real, actual player sprite.
+Player.prototype.getSprite = function() {
+	var obj = this.objs.Player;
+	if (!obj) {
+		return null;
+	}
+	return obj.sprite;
+};
+
 // Call a function on a player object.
 Player.prototype.invoke = function(sprite, func, context) {
 	var name = sprite.name;

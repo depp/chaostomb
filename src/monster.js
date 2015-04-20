@@ -35,6 +35,7 @@ Behavior.prototype.damage = function(amt) {
 	}
 };
 Behavior.prototype.kill = function() {
+	this.obj.sprite.name = null;
 	this.obj.behavior = new Die(this.obj);
 };
 Behavior.prototype.push = function(push) {

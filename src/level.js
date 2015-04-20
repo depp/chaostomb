@@ -150,10 +150,28 @@ Level.prototype.create = function() {
 	this.gPlayer.spawn(playerPos);
 };
 
-// Test if the tile map is solid at the given location.
+// Test if a tile exists at the given location.
 Level.prototype.testTile = function(x, y) {
 	var tile = this.gTileMap.getTileWorldXY(x, y);
-	return !!tile && !NONSOLID_TILES[tile.index];
+	return !!tile;
+};
+
+// Test if a tile exists in the given rectangle.
+Level.prototype.testTileRect = function(r) {
+	var map = this.gTileMap;
+	var tw = map.tileWidth, th = map.tileHeight;
+	var x0 = Math.floor(r.x / tw), x1 = Math.ceil((r.x + r.width) / tw);
+	var y0 = Math.floor(r.y / th), y1 = Math.ceil((r.y + r.height) / th);
+	var x, y, t;
+	for (y = y0; y <= y1; y++) {
+		for (x = x0; x <= x1; x++) {
+			t = map.getTile(x, y);
+			if (t) {
+				return true;
+			}
+		}
+	}
+	return false;
 };
 
 /*
