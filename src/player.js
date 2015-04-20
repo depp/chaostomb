@@ -13,6 +13,7 @@ function Behavior(obj) {
 }
 Behavior.prototype.canInteract = true;
 Behavior.prototype.update = function() {
+	var player;
 	var level = this.obj.level;
 	var input = level.gInput;
 	var xdrive = 0, ydrive = 0, fire = false, interact = false;
@@ -30,6 +31,12 @@ Behavior.prototype.update = function() {
 	}
 	if (input.fire === 1) {
 		fire = true;
+	}
+	if (input.wprev === 1) {
+		level.gPlayer.setWeapon(level.gPlayer.weapon - 1);
+	}
+	if (input.wnext === 1) {
+		level.gPlayer.setWeapon(level.gPlayer.weapon + 1);
 	}
 	if (fire) {
 		var pos = this.obj.sprite.position;
@@ -212,8 +219,30 @@ Player.prototype.addWeapon = function(weapon) {
 	}
 	this.weapons.push({
 		name: weapon,
+		info: info,
 		sprite: sprite
 	});
+};
+
+// Set the current weapon.
+Player.prototype.setWeapon = function(weapon) {
+	if (this.weapon < 0) {
+		game.sound.play('buzz');
+	}
+	if (weapon < 0) {
+		weapon = this.weapons.length - 1;
+	} else if (weapon >= this.weapons.length) {
+		weapon = 0;
+	}
+	game.sound.play('clack');
+	if (this.weapon === weapon) {
+		return;
+	}
+	var w = this.weapons[this.weapon];
+	w.info.setIcon(w.sprite, false);
+	this.weapon = weapon;
+	w = this.weapons[this.weapon];
+	w.info.setIcon(w.sprite, true);
 };
 
 // Set the number of hearts (equal to half health capacity).
