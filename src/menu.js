@@ -29,6 +29,7 @@ function itemNewGame() {
 function itemSavedGame() {
 	var saveData = persist.loadSave();
 	return {
+		preference: saveData ? +10 : -10,
 		text: 'Load Saved Game',
 		enabled: !!saveData,
 		func: function() {
@@ -52,15 +53,21 @@ function Menu(items, title) {
 	this.title = title ? this.makeItem(x, y - 96, title, true, false) : null;
 	this.pointer = this.group.create(x, y, 'menu', 0);
 	this.pointer.anchor.set(0.5, 0.5);
+	this.selection = 0;
+	var preference = 0;
 	for (i = 0; i < items.length; i++, y += 56) {
 		it = items[i];
+		if (typeof it.preference == 'number' && it.preference > preference) {
+			preference = it.preference;
+			this.selection = i;
+			this.pointer.position.set(x, y);
+		}
 		obj = this.makeItem(x, y, it.text, it.enabled, true);
 		obj.func = it.func;
 		obj.context = it.context;
 		this.items.push(obj);
 	}
 	this.pointer.bringToTop();
-	this.selection = 0;
 }
 
 Menu.prototype.makeItem = function(x, y, txt, enabled, makeBack) {
