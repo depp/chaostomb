@@ -1,4 +1,5 @@
 from . import build
+from . import slow
 from wsgiref.simple_server import make_server, WSGIServer
 from socketserver import ThreadingMixIn
 import os
@@ -83,10 +84,12 @@ def serve_file(fp):
                 return
             yield chunk
 
-def serve(config, app):
+def serve(config, app, *, rate=None):
     sec = config['server']
     host = sec.get('host', 'localhost')
     port = sec.getint('port', 8000)
     handler = Handler(app)
-    server = make_server(host, port, Handler(app), ThreadingServer)
+    if rate is not None:
+        handler = slow.SlowWrapper(handler, rate=rate)
+    server = make_server(host, port, handler, ThreadingServer)
     server.serve_forever()

@@ -1,12 +1,15 @@
 from . import app
 from . import build
+from . import slow
 
 def run():
     import argparse
     import configparser
     p = argparse.ArgumentParser()
-    p.add_argument('action', choices=('build', 'serve', 'package', 'deploy'))
+    p.add_argument('action', choices=(
+        'build', 'serve', 'package', 'deploy'))
     p.add_argument('config')
+    p.add_argument('--rate', type=slow.parse_rate)
     args = p.parse_args()
     config = configparser.ConfigParser()
     with open(args.config) as fp:
@@ -17,7 +20,7 @@ def run():
         obj.build()
         if args.action == 'serve':
             from . import serve
-            serve.serve(config, obj)
+            serve.serve(config, obj, rate=args.rate)
         elif args.action == 'package':
             system.package('package.tar.gz', 'build')
         elif args.action == 'deploy':
