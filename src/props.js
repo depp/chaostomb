@@ -89,20 +89,30 @@ Chest.prototype.interact = function() {
 	var level = this.level;
 	level.setPaused(true);
 	level.gProps.setTarget(null);
-	this.sprite.frame += 4;
-	var tsprite, tframe, tfunc, weapon = null;
-	if (this.sprite.frame == 9) {
-		weapon = this.level.gPlayer.getNextWeapon();
-	}
-	if (weapon) {
-		tsprite = 'icons';
-		tframe = weapons[weapon].getFrame(true);
-		tfunc = function(player) { player.addWeapon(weapon); };
-	} else {
+	var tsprite, tframe, tfunc, weapon;
+	switch (this.sprite.frame) {
+	case 8:
 		tsprite = 'hearts';
 		tframe = 0;
 		tfunc = function(player) { player.addHeart(); };
+		break;
+	case 9:
+		weapon = this.level.gPlayer.getNextWeapon();
+		if (weapon) {
+			tsprite = 'icons';
+			tframe = weapons[weapon].getFrame(true);
+			tfunc = function(player) { player.addWeapon(weapon); };
+		} else {
+			tsprite = 'hearts';
+			tframe = 0;
+			tfunc = function(player) { player.addHeart(); };
+		}
+		break;
+	default:
+		console.error('Bad chest sprite', this.sprite.frame);
+		return;
 	}
+	this.sprite.frame += 4;
 	var treasure = level.add.sprite(
 		this.sprite.x,
 		this.sprite.y - 24,
@@ -156,6 +166,7 @@ var PROP_TYPES = {
 	4: SavePoint,
 	8: Chest,
 	9: Chest,
+	10: Chest,
 };
 
 ////////////////////////////////////////////////////////////////////////
