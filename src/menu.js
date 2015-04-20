@@ -1,11 +1,13 @@
 'use strict';
 var music = require('./music');
 var text = require('./text');
+var input = require('./input');
 
 ////////////////////////////////////////////////////////////////////////
 // Menu
 
 function Menu(items) {
+	this.input = input.getKeys();
 	this.group = game.add.group();
 	this.group.fixedToCamera = true;
 	var i, it;
@@ -29,6 +31,32 @@ function Menu(items) {
 		});
 	}
 	this.pointer.bringToTop();
+	this.selection = 0;
+}
+
+// Update the menu state for this frame.
+Menu.prototype.update = function() {
+	if (this.input.down === 1) {
+		this.select(this.selection + 1);
+	}
+	if (this.input.up === 1) {
+		this.select(this.selection - 1);
+	}
+};
+
+// Set the current menu selection.
+Menu.prototype.select = function(index) {
+	if (index < 0) {
+		index = this.items.length - 1;
+	} else if (index >= this.items.length) {
+		index = 0;
+	}
+	if (this.selection === index) {
+		return;
+	}
+	var it = this.items[index];
+	this.pointer.position.set(it.x, it.y);
+	this.selection = index;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -39,12 +67,16 @@ function MainMenu() {
 };
 
 MainMenu.prototype.create = function() {
-
 	this.menu = new Menu([
 		'New Game',
 		'Continue Saved Game',
 	]);
 }
+
+MainMenu.prototype.update = function() {
+	input.update();
+	this.menu.update();
+};
 
 ////////////////////////////////////////////////////////////////////////
 // Exports
