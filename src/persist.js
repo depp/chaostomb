@@ -29,6 +29,8 @@ function decode() {
 	st.hearts = save.hearts;
 	st.chests = save.chests;
 	st.weapons = save.weapons;
+	st.currentWeapon = save.currentWeapon;
+	st.health = st.hearts * 2;
 	return {
 		state: st,
 		level: save.level,
