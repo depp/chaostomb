@@ -106,31 +106,35 @@ function Patrol(obj) {
 }
 Patrol.prototype = Object.create(Behavior.prototype);
 Patrol.prototype.update = function() {
+	var obj = this.obj;
 	this.scantime -= game.time.physicsElapsed;
 	if (this.scantime <= 0) {
-		this.scantime = this.obj.stats.scaninterval * randAdjust();
+		this.scantime = obj.stats.scaninterval * randAdjust();
 		this.scan();
 	}
+	var pos = obj.sprite.position;
+	var x = pos.x, y = pos.y + obj.stats.height / 2 + 16;
+	var dx = obj.stats.width * 1.5;
 	switch (this.state) {
 	case 0:
-		this.obj.mover.update(-1, 0);
-		if (this.obj.sprite.body.blocked.left) {
+		obj.mover.update(-1, 0);
+		if (obj.sprite.body.blocked.left || !obj.level.testTile(x - dx, y)) {
 			this.state = 1;
-			this.time = randAdjust() * this.obj.stats.patrolpause;
+			this.time = randAdjust() * obj.stats.patrolpause;
 		}
 		break;
 
 	case 2:
-		this.obj.mover.update(+1, 0);
-		if (this.obj.sprite.body.blocked.right) {
+		obj.mover.update(+1, 0);
+		if (obj.sprite.body.blocked.right || !obj.level.testTile(x + dx, y)) {
 			this.state = 3;
-			this.time = randAdjust() * this.obj.stats.patrolpause;
+			this.time = randAdjust() * obj.stats.patrolpause;
 		}
 		break;
 
 	case 1:
 	case 3:
-		this.obj.mover.update(0, 0);
+		obj.mover.update(0, 0);
 		this.time -= game.time.physicsElapsed;
 		if (this.time <= 0) {
 			this.state = (this.state + 1) & 3;
@@ -209,7 +213,6 @@ Monsters.prototype.spawn = function(gid, info) {
 	}
 	var name = 'Monster ' + this.counter;
 	this.counter++;
-	console.log(info);
 	var sprite = this.group.create(
 		info.x + 32, info.y - stats.height / 2);
 	assets.setAnimations(sprite, type.toLowerCase());

@@ -10,13 +10,21 @@ var music = require('./music');
 var persist = require('./persist');
 var menu = require('./menu');
 
-// All other tiles in 1-64 are solid, but these kill you.
-var OUCH_TILES = [
-	// Water
-	41, 49, 57,
-	// Lava
-	23, 24, 31, 32,
-];
+// All other tiles are solid.
+var NONSOLID_TILES = (function() {
+	var t = [
+		// Water
+		41, 49, 57,
+		// Lava
+		23, 24, 31, 32,
+	];
+	var i;
+	var obj = {};
+	for (i = 0; i < t.length; i++) {
+		obj[t[i]] = true;
+	}
+	return obj;
+})();
 
 function Level() {
 	this.gLevelName = null;
@@ -24,6 +32,7 @@ function Level() {
 	this.gStartInfo = null;
 	this.gInput = null;
 	this.gPlayer = null;
+	this.gTileMap = null;
 	this.gTiles = null;
 	this.gProps = null;
 	this.gMonsters = null;
@@ -49,13 +58,14 @@ Level.prototype.create = function() {
 	game.physics.startSystem(Phaser.Physics.ARCADE);
 
 	var map = game.add.tilemap(this.gLevelName);
+	this.gTileMap = map;
 	music.play(map.properties.Music);
 	map.addTilesetImage('tiles', 'tiles');
 	this.gTiles = map.createLayer('Main');
 	this.gTiles.resizeWorld();
 	var collide = [];
 	for (i = 1; i <= 64; i++) {
-		if (OUCH_TILES.indexOf(i) < 0) {
+		if (!NONSOLID_TILES[i]) {
 			collide.push(i);
 		}
 	}
@@ -120,6 +130,12 @@ Level.prototype.create = function() {
 		break;
 	}
 	this.gPlayer.spawn(playerPos);
+};
+
+// Test if the tile map is solid at the given location.
+Level.prototype.testTile = function(x, y) {
+	var tile = this.gTileMap.getTileWorldXY(x, y);
+	return !!tile && !NONSOLID_TILES[tile.index];
 };
 
 /*
