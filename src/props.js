@@ -263,11 +263,11 @@ Props.prototype.spawnPlayerFromDoor = function(ident) {
 	}
 };
 
-// Spawn player from a spawn point.
-Props.prototype.spawnPlayerFromSpawnPoint = function(ident) {
-	var obj = this.spawnPoints[ident];
+// Spawn player from a save point.
+Props.prototype.spawnPlayerFromSavePoint = function(ident) {
+	var obj = this.savePoints[ident];
 	if (!obj) {
-		console.error('Missing spawn point:', ident);
+		console.error('Missing save point:', ident);
 	} else {
 		obj.spawnPlayer();
 	}
