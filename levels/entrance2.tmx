@@ -44,5 +44,7 @@
   <object gid="70" x="248" y="192"/>
   <object type="Water" x="432" y="212" width="80" height="108"/>
   <object type="Water" x="160" y="228" width="80" height="92"/>
+  <object gid="81" x="272" y="192"/>
+  <object gid="81" x="364" y="192"/>
  </objectgroup>
 </map>
