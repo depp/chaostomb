@@ -9,6 +9,7 @@ var shots = require('./shots');
 var music = require('./music');
 var persist = require('./persist');
 var menu = require('./menu');
+var text = require('./text');
 
 // All other tiles are solid.
 var NONSOLID_TILES = (function() {
@@ -60,6 +61,9 @@ Level.prototype.init = function(startInfo) {
 	this.gStartInfo = startInfo;
 	this.gPaused = false;
 	this.gMenu = null;
+	this.gAlertText = null;
+	this.gAlertGroup = null;
+	this.gAlertTween = null;
 };
 
 Level.prototype.getGidRange = function(name) {
@@ -232,6 +236,42 @@ Level.prototype.changeLevel = function(target) {
 		source: 'door',
 		sourceId: this.gStartInfo.level,
 	});
+};
+
+// Present an alert.
+Level.prototype.alert = function(message, noPause) {
+	var tweenTime = 0.2, hangTime = 0.3;
+	if (!this.gAlertText) {
+		this.gAlertText = text.create();
+		this.gAlertGroup = game.add.group();
+		this.gUi.add(this.gAlertGroup);
+		var back = this.gAlertGroup.create(0, 0, 'menu', 1);
+		back.anchor.set(0.5, 0.5);
+		var img = new Phaser.Image(game, 0, 2, this.gAlertText);
+		this.gAlertGroup.add(img);
+		this.gAlertGroup.x = params.WIDTH / 2;
+		img.anchor.set(0.5, 0.5);
+		this.gAlertTween = this.add.tween(this.gAlertGroup);
+		this.gAlertTween.to(
+			{y: params.HEIGHT * 3 / 4}, tweenTime * 1000,
+			Phaser.Easing.Sinusoidal.Out,
+			false, 0, 0, false);
+	}
+	if (!noPause) {
+		this.setPaused(true);
+	}
+	this.gAlertText.text = message;
+	this.gAlertGroup.y = params.HEIGHT + 32;
+	this.gAlertGroup.visible = true;
+	this.gAlertTween.start();
+	var timer = game.time.create(true);
+	timer.add((tweenTime + hangTime) * 1000, function() {
+		this.gAlertGroup.visible = false;
+		if (!noPause) {
+			this.setPaused(false);
+		}
+	}, this);
+	timer.start();
 };
 
 module.exports.Level = Level;

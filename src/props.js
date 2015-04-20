@@ -153,6 +153,8 @@ SavePoint.prototype.dead = false;
 SavePoint.prototype.interact = function() {
 	this.level.gPlayer.healFull();
 	this.level.gState.save(this.level.gLevelName, this.ident);
+	this.level.alert('Game saved.');
+	game.sound.play('good');
 };
 SavePoint.prototype.spawnPlayer = function() {
 	this.level.gPlayer.spawn(this.sprite.position);
