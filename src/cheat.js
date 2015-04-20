@@ -28,4 +28,3 @@ global.cheat = (function() {
 	}
 	return obj;
 })();
-console.log("HERE");
