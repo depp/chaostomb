@@ -61,14 +61,29 @@ function Chest(level, sprite, info) {
 	this.ident = info.Id;
 	if (typeof this.ident == 'undefined') {
 		console.error('Chest has no Id');
-	} else if (this.ident in level.gProps.chests) {
-		console.error('Duplicate chest:', this.ident);
 	} else {
-		level.gProps.chests[this.ident] = this;
+		if (this.ident in level.gProps.chests) {
+			console.error('Duplicate chest:', this.ident);
+		} else {
+			level.gProps.chests[this.ident] = this;
+		}
+		var chests = level.gState.chests[level.gLevelName];
+		if (chests && (this.ident in chests)) {
+			sprite.frame = 3;
+			sprite.name = null;
+		}
 	}
 }
 Chest.prototype.markerOffset = 48;
 Chest.prototype.interact = function() {
+	this.sprite.name = null;
+	var chests = this.level.gState.chests[this.level.gLevelName];
+	if (!chests) {
+		chests = {};
+		this.level.gState.chests[this.level.gLevelName] = chests;
+	}
+	chests[this.ident] = 0;
+
 	var level = this.level;
 	this.sprite.frame = 3;
 	level.setPaused(true);
@@ -113,6 +128,7 @@ function SavePoint(level, sprite, info) {
 	}
 }
 SavePoint.prototype.markerOffset = 48;
+SavePoint.prototype.dead = false;
 SavePoint.prototype.interact = function() {
 	this.level.gPlayer.healFull();
 	this.level.gState.save(this.level.gLevelName, this.ident);
