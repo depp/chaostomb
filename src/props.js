@@ -102,6 +102,7 @@ Chest.prototype.interact = function() {
 			tsprite = 'icons';
 			tframe = weapons[weapon].getFrame(true);
 			tfunc = function(player) { player.addWeapon(weapon); };
+			message = 'Got ' + weapons[weapon].name;
 		} else {
 			tsprite = 'hearts';
 			tframe = 0;

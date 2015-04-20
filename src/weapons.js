@@ -104,7 +104,7 @@ var WEAPONS = {
 	},
 	Shield: {
 		icon: 15,
-		name: 'Hexagonal Asset',
+		name: 'Shield Emitter',
 		cooldown: 0.1,
 		auto: true,
 		fire: function(level) {
