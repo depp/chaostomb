@@ -1,4 +1,5 @@
 'use strict';
+var weapons = require('./weapons');
 
 var loaded = false;
 var saveData = null;
@@ -30,6 +31,7 @@ function decode() {
 	st.weapons = save.weapons;
 	st.currentWeapon = save.currentWeapon;
 	st.health = st.hearts * 2;
+	st.weaponOrder = save.weaponOrder;
 	return {
 		state: st,
 		level: save.level,
@@ -59,11 +61,24 @@ function loadSave() {
 // Game state
 
 function GameState() {
+	var i, j, name, t;
 	this.hearts = 2;
 	this.chests = {};
 	this.weapons = [];
 	this.currentWeapon = null;
 	this.health = 4;
+	this.weaponOrder = [];
+	for (name in weapons) {
+		this.weaponOrder.push(name);
+	}
+	for (i = 1; i < this.weaponOrder.length; i++) {
+		j = Math.floor(Math.random() * (i + 1));
+		if (j != i) {
+			t = this.weaponOrder[i];
+			this.weaponOrder[i] = this.weaponOrder[j];
+			this.weaponOrder[j] = t;
+		}
+	}
 }
 
 // Save the game state.
@@ -74,7 +89,8 @@ GameState.prototype.save = function(levelName, savePointId) {
 		weapons: this.weapons,
 		currentWeapon: this.currentWeapon,
 		level: levelName,
-		savePointId: savePointId
+		savePointId: savePointId,
+		weaponOrder: this.weaponOrder,
 	});
 	saveData = data;
 	if (hasLocalStorage) {

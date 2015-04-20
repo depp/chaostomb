@@ -240,10 +240,10 @@ Player.prototype.addWeapon = function(weapon, silent) {
 		'icons', 0);
 	sprite.anchor.setTo(0.5, 0.5);
 	if (this.weapons.length === 0) {
-		info.setIcon(sprite, true);
+		sprite.frame = info.getFrame(true);
 		this.weapon = 0;
 	} else {
-		info.setIcon(sprite, false);
+		sprite.frame = info.getFrame(false);
 	}
 	this.weapons.push({
 		name: weapon,
@@ -278,13 +278,28 @@ Player.prototype.setWeapon = function(weapon, silent) {
 		return;
 	}
 	var w = this.weapons[this.weapon];
-	w.info.setIcon(w.sprite, false);
+	w.sprite.frame = w.info.getFrame(false);
 	this.weapon = weapon;
 	w = this.weapons[this.weapon];
-	w.info.setIcon(w.sprite, true);
+	w.sprite.frame = w.info.getFrame(true);
 	if (!silent) {
 		this.level.gState.currentWeapon = weapon;
 	}
+};
+
+// Get the name next available weapon for the player to pick up.
+Player.prototype.getNextWeapon = function() {
+	var w = this.weapons, s = {}, i, o = this.level.gState.weaponOrder;
+	for (i = 0; i < w.length; i++) {
+		s[w[i].name] = true;
+	}
+	for (i = 0; i < o.length; i++) {
+		if (!s[o[i]]) {
+			return o[i];
+		}
+	}
+	console.error('No weapons left to pick up!');
+	return null;
 };
 
 // Set the number of hearts (equal to half health capacity).

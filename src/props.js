@@ -1,4 +1,5 @@
 'use strict';
+var weapons = require('./weapons');
 
 var BOB_MAGNITUDE = 16;
 var BOB_TIME = 1.0;
@@ -59,6 +60,7 @@ function Chest(level, sprite, info) {
 	this.level = level;
 	this.sprite = sprite;
 	this.ident = info.Id;
+	this.object = info.Object;
 	if (typeof this.ident == 'undefined') {
 		console.error('Chest has no Id');
 	} else {
@@ -72,6 +74,15 @@ function Chest(level, sprite, info) {
 			sprite.frame = 3;
 			sprite.name = null;
 		}
+	}
+	switch (this.object) {
+	case 'Heart':
+	case 'Weapon':
+		break;
+	default:
+		console.error('Chest has bad Object property:', this.object);
+		this.object = 'Heart';
+		break;
 	}
 }
 Chest.prototype.markerOffset = 48;
@@ -89,7 +100,13 @@ Chest.prototype.interact = function() {
 	level.setPaused(true);
 	level.gProps.setTarget(null);
 	var tsprite, tframe, tfunc;
-	if (true) {
+	var weapon = this.object == 'Weapon' ?
+			this.level.gPlayer.getNextWeapon() : null;
+	if (weapon) {
+		tsprite = 'icons';
+		tframe = weapons[weapon].getFrame(true);
+		tfunc = function(player) { player.addWeapon(weapon); };
+	} else {
 		tsprite = 'hearts';
 		tframe = 0;
 		tfunc = function(player) { player.addHeart(); };

@@ -36,6 +36,7 @@
   <object gid="67" x="400" y="112">
    <properties>
     <property name="Id" value="1"/>
+    <property name="Object" value="Weapon"/>
    </properties>
   </object>
   <object gid="70" x="248" y="128"/>
