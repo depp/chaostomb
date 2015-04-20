@@ -88,10 +88,11 @@ Chest.prototype.interact = function() {
 	this.sprite.frame = 3;
 	level.setPaused(true);
 	level.gProps.setTarget(null);
-	var tsprite, tframe;
+	var tsprite, tframe, tfunc;
 	if (true) {
 		tsprite = 'hearts';
 		tframe = 0;
+		tfunc = function(player) { player.addHeart(); };
 	}
 	var treasure = level.add.sprite(
 		this.sprite.x,
@@ -107,9 +108,10 @@ Chest.prototype.interact = function() {
 		true, tpre * 1000, 0, false);
 	game.sound.play('fanfare');
 	tween.onComplete.addOnce(function() {
+		tfunc(this.level.gPlayer);
 		level.setPaused(false);
 		treasure.destroy();
-	});
+	}, this);
 };
 
 ////////////////////////////////////////////////////////////////////////
