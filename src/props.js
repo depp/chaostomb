@@ -71,7 +71,7 @@ function Chest(level, sprite, info) {
 		}
 		var chests = level.gState.chests[level.gLevelName];
 		if (chests && (this.ident in chests)) {
-			sprite.frame = 3;
+			sprite.frame += 6;
 			sprite.name = null;
 		}
 	}
