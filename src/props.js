@@ -89,7 +89,7 @@ Chest.prototype.interact = function() {
 	var level = this.level;
 	level.setPaused(true);
 	level.gProps.setTarget(null);
-	var tsprite, tframe, tfunc, weapon;
+	var tsprite, tframe, tfunc, weapon, message = null;
 	switch (this.sprite.frame) {
 	case 8:
 		tsprite = 'hearts';
@@ -107,6 +107,12 @@ Chest.prototype.interact = function() {
 			tframe = 0;
 			tfunc = function(player) { player.addHeart(); };
 		}
+		break;
+	case 10:
+		tsprite = 'hearts';
+		tframe = 3;
+		tfunc = function(player) { player.giveDoubleJump(); };
+		message = 'Got Double Jump!';
 		break;
 	default:
 		console.error('Bad chest sprite', this.sprite.frame);
@@ -131,6 +137,9 @@ Chest.prototype.interact = function() {
 		level.setPaused(false);
 		treasure.destroy();
 	}, this);
+	if (message) {
+		level.alert(message, true);
+	}
 };
 
 ////////////////////////////////////////////////////////////////////////

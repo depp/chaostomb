@@ -64,7 +64,10 @@ Behavior.prototype.update = function() {
 		}
 		player.cooldown -= game.time.physicsElapsed;
 	}
-	this.obj.mover.update(xdrive, ydrive, this.stuntime > 0);
+	this.obj.mover.update(
+		xdrive, ydrive,
+		this.stuntime > 0,
+		player.doubleJump !== null);
 };
 Behavior.prototype.stun = function() {
 	this.stuntime = params.PLAYER_STUN_TIME;
@@ -176,6 +179,7 @@ function Player(level, obj) {
 	this.health = 11;
 	this.objs = {};
 	this.cooldown = 0;
+	this.doubleJump = null;
 }
 
 Player.prototype.spawn = function(pos) {
@@ -208,6 +212,9 @@ Player.prototype.spawn = function(pos) {
 			this.addWeapon(st.weapons[i], true);
 		}
 		this.setWeapon(st.currentWeapon, true);
+	}
+	if (st.doubleJump) {
+		this.giveDoubleJump();
 	}
 	this.setHearts(st.hearts, true);
 	this.setHealth(st.health, true);
@@ -360,6 +367,21 @@ Player.prototype.setHealth = function(amt, silent) {
 // Heal the player to full health.
 Player.prototype.healFull = function(amt) {
 	this.setHealth(this.hearts.length * 2);
+};
+
+// Give the player the ability to double-jump.
+Player.prototype.giveDoubleJump = function(silent) {
+	if (this.doubleJump !== null) {
+		return;
+	}
+	if (!silent) {
+		this.level.gState.doubleJump = true;
+	}
+	var size = 48, margin = 4;
+	this.doubleJump = this.level.gUi.create(
+		size / 2 + margin, params.HEIGHT - (size / 2 + margin),
+		'hearts', 3);
+	this.doubleJump.anchor.set(0.5, 0.5);
 };
 
 // Get the current weapon info.

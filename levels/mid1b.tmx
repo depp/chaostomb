@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="25" height="15" tilewidth="16" tileheight="16">
+ <properties>
+  <property name="Music" value="state_of_war"/>
+ </properties>
+ <tileset firstgid="1" source="tiles.tsx"/>
+ <tileset firstgid="65" source="props.tsx"/>
+ <tileset firstgid="81" source="monsters.tsx"/>
+ <layer name="Main" width="25" height="15">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,20,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,20,0,2,3,4,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,20,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,30,0,0,0,0,0,30,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+43,44,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+51,52,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+51,52,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+51,52,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+51,52,0,0,0,0,0,0,0,0,0,0,0,0,0,0,33,34,35,0,0,0,0,0,0,
+51,52,0,0,0,0,0,0,0,0,0,0,0,9,10,10,10,10,10,10,10,11,0,0,0,
+51,52,0,0,0,0,0,0,0,0,0,0,0,17,29,22,18,22,18,18,36,19,0,12,0,
+51,52,0,9,10,11,0,0,9,10,11,0,0,17,18,18,22,18,22,22,22,19,0,20,0,
+51,52,41,17,18,19,41,41,17,18,19,41,41,17,22,22,18,22,18,18,18,19,41,20,41,
+51,52,49,17,18,19,49,49,17,18,19,49,49,17,18,18,18,18,18,18,22,19,49,20,49
+</data>
+ </layer>
+ <objectgroup name="Default">
+  <object gid="75" x="264" y="144">
+   <properties>
+    <property name="Id" value="1"/>
+   </properties>
+  </object>
+  <object gid="65" x="0" y="80">
+   <properties>
+    <property name="Target" value="mid1"/>
+   </properties>
+  </object>
+  <object type="Water" x="32" y="212" width="16" height="28"/>
+  <object type="Water" x="96" y="212" width="32" height="28"/>
+  <object type="Water" x="176" y="212" width="32" height="28"/>
+  <object type="Water" x="352" y="212" width="16" height="28"/>
+  <object type="Water" x="384" y="212" width="16" height="28"/>
+ </objectgroup>
+</map>

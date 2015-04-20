@@ -44,7 +44,7 @@ function Walker(sprite, stats) {
 	this.fast = false;
 }
 
-Walker.prototype.update = function(xdrive, ydrive, stunned) {
+Walker.prototype.update = function(xdrive, ydrive, stunned, can_doublejump) {
 	var body = this.sprite.body;
 	var stats = this.stats;
 	var direction = this.direction;
@@ -108,7 +108,7 @@ Walker.prototype.update = function(xdrive, ydrive, stunned) {
 				state = 0;
 			}
 			var can_jump = !this.jumpdown &&
-					(state === 0 || state === 1 && stats.jdouble);
+					(state === 0 || state === 1 && can_doublejump);
 			if (can_jump) {
 				this.state = state + 1;
 				this.jumptime = stats.jtime;

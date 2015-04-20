@@ -32,11 +32,12 @@ function decode() {
 	st.currentWeapon = save.currentWeapon;
 	st.health = st.hearts * 2;
 	st.weaponOrder = save.weaponOrder;
+	st.doubleJump = !!save.doubleJump;
 	return {
 		state: st,
 		level: save.level,
 		source: 'save',
-		sourceId: save.savePointId
+		sourceId: save.savePointId,
 	};
 }
 
@@ -68,6 +69,7 @@ function GameState() {
 	this.currentWeapon = null;
 	this.health = 4;
 	this.weaponOrder = [];
+	this.doubleJump = false;
 	for (name in weapons) {
 		this.weaponOrder.push(name);
 	}
@@ -91,6 +93,7 @@ GameState.prototype.save = function(levelName, savePointId) {
 		level: levelName,
 		savePointId: savePointId,
 		weaponOrder: this.weaponOrder,
+		doubleJump: this.doubleJump,
 	});
 	saveData = data;
 	if (hasLocalStorage) {

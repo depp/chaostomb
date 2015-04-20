@@ -56,7 +56,6 @@ function monster(obj) {
 			jtime: 0,
 			jaccel: 0,
 			jheight: obj.jheight,
-			jdouble: false
 		}),
 		patrolpause: obj.patrolpause,
 		scaninterval: obj.scaninterval,
@@ -126,7 +125,6 @@ module.exports = {
 		jtime: 0.4,
 		jaccel: 1800,
 		jheight: 165,
-		jdouble: true,
 
 		// Play sounds
 		sound: true,
