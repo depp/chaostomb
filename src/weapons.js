@@ -32,6 +32,10 @@ var WEAPONS = {
 	Teleport: {
 		icon: 4,
 		name: 'Transmat',
+		cooldown: 1,
+		fire: function(level) {
+			game.sound.play('guitar');
+		}
 	},
 	Wind: {
 		icon: 5,

@@ -13,10 +13,10 @@ function Behavior(obj) {
 }
 Behavior.prototype.canInteract = true;
 Behavior.prototype.update = function() {
-	var player;
 	var level = this.obj.level;
+	var player = level.gPlayer;
 	var input = level.gInput;
-	var xdrive = 0, ydrive = 0, fire = false, interact = false;
+	var xdrive = 0, ydrive = 0, interact = false;
 	if (input.left !== 0) {
 		xdrive += -1;
 	}
@@ -26,30 +26,43 @@ Behavior.prototype.update = function() {
 	if (input.up !== 0) {
 		ydrive += -1;
 	}
-	if (input.down === 1) {
-		interact = true;
-	}
-	if (input.fire === 1) {
-		fire = true;
-	}
 	if (input.wprev === 1) {
-		level.gPlayer.setWeapon(level.gPlayer.weapon - 1);
+		player.setWeapon(player.weapon - 1);
 	}
 	if (input.wnext === 1) {
-		level.gPlayer.setWeapon(level.gPlayer.weapon + 1);
-	}
-	if (fire) {
-		var pos = this.obj.sprite.position;
-		level.gShots.spawn(
-			true, 'Bolt',
-			pos.x, pos.y,
-			this.obj.mover.direction, 0);
-	}
-	if (interact) {
-		level.gProps.interact();
+		player.setWeapon(player.weapon + 1);
 	}
 	if (this.stuntime > 0) {
 		this.stuntime -= game.time.physicsElapsed;
+		// Hackish... wait until not stunned to process buttons.
+		if (input.fire === 1) {
+			input.fire = 0;
+		}
+		if (input.down === 1) {
+			input.down = 0;
+		}
+	} else {
+		if (input.fire !== 0) {
+			var winfo = player.getWeaponInfo();
+			if (winfo && winfo.fire) {
+				if (input.fire === 1) {
+					if (player.cooldown > 0) {
+						game.sound.play('click');
+					} else {
+						player.cooldown = winfo.cooldown;
+						winfo.fire(level);
+					}
+				}
+			} else {
+				if (input.fire === 1) {
+					game.sound.play('click');
+				}
+			}
+		}
+		if (input.down === 1) {
+			level.gProps.interact();
+		}
+		player.cooldown -= game.time.physicsElapsed;
 	}
 	this.obj.mover.update(xdrive, ydrive, this.stuntime > 0);
 };
@@ -162,6 +175,7 @@ function Player(level, obj) {
 	this.hearts = [];
 	this.health = 11;
 	this.objs = {};
+	this.cooldown = 0;
 }
 
 Player.prototype.spawn = function(pos) {
@@ -190,7 +204,7 @@ Player.prototype.spawn = function(pos) {
 
 	var st = this.level.gState, i;
 	if (st.weapons.length !== 0) {
-		for (i = 0; i < st.weapons; i++) {
+		for (i = 0; i < st.weapons.length; i++) {
 			this.addWeapon(st.weapons[i], true);
 		}
 		this.setWeapon(st.currentWeapon, true);
@@ -346,6 +360,14 @@ Player.prototype.setHealth = function(amt, silent) {
 // Heal the player to full health.
 Player.prototype.healFull = function(amt) {
 	this.setHealth(this.hearts.length * 2);
+};
+
+// Get the current weapon info.
+Player.prototype.getWeaponInfo = function() {
+	if (this.weapon < 0) {
+		return null;
+	}
+	return this.weapons[this.weapon].info;
 };
 
 // Get the current player position, for monster targeting purposes.
