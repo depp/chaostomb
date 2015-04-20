@@ -8,8 +8,6 @@ var player = require('./player');
 var shots = require('./shots');
 var music = require('./music');
 
-var MUSIC_FADE_TIME = 1;
-
 // All other tiles in 1-64 are solid, but these kill you.
 var OUCH_TILES = [
 	// Water
@@ -38,57 +36,8 @@ Level.prototype.init = function(startInfo) {
 	this.gPaused = false;
 };
 
-var haveCommonAssets = false;
-function loadCommonAssets() {
-	if (haveCommonAssets) {
-		return;
-	}
-	haveCommonAssets = true;
-	var x, s, uris, i;
-	var images = PATH_MAP.images;
-	for (x in images) {
-		game.load.image(x, 'images/' + images[x]);
-	}
-	var spritesheets = PATH_MAP.spritesheets;
-	for (x in spritesheets) {
-		s = spritesheets[x];
-		game.load.spritesheet(x, 'images/' + s.path, s.w, s.h);
-	}
-	var sfx = PATH_MAP.sfx;
-	for (x in sfx) {
-		s = sfx[x];
-		uris = [];
-		for (i = 0; i < s.length; i++) {
-			uris.push('sfx/' + s[i]);
-		}
-		game.load.audio(x, uris);
-	}
-	var music = PATH_MAP.music;
-	for (x in music) {
-		s = music[x];
-		uris = [];
-		for (i = 0; i < s.length; i++) {
-			uris.push('music/' + s[i]);
-		}
-		game.load.audio('music/' + x, uris);
-	}
-}
-
-Level.prototype.preload = function() {
-	loadCommonAssets();
-	game.load.tilemap(
-		this.gStartInfo.level,
-		'levels/' + PATH_MAP.levels[this.gStartInfo.level],
-		null,
-		Phaser.Tilemap.TILED_JSON);
-};
-
 Level.prototype.create = function() {
 	var i;
-
-	game.renderer.renderSession.roundPixels = true;
-	game.antialias = false;
-	game.stage.smoothed = false;
 	game.physics.startSystem(Phaser.Physics.ARCADE);
 
 	var map = game.add.tilemap(this.gStartInfo.level);

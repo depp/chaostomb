@@ -1,7 +1,7 @@
 'use strict';
 var params = require('./params');
 var mover = require('./mover');
-var loader = require('./loader');
+var assets = require('./assets');
 
 function randAdjust() {
 	return (Math.random() + 1) * (2 / 3);
@@ -202,7 +202,7 @@ Monsters.prototype.spawn = function(info) {
 	this.counter++;
 	var sprite = this.group.create(
 		info.x + info.width / 2, info.y + info.height / 2);
-	loader.setAnimations(sprite, info.type.toLowerCase());
+	assets.setAnimations(sprite, info.type.toLowerCase());
 	sprite.anchor.setTo(0.5, 0.5);
 	sprite.name = name;
 	game.physics.arcade.enable(sprite);

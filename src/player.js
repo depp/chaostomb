@@ -1,7 +1,7 @@
 'use strict';
 var params = require('./params');
 var mover = require('./mover');
-var loader = require('./loader');
+var assets = require('./assets');
 var weapons = require('./weapons');
 
 ////////////////////////////////////////////////////////////////////////
@@ -146,7 +146,7 @@ Player.prototype.spawn = function(pos) {
 	var sprite = this.group.create(pos.x, pos.y);
 	this.level.camera.follow(sprite, Phaser.Camera.FOLLOW_PLATFORMER);
 	sprite.name = 'Player';
-	loader.setAnimations(sprite, 'player');
+	assets.setAnimations(sprite, 'player');
 	sprite.anchor.setTo(0.5, 0.5);
 	game.physics.arcade.enable(sprite);
 	sprite.body.gravity.y = params.GRAVITY;
