@@ -25,7 +25,6 @@ function decode() {
 	if (!save || typeof save != 'object') {
 		return null;
 	}
-	console.log(save);
 	st.hearts = save.hearts;
 	st.chests = save.chests;
 	st.weapons = save.weapons;
