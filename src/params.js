@@ -91,13 +91,16 @@ module.exports = {
 	WALK_THRESHOLD: WALK_THRESHOLD,
 	MONSTER_DEATH_TIME: 0.5,
 	MONSTER_STUN_TIME: 0.5,
-	PLAYER_DEATH_TIME: 1.5,
+	PLAYER_DEATH_TIME: 0.5,
 	PLAYER_STUN_TIME: 0.3,
 	CORPSE_DRAG: 800,
 	CORPSE_AIR_DRAG: 50,
 
 	// Time after leaving a platform while you can still jump.
 	JUMP_SLOP: 0.2,
+
+	// Speed at which player jumps when hitting the bottom of a pool.
+	DROWN_JUMP_SPEED: 600,
 
 	PLAYER_STATS: stats({
 		bounce: 0.2,

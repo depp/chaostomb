@@ -63,26 +63,34 @@ Behavior.prototype.damage = function(amt) {
 	var player = this.obj.player;
 	player.setHealth(player.health - amt);
 	if (player.health <= 0) {
-		this.kill();
+		this.kill('damage');
 	}
 };
 Behavior.prototype.push = function(push) {
 	var vel = this.obj.sprite.body.velocity;
 	Phaser.Point.add(vel, push, vel);
 };
-Behavior.prototype.kill = function() {
+Behavior.prototype.kill = function(reason) {
 	var i;
 	var w = this.obj.player.weapons;
 	for (i = 0; i < w.length; i++) {
 		w[i].sprite.kill();
 	}
-	this.obj.behavior = new Die(this.obj);
+	switch (reason) {
+	case 'drown':
+		this.obj.behavior = new Drown(this.obj);
+		break;
+	default:
+		this.obj.behavior = new Die(this.obj);
+		break;
+	}
 };
 
 ////////////////////////////////////////////////////////////////////////
 // Dead (note: no inheritance)
 
 function Dead(obj) {
+	obj.mover = new mover.Corpse(obj.sprite);
 	obj.sprite.body.gravity.y = params.GRAVITY;
 	this.obj = obj;
 }
@@ -108,8 +116,6 @@ Die.prototype.update = function() {
 	this.obj.mover.update(0, 0, true);
 	this.time -= game.time.physicsElapsed;
 	if (this.time <= 0) {
-		this.obj.sprite.body.enable = false;
-		this.obj.mover = new mover.Corpse(this.obj.sprite);
 		this.obj.behavior = new Dead(this.obj);
 	}
 };
@@ -123,6 +129,24 @@ Die.prototype.push = function(push) {
 		}
 	}
 	vel.add(push.x * 2, push.y * 2);
+};
+
+////////////////////////////////////////////////////////////////////////
+// Drown
+
+function Drown(obj) {
+	obj.sprite.body.gravity.y = params.GRAVITY;
+	this.obj = obj;
+}
+Drown.prototype = Object.create(Dead.prototype);
+Drown.prototype.update = function() {
+	this.obj.mover.update(0, 0, true);
+	var body = this.obj.sprite.body;
+	if (body.blocked.down) {
+		body.collideWorldBounds = false;
+		body.velocity.set(0, -params.DROWN_JUMP_SPEED);
+		this.obj.behavior = new Dead(this.obj);
+	}
 };
 
 ////////////////////////////////////////////////////////////////////////
@@ -183,7 +207,7 @@ Player.prototype.update = function() {
 
 // Handle an overlap between a player and an ouch region.
 Player.prototype.playerOuch = function(player, ouch) {
-	this.invoke(player, function(obj) { obj.kill(); });
+	this.invoke(player, function(obj) { obj.kill('drown'); });
 };
 
 // Add a weapon to the player's inventory.
