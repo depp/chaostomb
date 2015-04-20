@@ -3,53 +3,82 @@
 var MUSIC_FADE_TIME = 1;
 
 var curAudio = null;
-var curName = null;
-var nextAudio = null;
-var nextName = null;
+var curKey = null;
+var nextKey = null;
+var loaded = null;
+var fading = false;
 
-function play(name) {
-	if (!name) {
-		name = null;
-	}
-	if (name === (nextName || curName)) {
+function update() {
+	if (!nextKey || curAudio) {
 		return;
 	}
-	var s = PATH_MAP.music[name];
-	if (!s) {
-		console.error('No such music:', name);
+	if (!game.cache.checkSoundKey(nextKey)) {
 		return;
 	}
-	var uris = [], i;
-	for (i = 0; i < s.length; i++) {
-		uris.push('music/' + s[i]);
+	curAudio = game.sound.add(nextKey, 1, true);
+	curKey = nextKey;
+	nextKey = null;
+	curAudio.play();
+}
+
+function fileComplete(progress, key, success, loaded, total) {
+	try {
+	if (nextKey && key === nextKey) {
+		var timer = game.time.create(true);
+		timer.add(0, update);
+		timer.start();
 	}
-	var audio = null;
-	if (name) {
-		audio = game.add.audio('music/' + name, 1, true);
-	}
-	if (nextAudio) {
-		nextAudio = audio;
-		nextName = name;
-	} else if (curAudio) {
-		curAudio.fadeOut(MUSIC_FADE_TIME * 1000);
-		curAudio.onFadeComplete.addOnce(function() {
-			curAudio = nextAudio;
-			curName = nextName;
-			nextAudio = null;
-			nextName = null;
-			if (curAudio) {
-				curAudio.play();
-			}
-		});
-	} else {
-		curAudio = audio;
-		curName = name;
-		if (curAudio) {
-			curAudio.play();
-		}
+	} catch (e) {
+		console.error(e);
 	}
 }
 
+function fadeComplete() {
+	curAudio.destroy();
+	curAudio = null;
+	curKey = null;
+	fading = false;
+	update();
+}
+
+function play(name) {
+	var key, paths;
+	if (!name) {
+		key = null;
+	} else {
+		key = 'music/' + name;
+		paths = PATH_MAP.music[name];
+		if (!paths) {
+			console.error('No such music:', name);
+			key = null;
+		}
+	}
+	if (key === (nextKey || curKey)) {
+		return;
+	}
+	if (curAudio && !fading) {
+		curAudio.fadeOut(MUSIC_FADE_TIME * 1000);
+		curAudio.onFadeComplete.addOnce(fadeComplete);
+		fading = true;
+	}
+	if (!loaded) {
+		loaded = {};
+		game.load.onFileComplete.add(fileComplete);
+	}
+	nextKey = key;
+	if (!loaded[key]) {
+		var uris = [], i;
+		for (i = 0; i < paths.length; i++) {
+			uris.push('music/' + paths[i]);
+		}
+		game.load.audio(key, uris);
+		game.load.start();
+	}
+	update();
+}
+
 module.exports = {
-	play: play
+	play: play,
 };
+
+global.play = play;

@@ -65,15 +65,6 @@ LoadScreen.prototype.create = function() {
 		}
 		game.load.audio(key, uris);
 	}
-	objs = PATH_MAP.music;
-	for (key in objs) {
-		obj = objs[key];
-		uris = [];
-		for (i = 0; i < obj.length; i++) {
-			uris.push('music/' + obj[i]);
-		}
-		game.load.audio('music/' + key, uris);
-	}
 	objs = PATH_MAP.levels;
 	for (key in objs) {
 		game.load.tilemap(
