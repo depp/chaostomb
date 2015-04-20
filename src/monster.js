@@ -144,7 +144,8 @@ Patrol.prototype.update = function() {
 };
 Patrol.prototype.scan = function() {
 	var target = this.obj.level.gPlayer.getTargetPosition();
-	if (!target) {
+	var pos = this.obj.sprite.position;
+	if (!target || pos.distance(target) > this.obj.stats.shotrange) {
 		return;
 	}
 	this.obj.behavior = new Shoot(this.obj, target);

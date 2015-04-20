@@ -33,6 +33,7 @@ var MON_DEFAULTS = {
 	shotinterval: 0.5,
 	shotrecover: 0.2,
 	shotcount: 1,
+	shotrange: 600,
 };
 
 function monster(obj) {
@@ -65,6 +66,7 @@ function monster(obj) {
 		shotinterval: obj.shotinterval,
 		shotrecover: obj.shotrecover,
 		shotcount: obj.shotcount,
+		shotrange: obj.shotrange,
 		width: obj.width,
 		height: obj.height,
 	};
