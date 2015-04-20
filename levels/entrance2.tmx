@@ -5,6 +5,7 @@
  </properties>
  <tileset firstgid="1" source="tiles.tsx"/>
  <tileset firstgid="65" source="props.tsx"/>
+ <tileset firstgid="81" source="monsters.tsx"/>
  <layer name="Main" width="40" height="20">
   <data encoding="csv">
 16,14,13,13,16,13,14,16,13,0,0,0,0,45,46,46,46,46,46,46,46,46,46,46,46,47,0,0,0,45,46,46,46,46,46,46,47,0,0,40,
@@ -35,7 +36,7 @@
     <property name="Target" value="entrance1"/>
    </properties>
   </object>
-  <object gid="67" x="576" y="176">
+  <object gid="73" x="576" y="176">
    <properties>
     <property name="Id" value="1"/>
    </properties>

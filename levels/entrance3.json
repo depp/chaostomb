@@ -47,7 +47,7 @@
                  "y":112
                 }, 
                 {
-                 "gid":68,
+                 "gid":74,
                  "height":0,
                  "name":"",
                  "properties":
@@ -77,7 +77,7 @@
                  "y":128
                 }, 
                 {
-                 "gid":75,
+                 "gid":81,
                  "height":0,
                  "name":"",
                  "properties":
@@ -92,7 +92,7 @@
                  "y":224
                 }, 
                 {
-                 "gid":75,
+                 "gid":81,
                  "height":0,
                  "name":"",
                  "properties":
@@ -107,7 +107,7 @@
                  "y":208
                 }, 
                 {
-                 "gid":75,
+                 "gid":81,
                  "height":0,
                  "name":"",
                  "properties":
@@ -154,10 +154,25 @@
         {
          "firstgid":65,
          "image":"..\/images\/props.png",
-         "imageheight":96,
+         "imageheight":128,
          "imagewidth":128,
          "margin":0,
          "name":"props",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":32,
+         "tilewidth":32
+        }, 
+        {
+         "firstgid":81,
+         "image":"monsters.png",
+         "imageheight":64,
+         "imagewidth":128,
+         "margin":0,
+         "name":"monsters",
          "properties":
             {
 

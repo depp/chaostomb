@@ -71,7 +71,7 @@ function Chest(level, sprite, info) {
 		}
 		var chests = level.gState.chests[level.gLevelName];
 		if (chests && (this.ident in chests)) {
-			sprite.frame += 6;
+			sprite.frame += 4;
 			sprite.name = null;
 		}
 	}
@@ -89,6 +89,7 @@ Chest.prototype.interact = function() {
 	var level = this.level;
 	level.setPaused(true);
 	level.gProps.setTarget(null);
+	this.sprite.frame += 4;
 	var tsprite, tframe, tfunc, weapon = null;
 	if (this.sprite.frame == 3) {
 		weapon = this.level.gPlayer.getNextWeapon();
@@ -97,12 +98,10 @@ Chest.prototype.interact = function() {
 		tsprite = 'icons';
 		tframe = weapons[weapon].getFrame(true);
 		tfunc = function(player) { player.addWeapon(weapon); };
-		this.sprite.frame = 9;
 	} else {
 		tsprite = 'hearts';
 		tframe = 0;
 		tfunc = function(player) { player.addHeart(); };
-		this.sprite.frame = 8;
 	}
 	var treasure = level.add.sprite(
 		this.sprite.x,
@@ -154,9 +153,9 @@ SavePoint.prototype.spawnPlayer = function() {
 
 var PROP_TYPES = {
 	0: Door,
-	2: Chest,
-	3: Chest,
 	4: SavePoint,
+	8: Chest,
+	9: Chest,
 };
 
 ////////////////////////////////////////////////////////////////////////

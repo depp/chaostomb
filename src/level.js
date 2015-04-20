@@ -14,9 +14,9 @@ var menu = require('./menu');
 var NONSOLID_TILES = (function() {
 	var t = [
 		// Water
-		41, 49, 57,
+		40, 48, 56,
 		// Lava
-		23, 24, 31, 32,
+		22, 23, 30, 31,
 	];
 	var i;
 	var obj = {};
@@ -25,6 +25,15 @@ var NONSOLID_TILES = (function() {
 	}
 	return obj;
 })();
+
+function Range(start, end) {
+	this.start = start;
+	this.end = end;
+}
+
+Range.prototype.contains = function(idx) {
+	return idx >= this.start && idx < this.end;
+};
 
 function Level() {
 	this.gLevelName = null;
@@ -53,6 +62,18 @@ Level.prototype.init = function(startInfo) {
 	this.gMenu = null;
 };
 
+Level.prototype.getGidRange = function(name) {
+	var idx = this.gTileMap.getTilesetIndex(name);
+	if (idx === null) {
+		// console.warn('No such tileset:', name);
+		return new Range(0, 0);
+	}
+	var tileset = this.gTileMap.tilesets[idx];
+	return new Range(
+		tileset.firstgid,
+		tileset.firstgid + tileset.rows * tileset.columns);
+};
+
 Level.prototype.create = function() {
 	var i;
 	game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -63,20 +84,14 @@ Level.prototype.create = function() {
 	map.addTilesetImage('tiles', 'tiles');
 	this.gTiles = map.createLayer('Main');
 	this.gTiles.resizeWorld();
+	this.gTileRange = this.getGidRange('tiles');
 	var collide = [];
-	for (i = 1; i <= 64; i++) {
+	for (i = this.gTileRange.start; i < this.gTileRange.end; i++) {
 		if (!NONSOLID_TILES[i]) {
 			collide.push(i);
 		}
 	}
 	map.setCollision(collide, true, 'Main', true);
-
-	var propsetIdx = map.getTilesetIndex('props');
-	if (!propsetIdx) {
-		console.error('No prop tileset');
-		return;
-	}
-	var propGid = map.tilesets[propsetIdx].firstgid;
 
 	this.gProps = new props.Props(this);
 	this.gMonsters = new monster.Monsters(this);
@@ -89,6 +104,8 @@ Level.prototype.create = function() {
 	this.gOuch.enableBody = true;
 	this.gOuch.physicsBodyType = Phaser.Physics.ARCADE;
 
+	var propRange = this.getGidRange('props');
+	var monsterRange = this.getGidRange('monsters');
 	var playerPos = new Phaser.Point(64, 64);
 	var olayer = map.objects.Default;
 	if (!olayer) {
@@ -98,11 +115,12 @@ Level.prototype.create = function() {
 	for (i = 0; i < olayer.length; i++) {
 		var info = olayer[i];
 		if (typeof info.gid == 'number') {
-			var gid = info.gid - propGid;
-			if (gid < 10) {
-				this.gProps.spawn(gid, info);
+			if (propRange.contains(info.gid)) {
+				this.gProps.spawn(info.gid - propRange.start, info);
+			} else if (monsterRange.contains(info.gid)) {
+				this.gMonsters.spawn(info.gid - monsterRange.start, info);
 			} else {
-				this.gMonsters.spawn(gid - 10, info);
+				console.warn('Orphaned GID:', info.gid);
 			}
 			continue;
 		}

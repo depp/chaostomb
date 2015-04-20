@@ -151,7 +151,7 @@
                  "y":232
                 }, 
                 {
-                 "gid":67,
+                 "gid":73,
                  "height":0,
                  "name":"",
                  "properties":
@@ -227,10 +227,25 @@
         {
          "firstgid":65,
          "image":"..\/images\/props.png",
-         "imageheight":64,
+         "imageheight":128,
          "imagewidth":128,
          "margin":0,
          "name":"props",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":32,
+         "tilewidth":32
+        }, 
+        {
+         "firstgid":81,
+         "image":"monsters.png",
+         "imageheight":64,
+         "imagewidth":128,
+         "margin":0,
+         "name":"monsters",
          "properties":
             {
 

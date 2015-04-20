@@ -2,6 +2,7 @@
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="40" height="20" tilewidth="16" tileheight="16">
  <tileset firstgid="1" source="tiles.tsx"/>
  <tileset firstgid="65" source="props.tsx"/>
+ <tileset firstgid="81" source="monsters.tsx"/>
  <layer name="Main" width="40" height="20">
   <data encoding="csv">
 40,0,0,15,13,14,13,14,13,16,14,15,16,15,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,13,14,13,16,13,14,14,0,40,
@@ -33,14 +34,14 @@
    </properties>
   </object>
   <object gid="65" x="592" y="112"/>
-  <object gid="68" x="400" y="112">
+  <object gid="74" x="400" y="112">
    <properties>
     <property name="Id" value="1"/>
    </properties>
   </object>
   <object gid="70" x="248" y="128"/>
-  <object gid="75" x="208" y="224"/>
-  <object gid="75" x="488" y="208"/>
-  <object gid="75" x="352" y="256"/>
+  <object gid="81" x="208" y="224"/>
+  <object gid="81" x="488" y="208"/>
+  <object gid="81" x="352" y="256"/>
  </objectgroup>
 </map>
