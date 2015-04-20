@@ -496,6 +496,19 @@ Player.prototype.invoke = function(sprite, func, context) {
 	func.call(context, obj.behavior);
 };
 
+// Get x, y, and direction.
+Player.prototype.getFacing = function() {
+	var obj = this.objs.Player;
+	if (!obj) {
+		return null;
+	}
+	return {
+		x: obj.sprite.x,
+		y: obj.sprite.y,
+		direction: obj.mover.direction,
+	};
+};
+
 ////////////////////////////////////////////////////////////////////////
 // Exports
 

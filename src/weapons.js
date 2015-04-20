@@ -93,6 +93,12 @@ var WEAPONS = {
 	Gun: {
 		icon: 12,
 		name: 'Gun',
+		fire: function(level) {
+			var face = level.gPlayer.getFacing();
+			console.log(face);
+			level.gShots.spawn(true, 'Bolt', face.x, face.y, face.direction, 0);
+			game.sound.play('shot_short');
+		}
 	},
 	Sheep: {
 		icon: 13,
