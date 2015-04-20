@@ -87,7 +87,7 @@ Level.prototype.create = function() {
 	this.gTileRange = this.getGidRange('tiles');
 	var collide = [];
 	for (i = this.gTileRange.start; i < this.gTileRange.end; i++) {
-		if (!NONSOLID_TILES[i]) {
+		if (!NONSOLID_TILES[i - this.gTileRange.start]) {
 			collide.push(i);
 		}
 	}
