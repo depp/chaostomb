@@ -45,9 +45,11 @@ Behavior.prototype.update = function() {
 		if (input.fire !== 0) {
 			var winfo = player.getWeaponInfo();
 			if (winfo && winfo.fire) {
-				if (input.fire === 1) {
+				if (input.fire === 1 || winfo.auto) {
 					if (player.cooldown > 0) {
-						game.sound.play('click');
+						if (!winfo.auto || input.fire === 1) {
+							game.sound.play('click');
+						}
 					} else {
 						player.cooldown = winfo.cooldown;
 						winfo.fire(level);
@@ -168,6 +170,34 @@ Drown.prototype.update = function() {
 };
 
 ////////////////////////////////////////////////////////////////////////
+// Hex
+
+function Hex(obj, time) {
+	this.obj = obj;
+	this.time = time;
+}
+Hex.prototype.canInteract = false;
+Hex.prototype.update = function() {
+	this.time -= game.time.physicsElapsed;
+	if (this.time < 0) {
+		this.kill(true);
+	}
+};
+Hex.prototype.stun = function() {};
+Hex.prototype.damage = function(amt) {
+	this.kill();
+};
+Hex.prototype.push = function(push) {};
+Hex.prototype.kill = function(silent) {
+	var sprite = this.obj.sprite;
+	delete this.obj.level.gPlayer.objs[sprite.name];
+	if (!silent) {
+		this.obj.level.gFx.emitSparks(sprite.x, sprite.y);
+	}
+	sprite.kill();
+};
+
+////////////////////////////////////////////////////////////////////////
 // Player
 
 function Player(level, obj) {
@@ -218,6 +248,43 @@ Player.prototype.spawn = function(pos) {
 	}
 	this.setHearts(st.hearts, true);
 	this.setHealth(st.health, true);
+};
+
+// Spawn a hexagonal tile.
+Player.prototype.spawnHex = function() {
+	var hexTime = 2, hexCount = 20, hexSize = 24;
+	var i, sprite;
+	if (!this.hexes) {
+		this.hexes = game.add.group();
+		this.group.add(this.hexes);
+		for (i = 0; i < hexCount; i++) {
+			sprite = this.hexes.create(0, 0, 'shots', 2, false);
+			sprite.anchor.setTo(0.5, 0.5);
+			game.physics.arcade.enable(sprite);
+			sprite.body.collideWorldBounds = true;
+			sprite.body.setSize(hexSize, hexSize);
+			sprite.name = 'Hex ' + i;
+		}
+	}
+	sprite = this.hexes.getFirstDead();
+	if (!sprite) {
+		return false;
+	}
+	var pos = this.level.findEmptySpace(hexSize, hexSize);
+	if (!pos) {
+		return false;
+	}
+	console.log(pos);
+	sprite.reset(pos.x, pos.y);
+	var obj = {
+		level: this.level,
+		player: this,
+		sprite: sprite,
+		behavior: null,
+	};
+	obj.behavior = new Hex(obj, hexTime);
+	this.objs[sprite.name] = obj;
+	return true;
 };
 
 Player.prototype.update = function() {

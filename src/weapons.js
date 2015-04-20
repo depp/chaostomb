@@ -105,6 +105,15 @@ var WEAPONS = {
 	Shield: {
 		icon: 15,
 		name: 'Hexagonal Asset',
+		cooldown: 0.1,
+		auto: true,
+		fire: function(level) {
+			if (level.gPlayer.spawnHex()) {
+				game.sound.play('hex');
+			} else {
+				game.sound.play('click');
+			}
+		}
 	},
 };
 
