@@ -115,13 +115,13 @@ module.exports = {
 
 		// Air movement
 		adrag: 0,
-		aaccel: 300,
-		aspeed: 180,
+		aaccel: 1000,
+		aspeed: 250,
 
 		// Jumping
-		jtime: 0.5,
+		jtime: 0.4,
 		jaccel: 1800,
-		jheight: 180,
+		jheight: 165,
 		jdouble: true,
 
 		// Play sounds
