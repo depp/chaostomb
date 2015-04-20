@@ -11,6 +11,8 @@ function Menu(items) {
 	var i, it;
 	this.items = [];
 	var x = game.world.centerX, y = game.world.centerY + 64;
+	this.pointer = this.group.create(x, y, 'menu', 0);
+	this.pointer.anchor.set(0.5, 0.5);
 	for (i = 0; i < items.length; i++, y += 56) {
 		it = items[i];
 		var back = this.group.create(x, y, 'menu', 1);
@@ -26,6 +28,7 @@ function Menu(items) {
 			y: y,
 		});
 	}
+	this.pointer.bringToTop();
 }
 
 ////////////////////////////////////////////////////////////////////////
