@@ -238,10 +238,20 @@ Monsters.prototype.spawn = function(gid, info) {
 
 Monsters.prototype.update = function() {
 	game.physics.arcade.collide(this.group, this.level.gTiles);
+	game.physics.arcade.overlap(
+		this.group, this.level.gOuch, this.monsterOuch, null, this);
 	var name;
 	for (name in this.objs) {
 		this.objs[name].behavior.update();
 	}
+};
+
+// Handle an overlap between a player and an ouch region.
+Monsters.prototype.monsterOuch = function(monster, ouch) {
+	if (!monster.name) {
+		return;
+	}
+	this.invoke(monster, function(obj) { obj.kill(); });
 };
 
 // Call a function on a monster object.
