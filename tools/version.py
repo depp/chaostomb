@@ -12,7 +12,7 @@ def get_version(path):
         stdout=subprocess.PIPE)
     stdout, stderr = proc.communicate()
     if proc.returncode == 0:
-        return stdout.strip()
+        return stdout.strip().decode('ASCII')
 
     proc = subprocess.Popen(
         ['git', 'rev-parse', 'HEAD'],
