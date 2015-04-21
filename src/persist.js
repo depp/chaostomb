@@ -70,6 +70,7 @@ function GameState() {
 	this.health = 4;
 	this.weaponOrder = [];
 	this.doubleJump = false;
+	this.invincible = false;
 	for (name in weapons) {
 		this.weaponOrder.push(name);
 	}

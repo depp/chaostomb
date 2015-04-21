@@ -75,6 +75,9 @@ Behavior.prototype.stun = function() {
 	this.stuntime = params.PLAYER_STUN_TIME;
 };
 Behavior.prototype.damage = function(amt) {
+	if (this.obj.level.gState.invincible) {
+		return;
+	}
 	if (typeof amt == 'undefined') {
 		amt = 1;
 	}
@@ -85,10 +88,16 @@ Behavior.prototype.damage = function(amt) {
 	}
 };
 Behavior.prototype.push = function(push) {
+	if (this.obj.level.gState.invincible) {
+		return;
+	}
 	var vel = this.obj.sprite.body.velocity;
 	Phaser.Point.add(vel, push, vel);
 };
 Behavior.prototype.kill = function(reason) {
+	if (this.obj.level.gState.invincible) {
+		return;
+	}
 	var i;
 	var w = this.obj.player.weapons;
 	for (i = 0; i < w.length; i++) {

@@ -7,7 +7,10 @@ var cheats = {
 		for (name in weapons) {
 			level.gPlayer.addWeapon(name);
 		}
-	}
+	},
+	invincible: function(level) {
+		level.gState.invincible = true;
+	},
 };
 
 function wrap(func) {
