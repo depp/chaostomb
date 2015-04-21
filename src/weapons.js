@@ -28,6 +28,15 @@ var WEAPONS = {
 	Fish: {
 		icon: 3,
 		name: 'Fish Schooler',
+		auto: true,
+		cooldown: 0.15,
+		fire: function(level) {
+			var face = level.gPlayer.getFacing();
+			var angle = Math.random() * Math.PI;
+			var x = Math.cos(angle);
+			var y = -Math.sin(angle);
+			level.gShots.spawn(true, 'Fish', face.x, face.y, x, y);
+		},
 	},
 	Teleport: {
 		icon: 4,

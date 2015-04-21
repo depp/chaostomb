@@ -47,6 +47,7 @@ Shot.prototype.hitActor = function(target, team) {
 Shot.prototype.update = function() {};
 // Shot.prototype.outOfBoundsKill = true;
 Shot.prototype.bounce = 1.0;
+Shot.prototype.gravity = 0.0;
 
 function shotClass(attr) {
 	var proto = Object.create(Shot.prototype);
@@ -80,6 +81,18 @@ Eye.prototype = shotClass({
 });
 
 ////////////////////////////////////////////////////////////////////////
+// Fish
+
+function Fish() {}
+Fish.prototype = shotClass({
+	frame: 5,
+	speed: 800,
+	size: 12,
+	sound: 'fish',
+	gravity: params.GRAVITY,
+});
+
+////////////////////////////////////////////////////////////////////////
 // Ball
 
 function Ball() {
@@ -110,6 +123,7 @@ var SHOTS = {
 	Bolt: Bolt,
 	Eye: Eye,
 	Ball: Ball,
+	Fish: Fish,
 };
 
 ////////////////////////////////////////////////////////////////////////
@@ -191,6 +205,7 @@ Shots.prototype.spawn = function(isPlayer, type, px, py, dx, dy) {
 	sprite.body.velocity.set(dx * dfac, dy * dfac);
 	sprite.body.setSize(obj.size, obj.size);
 	sprite.body.bounce.set(obj.bounce);
+	sprite.body.gravity.y = obj.gravity;
 	obj.level = this.level;
 	obj.sprite = sprite;
 	obj.isPlayerShot = isPlayer;
