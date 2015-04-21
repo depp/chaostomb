@@ -19,6 +19,7 @@ function Door(level, sprite, info) {
 	} else {
 		level.gProps.doors[this.target] = this;
 	}
+	this.confirm = 0;
 }
 Door.prototype.markerOffset = 64;
 Door.prototype.interact = function() {
@@ -26,6 +27,14 @@ Door.prototype.interact = function() {
 	if (!this.target) {
 		game.sound.play('buzz');
 		console.warn('Door has no target');
+		return;
+	}
+	if (this.target === 'exit') {
+		this.endGame();
+		return;
+	}
+	if (!(this.target in PATH_MAP.levels)) {
+		console.warn('Door goes to invalid level');
 		return;
 	}
 	var level = this.level;
@@ -51,6 +60,47 @@ Door.prototype.spawnPlayer = function() {
 			this.level.setPaused(false);
 		}, this);
 	timer.start();
+};
+Door.prototype.endGame = function() {
+	var level = this.level;
+	var nweap = level.gState.weapons.length, msg = null;
+	switch (nweap) {
+	case 0:
+		switch (this.confirm++) {
+		case 0: msg = 'You just got here.'; break;
+		case 1: msg = 'Go find a weapon.'; break;
+		case 2: msg = 'Seriously, go explore.'; break;
+		case 3: msg = 'Are you still here?'; break;
+		case 4: msg = 'You can\'t be serious.'; break;
+		case 5: msg = 'Are you a QUITTER?'; break;
+		case 6: msg = 'Don\'t break my heart!'; break;
+		case 7: msg = 'Last warning!!!!!'; break;
+		}
+		break;
+	case 1:
+		switch (this.confirm++) {
+		case 0: msg = 'Are you done yet?'; break;
+		case 1: msg = 'Really?'; break;
+		case 2: msg = 'Okay, I warned you.'; break;
+		}
+		break;
+	case 2:
+		switch (this.confirm++) {
+		case 0: msg = 'Are you sure?'; break;
+		}
+	}
+	if (msg) {
+		game.sound.play('buzz');
+		level.alert(msg, false, true);
+	} else {
+		game.sound.play('door');
+		var timer = game.time.create(true);
+		timer.add(
+			1000, function() {
+				level.state.start('Final', true, false, level.gState);
+			});
+		timer.start();
+	}
 };
 
 ////////////////////////////////////////////////////////////////////////

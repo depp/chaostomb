@@ -13,7 +13,7 @@
         }, 
         {
          "draworder":"topdown",
-         "height":15,
+         "height":0,
          "name":"Default",
          "objects":[
                 {
@@ -124,7 +124,7 @@
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
-         "width":40,
+         "width":0,
          "x":0,
          "y":0
         }],

@@ -8,9 +8,11 @@ function start() {
 	var assets = require('./assets');
 	var menu = require('./menu');
 	var level = require('./level');
+	var mfinal = require('./final');
 	game.state.add('Load', assets.LoadScreen);
 	game.state.add('Menu', menu.MainMenu);
 	game.state.add('Level', level.Level);
+	game.state.add('Final', mfinal.FinalScreen);
 	game.state.add('Dummy', Dummy);
 	game.state.start('Load', true, false);
 	/*

@@ -82,6 +82,14 @@ function GameState() {
 			this.weaponOrder[j] = t;
 		}
 	}
+	// 'gun' is always last
+	i = this.weaponOrder.indexOf('Gun');
+	j = this.weaponOrder.length - 1;
+	if (i >= 0 && i != j) {
+			t = this.weaponOrder[i];
+			this.weaponOrder[i] = this.weaponOrder[j];
+			this.weaponOrder[j] = t;
+	}
 }
 
 // Save the game state.

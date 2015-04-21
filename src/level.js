@@ -64,6 +64,7 @@ Level.prototype.init = function(startInfo) {
 	this.gAlertText = null;
 	this.gAlertGroup = null;
 	this.gAlertTween = null;
+	this.gAlertWait = false;
 };
 
 Level.prototype.getGidRange = function(name) {
@@ -191,6 +192,18 @@ Level.prototype.spawnPlayer = function(obj) {
 
 Level.prototype.update = function() {
 	input.update();
+	if (this.gAlertWait) {
+		var name;
+		for (name in this.gInput) {
+			if (this.gInput[name] === 1) {
+				this.gAlertWait = false;
+				this.gAlertGroup.visible = false;
+				this.setPaused(false);
+				break;
+			}
+		}
+		return;
+	}
 	if (this.gMenu) {
 		this.gMenu.update();
 	}
@@ -239,7 +252,7 @@ Level.prototype.changeLevel = function(target) {
 };
 
 // Present an alert.
-Level.prototype.alert = function(message, noPause) {
+Level.prototype.alert = function(message, noPause, wait) {
 	var tweenTime = 0.2, hangTime = 0.3;
 	if (!this.gAlertText) {
 		this.gAlertText = text.create();
@@ -257,7 +270,7 @@ Level.prototype.alert = function(message, noPause) {
 			Phaser.Easing.Sinusoidal.Out,
 			false, 0, 0, false);
 	}
-	if (!noPause) {
+	if (!noPause || wait) {
 		this.setPaused(true);
 	}
 	this.gAlertText.text = message;
@@ -265,10 +278,15 @@ Level.prototype.alert = function(message, noPause) {
 	this.gAlertGroup.visible = true;
 	this.gAlertTween.start();
 	var timer = game.time.create(true);
+	this.gAlertWait = false;
 	timer.add((tweenTime + hangTime) * 1000, function() {
-		this.gAlertGroup.visible = false;
-		if (!noPause) {
-			this.setPaused(false);
+		if (wait) {
+			this.gAlertWait = true;
+		} else {
+			this.gAlertGroup.visible = false;
+			if (!noPause) {
+				this.setPaused(false);
+			}
 		}
 	}, this);
 	timer.start();

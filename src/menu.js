@@ -143,6 +143,7 @@ function MainMenu() {
 }
 
 MainMenu.prototype.create = function() {
+	game.add.image(0, 0, 'title');
 	this.menu = new Menu([
 		itemNewGame(),
 		itemSavedGame(),

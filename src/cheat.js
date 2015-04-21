@@ -8,6 +8,12 @@ var cheats = {
 			level.gPlayer.addWeapon(name);
 		}
 	},
+	addWeapon: function(level) {
+		var w = level.gPlayer.getNextWeapon();
+		if (w) {
+			level.gPlayer.addWeapon(w);
+		}
+	},
 	invincible: function(level) {
 		level.gState.invincible = true;
 	},

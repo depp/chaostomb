@@ -300,6 +300,9 @@ Shots.prototype.tileHit = function(shot, tile) {
 
 // Call a function on a shot object.
 Shots.prototype.invoke = function(sprite, func, context) {
+	if (!sprite.exists) {
+		return;
+	}
 	var name = sprite.name;
 	var obj = this.objs[name];
 	if (!obj) {
