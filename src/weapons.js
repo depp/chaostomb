@@ -14,14 +14,17 @@ Weapon.prototype.getFrame = function(selected) {
 
 var WEAPONS = {
 	Heart: {
+		disabled: true,
 		icon: 0,
 		name: 'Power of Love',
 	},
 	Boot: {
+		disabled: true,
 		icon: 1,
 		name: 'Fearsome Boot',
 	},
 	Doll: {
+		disabled: true,
 		icon: 2,
 		name: 'Creepy Doll',
 	},
@@ -72,6 +75,7 @@ var WEAPONS = {
 		}
 	},
 	Wind: {
+		disabled: true,
 		icon: 5,
 		name: 'Broken Wind',
 	},
@@ -95,18 +99,22 @@ var WEAPONS = {
 		}
 	},
 	Billiards: {
+		disabled: true,
 		icon: 8,
 		name: 'Pool Shark',
 	},
 	Artillery: {
+		disabled: true,
 		icon: 9,
 		name: 'Heavy Cannon',
 	},
 	Math: {
+		disabled: true,
 		icon: 10,
 		name: 'Arithmetical Emblem',
 	},
 	Snake: {
+		disabled: true,
 		icon: 11,
 		name: 'King Cobra',
 	},
@@ -120,10 +128,12 @@ var WEAPONS = {
 		}
 	},
 	Sheep: {
+		disabled: true,
 		icon: 13,
 		name: 'Baa Ram Ewe',
 	},
 	Type: {
+		disabled: true,
 		icon: 14,
 		name: 'Key Pounder',
 	},
@@ -146,6 +156,10 @@ var WEAPONS = {
 	var name, w, y, attr;
 	for (name in WEAPONS) {
 		w = WEAPONS[name];
+		if (w.disabled) {
+			delete WEAPONS[name];
+			continue;
+		}
 		y = new Weapon();
 		for (attr in w) {
 			y[attr] = w[attr];
