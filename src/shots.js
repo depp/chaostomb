@@ -44,6 +44,9 @@ Shot.prototype.hitActor = function(target, team) {
 	});
 	shot.kill();
 };
+Shot.prototype.update = function() {};
+// Shot.prototype.outOfBoundsKill = true;
+Shot.prototype.bounce = 1.0;
 
 function shotClass(attr) {
 	var proto = Object.create(Shot.prototype);
@@ -79,12 +82,25 @@ Eye.prototype = shotClass({
 ////////////////////////////////////////////////////////////////////////
 // Ball
 
-function Ball() {}
+function Ball() {
+	this.bounces = 3;
+}
 Ball.prototype = shotClass({
 	frame: 4,
 	speed: 700,
 	size: 16,
 	sound: 'dink',
+// 	outOfBoundsKill: false,
+	bounce: 1.0,
+	hitTile: function(tile) {
+		this.bounces--;
+		game.sound.play('dink');
+		if (this.bounces <= 0) {
+			var shot = this.sprite;
+			this.level.gFx.spawn('Boom', shot.x, shot.y);
+			this.kill();
+		}
+	},
 });
 
 ////////////////////////////////////////////////////////////////////////
@@ -174,6 +190,7 @@ Shots.prototype.spawn = function(isPlayer, type, px, py, dx, dy) {
 	dfac *= obj.speed;
 	sprite.body.velocity.set(dx * dfac, dy * dfac);
 	sprite.body.setSize(obj.size, obj.size);
+	sprite.body.bounce.set(obj.bounce);
 	obj.level = this.level;
 	obj.sprite = sprite;
 	obj.isPlayerShot = isPlayer;
@@ -190,6 +207,15 @@ Shots.prototype.update = function() {
 		this.level.gPlayer.group, this.group, this.hitPlayer, null, this);
 	game.physics.arcade.overlap(
 		this.group, this.level.gTiles, this.tileHit, null, this);
+	var name, obj, i;
+	for (name in this.objs) {
+		obj = this.objs[name];
+		if (!obj.sprite.exists) {
+			delete this.objs[name];
+		} else {
+			obj.update();
+		}
+	}
 };
 
 // Callback when shot hits player.
