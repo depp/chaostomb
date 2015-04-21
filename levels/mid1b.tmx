@@ -28,7 +28,7 @@
  <objectgroup name="Default">
   <object gid="75" x="264" y="144">
    <properties>
-    <property name="Id" value="1"/>
+    <property name="Id" value="8"/>
    </properties>
   </object>
   <object gid="65" x="0" y="80">

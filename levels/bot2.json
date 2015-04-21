@@ -52,7 +52,7 @@
                  "name":"",
                  "properties":
                     {
-                     "Id":"1"
+                     "Id":"12"
                     },
                  "rotation":0,
                  "type":"",
@@ -67,7 +67,7 @@
                  "name":"",
                  "properties":
                     {
-                     "Id":"2"
+                     "Id":"11"
                     },
                  "rotation":0,
                  "type":"",
@@ -224,6 +224,34 @@
                  "width":368,
                  "x":16,
                  "y":884
+                }, 
+                {
+                 "height":8,
+                 "name":"",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"Lava",
+                 "visible":true,
+                 "width":272,
+                 "x":16,
+                 "y":280
+                }, 
+                {
+                 "height":8,
+                 "name":"",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"Lava",
+                 "visible":true,
+                 "width":128,
+                 "x":112,
+                 "y":392
                 }],
          "opacity":1,
          "type":"objectgroup",

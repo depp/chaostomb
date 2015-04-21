@@ -36,7 +36,11 @@
     <property name="Target" value="bot3"/>
    </properties>
   </object>
-  <object gid="74" x="216" y="144"/>
+  <object gid="74" x="216" y="144">
+   <properties>
+    <property name="Id" value="13"/>
+   </properties>
+  </object>
   <object type="Lava" x="48" y="212" width="352" height="28"/>
  </objectgroup>
 </map>

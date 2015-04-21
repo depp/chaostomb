@@ -59,7 +59,7 @@
   <object gid="72" x="64" y="48"/>
   <object gid="73" x="88" y="560">
    <properties>
-    <property name="Id" value="1"/>
+    <property name="Id" value="9"/>
    </properties>
   </object>
   <object gid="81" x="104" y="464"/>

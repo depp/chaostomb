@@ -95,7 +95,7 @@
   </object>
   <object gid="69" x="736" y="176">
    <properties>
-    <property name="Id" value="1"/>
+    <property name="Id" value="B"/>
    </properties>
   </object>
   <object type="Lava" x="64" y="612" width="16" height="28"/>
@@ -109,12 +109,12 @@
   <object gid="70" x="532" y="560"/>
   <object gid="69" x="208" y="592">
    <properties>
-    <property name="Id" value="3"/>
+    <property name="Id" value="D"/>
    </properties>
   </object>
   <object gid="69" x="672" y="560">
    <properties>
-    <property name="Id" value="2"/>
+    <property name="Id" value="C"/>
    </properties>
   </object>
  </objectgroup>

@@ -57,7 +57,7 @@
   </object>
   <object gid="69" x="848" y="304">
    <properties>
-    <property name="Id" value="1"/>
+    <property name="Id" value="A"/>
    </properties>
   </object>
   <object type="Player" x="160" y="232" width="16" height="24"/>
