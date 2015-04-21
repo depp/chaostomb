@@ -78,6 +78,13 @@ var WEAPONS = {
 	Potato: {
 		icon: 6,
 		name: 'Potato',
+		fire: function(level) {
+			var face = level.gPlayer.getFacing();
+			level.gShots.spawn(
+				true, 'Potato',
+				face.x, face.y,
+				face.direction, -0.6 - Math.random());
+		},
 	},
 	Breakout: {
 		icon: 7,

@@ -48,6 +48,7 @@ Shot.prototype.update = function() {};
 // Shot.prototype.outOfBoundsKill = true;
 Shot.prototype.bounce = 1.0;
 Shot.prototype.gravity = 0.0;
+Shot.prototype.maxTime = 3.0;
 
 function shotClass(attr) {
 	var proto = Object.create(Shot.prototype);
@@ -93,6 +94,43 @@ Fish.prototype = shotClass({
 });
 
 ////////////////////////////////////////////////////////////////////////
+// Potato
+
+function decelX(body, accel) {
+	var dv = accel * game.time.physicsElapsed;
+	if (Math.abs(body.velocity.x) < dv) {
+		body.velocity.x = 0;
+	} else {
+		body.velocity.x -= dv * Math.sign(body.velocity.x);
+	}
+}
+
+function Potato() {
+	this.bounces = 2;
+}
+Potato.prototype = shotClass({
+	frame: 3,
+	speed: 500,
+	size: 12,
+	sound: 'throw',
+	gravity: params.GRAVITY,
+	hitActor: function() {},
+	hitTile: function() {
+		if (this.bounces > 0) {
+			game.sound.play('potato');
+			this.bounces--;
+		}
+	},
+	update: function() {
+		var body = this.sprite.body;
+		if (body.blocked.down) {
+			decelX(body, 800);
+		}
+	},
+	bounce: 0.5,
+});
+
+////////////////////////////////////////////////////////////////////////
 // Ball
 
 function Ball() {
@@ -124,6 +162,7 @@ var SHOTS = {
 	Eye: Eye,
 	Ball: Ball,
 	Fish: Fish,
+	Potato: Potato,
 };
 
 ////////////////////////////////////////////////////////////////////////
@@ -209,6 +248,7 @@ Shots.prototype.spawn = function(isPlayer, type, px, py, dx, dy) {
 	obj.level = this.level;
 	obj.sprite = sprite;
 	obj.isPlayerShot = isPlayer;
+	obj.timeElapsed = 0;
 	this.objs[name] = obj;
 	if (obj.sound) {
 		game.sound.play(obj.sound);
@@ -225,9 +265,13 @@ Shots.prototype.update = function() {
 	var name, obj, i;
 	for (name in this.objs) {
 		obj = this.objs[name];
-		if (!obj.sprite.exists) {
-			delete this.objs[name];
-		} else {
+		if (obj.sprite.exists) {
+			obj.timeElapsed += game.time.physicsElapsed;
+			if (obj.timeElapsed > obj.maxTime) {
+				obj.sprite.kill();
+			}
+		}
+		if (obj.sprite.exists) {
 			obj.update();
 		}
 	}
