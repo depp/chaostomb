@@ -101,6 +101,7 @@ Door.prototype.endGame = function() {
 		game.sound.play('buzz');
 		level.alert(msg, false, true);
 	} else {
+		this.sprite.frame = 1;
 		game.sound.play('door');
 		var timer = game.time.create(true);
 		timer.add(
