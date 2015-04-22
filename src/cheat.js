@@ -26,6 +26,7 @@ function wrap(func) {
 			return;
 		}
 		var level = game.state.getCurrentState();
+		level.gState.cheat = true;
 		func(level);
 	};
 }
