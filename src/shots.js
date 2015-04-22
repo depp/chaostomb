@@ -8,6 +8,7 @@ var params = require('./params');
 
 // Part of ES6.
 var sign = Math.sign || function(x) { return x > 0 ? 1 : -1; }
+var hypot = Math.hypot || function(x, y) { return Math.sqrt(x*x + y*y); };
 
 ////////////////////////////////////////////////////////////////////////
 // Shot
@@ -191,7 +192,7 @@ function explosionPush(target, center, info, fixed) {
 	var dx = target.x - center.x;
 	var dy = target.y - center.y;
 	var a;
-	var dd = Math.hypot(dx, dy);
+	var dd = hypot(dx, dy);
 	if (info.push) {
 		a = info.push;
 	} else {
@@ -206,7 +207,7 @@ function explosionPush(target, center, info, fixed) {
 	}
 	if (info.kick) {
 		dy -= info.kick;
-		dd = Math.hypot(dx, dy);
+		dd = hypot(dx, dy);
 	}
 	if (dd < 1) {
 		dx = 0;
@@ -239,7 +240,7 @@ Shots.prototype.spawn = function(isPlayer, type, px, py, dx, dy) {
 		sprite.checkWorldBounds = true;
 		sprite.outOfBoundsKill = true;
 	}
-	var dmag = Math.hypot(dx, dy);
+	var dmag = hypot(dx, dy);
 	var dfac;
 	if (Math.abs(dmag) < 0.1) {
 		dx = 1;
