@@ -31,7 +31,6 @@ def read_animation(animation):
         if not frames:
             return None
         parts.reverse()
-        print(parts)
         try:
             for part in parts:
                 if part == 'loop':
@@ -201,7 +200,6 @@ class App(object):
                 name = os.path.splitext(path)[0]
                 name = os.path.basename(name)
                 name = not_word.sub('_', name.lower())
-                print(name)
                 apath = self.system.copy(
                     os.path.join(bpath, name + os.path.splitext(path)[1]),
                     path,
