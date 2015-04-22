@@ -118,7 +118,7 @@ Behavior.prototype.kill = function(reason) {
 		status = 'drown';
 		break;
 	default:
-		status = 'shot';
+		status = 'monster';
 		break;
 	}
 	this.obj.level.gState.report(status);
