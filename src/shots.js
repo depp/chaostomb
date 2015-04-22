@@ -7,7 +7,7 @@
 var params = require('./params');
 
 // Part of ES6.
-var sign = Math.sign || function(x) { return x > 0 ? 1 : -1; }
+var sign = Math.sign || function(x) { return x > 0 ? 1 : -1; };
 var hypot = Math.hypot || function(x, y) { return Math.sqrt(x*x + y*y); };
 
 ////////////////////////////////////////////////////////////////////////
