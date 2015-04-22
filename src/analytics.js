@@ -5,6 +5,15 @@ var endpoint = process.env.ANALYTICS;
 var playerKey;
 var failures = 0;
 
+// Test if we are in an IFrame.
+function isIFrame() {
+	try {
+		return window.self !== window.top;
+	} catch (e) {
+		return true;
+	}
+}
+
 // Record a failure
 function fail() {
 	failures++;
@@ -64,6 +73,7 @@ function init(callback, context) {
 	xhr.setRequestHeader('Content-Type', 'application/json');
 	xhr.send(JSON.stringify({
 		Referrer: document.referrer,
+		IFrame: isIFrame(),
 	}));
 }
 
