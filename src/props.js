@@ -113,14 +113,14 @@ function Chest(level, sprite, info) {
 	this.object = info.Object;
 	if (typeof this.ident == 'undefined') {
 		console.warn('Chest has no Id');
+		sprite.name = null;
 	} else {
 		if (this.ident in level.gProps.chests) {
 			console.warn('Duplicate chest:', this.ident);
 		} else {
 			level.gProps.chests[this.ident] = this;
 		}
-		var chests = level.gState.chests[level.gLevelName];
-		if (chests && (this.ident in chests)) {
+		if (this.ident in level.gState.chests) {
 			sprite.frame += 4;
 			sprite.name = null;
 		}
@@ -129,12 +129,7 @@ function Chest(level, sprite, info) {
 Chest.prototype.markerOffset = 48;
 Chest.prototype.interact = function() {
 	this.sprite.name = null;
-	var chests = this.level.gState.chests[this.level.gLevelName];
-	if (!chests) {
-		chests = {};
-		this.level.gState.chests[this.level.gLevelName] = chests;
-	}
-	chests[this.ident] = 0;
+	this.level.gState.chests[this.ident] = 0;
 
 	var level = this.level;
 	level.setPaused(true);

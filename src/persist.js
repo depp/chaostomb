@@ -26,6 +26,13 @@ function decode() {
 	if (!save || typeof save != 'object') {
 		return null;
 	}
+	switch (save.version) {
+	case 2:
+		break;
+	default:
+		save.chests = {};
+		break;
+	}
 	st.hearts = save.hearts;
 	st.chests = save.chests;
 	st.weapons = save.weapons;
@@ -33,6 +40,7 @@ function decode() {
 	st.health = st.hearts * 2;
 	st.weaponOrder = save.weaponOrder;
 	st.doubleJump = !!save.doubleJump;
+	st.cheat = !!save.cheat;
 	return {
 		state: st,
 		level: save.level,
@@ -71,6 +79,7 @@ function GameState() {
 	this.weaponOrder = [];
 	this.doubleJump = false;
 	this.invincible = false;
+	this.cheat = false;
 	for (name in weapons) {
 		this.weaponOrder.push(name);
 	}
@@ -103,6 +112,7 @@ GameState.prototype.save = function(levelName, savePointId) {
 		savePointId: savePointId,
 		weaponOrder: this.weaponOrder,
 		doubleJump: this.doubleJump,
+		version: 2
 	});
 	saveData = data;
 	if (hasLocalStorage) {
