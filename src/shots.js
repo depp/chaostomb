@@ -6,6 +6,9 @@
 'use strict';
 var params = require('./params');
 
+// Part of ES6.
+var sign = Math.sign || function(x) { return x > 0 ? 1 : -1; }
+
 ////////////////////////////////////////////////////////////////////////
 // Shot
 
@@ -106,7 +109,7 @@ function decelX(body, accel) {
 	if (Math.abs(body.velocity.x) < dv) {
 		body.velocity.x = 0;
 	} else {
-		body.velocity.x -= dv * Math.sign(body.velocity.x);
+		body.velocity.x -= dv * sign(body.velocity.x);
 	}
 }
 

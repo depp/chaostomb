@@ -6,6 +6,9 @@
 'use strict';
 var params = require('./params');
 
+// Part of ES6.
+var sign = Math.sign || function(x) { return x > 0 ? 1 : -1; }
+
 ////////////////////////////////////////////////////////////////////////
 // Corpse
 
@@ -22,7 +25,7 @@ Corpse.prototype.update = function(xdrive, ydrive, stunned) {
 		body.velocity.x = 0;
 		body.acceleration.x = 0;
 	} else {
-		body.acceleration.x = Math.sign(xdel) * xaccel;
+		body.acceleration.x = sign(xdel) * xaccel;
 	}
 	var anim = stunned ? 'hurt' : 'dead';
 	if (anim != this.anim) {
@@ -78,8 +81,8 @@ Walker.prototype.update = function(xdrive, ydrive, stunned, can_doublejump) {
 	var xaccel;
 	if (Math.abs(xdrive) > 0.1) {
 		anim = 'walk';
-		if (body.velocity.x * Math.sign(xdrive) >= -params.WALK_THRESHOLD) {
-			this.sprite.scale.x = this.direction = Math.sign(xdrive);
+		if (body.velocity.x * sign(xdrive) >= -params.WALK_THRESHOLD) {
+			this.sprite.scale.x = this.direction = sign(xdrive);
 		}
 		xaccel = accel;
 		var xfrac = body.velocity.x / xtarget;
@@ -98,7 +101,7 @@ Walker.prototype.update = function(xdrive, ydrive, stunned, can_doublejump) {
 		body.velocity.x = xtarget;
 		body.acceleration.x = 0;
 	} else {
-		body.acceleration.x = Math.sign(xdel) * xaccel;
+		body.acceleration.x = sign(xdel) * xaccel;
 	}
 
 	var did_jump = false;
