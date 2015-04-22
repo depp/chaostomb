@@ -379,7 +379,7 @@ Player.prototype.setWeapon = function(weapon, silent) {
 		weapon = 0;
 	}
 	if (!silent) {
-		game.sound.play('clack');
+		game.sound.play(weapon === 'gun' ? 'cock' : 'clack');
 	}
 	if (this.weapon === weapon) {
 		return;
