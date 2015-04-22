@@ -138,9 +138,18 @@ class BuildSystem(object):
 
 def browserify(config, modules):
     """Bundle a JavaScript application using browserify."""
+    try:
+        env = dict(config['environment'])
+    except KeyError:
+        env = None
     sec = config['browserify']
     cmd = [sec.get('path', './node_modules/.bin/browserify')]
     cmd.extend(sec.get('flags', '').split())
+    if env:
+        cmd.extend(('-t', '[', 'envify'))
+        for k, v in env.items():
+            cmd.extend(('--' + k.upper(), v))
+        cmd.append(']')
     cmd.extend(modules)
     return run_pipe(cmd)
 

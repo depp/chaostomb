@@ -1,4 +1,5 @@
 'use strict';
+var analytics = require('./analytics');
 
 ////////////////////////////////////////////////////////////////////////
 // Asset functions
@@ -19,10 +20,12 @@ function setAnimations(sprite, key) {
 // LoadScreen
 
 function LoadScreen() {
+	this.analyticsReady = false;
 }
 
 LoadScreen.prototype.preload = function() {
 	game.load.image('loadbar', 'images/' + PATH_MAP.images.loadbar);
+	analytics.init(function() { this.analyticsReady = true; }, this);
 };
 
 LoadScreen.prototype.create = function() {
@@ -77,12 +80,9 @@ LoadScreen.prototype.update = function() {
 	var margin = 8, w = 800;
 	if (game.load.hasLoaded) {
 		this.gRect.width = w;
-		/*
-		game.state.start('Level', true, false, {
-			level: 'test',
-		});
-		*/
-		game.state.start('Menu', true, false);
+		if (this.analyticsReady) {
+			game.state.start('Menu', true, false);
+		}
 	} else {
 		this.gRect.width = margin + (w - margin * 2) * (game.load.progress / 100);
 	}

@@ -7,7 +7,6 @@ var props = require('./props');
 var player = require('./player');
 var shots = require('./shots');
 var music = require('./music');
-var persist = require('./persist');
 var menu = require('./menu');
 var text = require('./text');
 
@@ -37,9 +36,7 @@ Range.prototype.contains = function(idx) {
 };
 
 function Level() {
-	this.gLevelName = null;
 	this.gState = null;
-	this.gStartInfo = null;
 	this.gInput = null;
 	this.gPlayer = null;
 	this.gTileMap = null;
@@ -54,11 +51,9 @@ function Level() {
 	this.gMenu = null;
 }
 
-Level.prototype.init = function(startInfo) {
-	this.gLevelName = startInfo.level;
-	this.gState = startInfo.state || new persist.GameState();
+Level.prototype.init = function(state) {
+	this.gState = state;
 	this.gInput = input.getKeys();
-	this.gStartInfo = startInfo;
 	this.gPaused = false;
 	this.gMenu = null;
 	this.gAlertText = null;
@@ -83,7 +78,7 @@ Level.prototype.create = function() {
 	var i;
 	game.physics.startSystem(Phaser.Physics.ARCADE);
 
-	var map = game.add.tilemap(this.gLevelName);
+	var map = game.add.tilemap(this.gState.level);
 	this.gTileMap = map;
 	music.play(map.properties.Music);
 	map.addTilesetImage('tiles', 'tiles');
@@ -144,12 +139,12 @@ Level.prototype.create = function() {
 			break;
 		}
 	}
-	switch (this.gStartInfo.source) {
+	switch (this.gState.source) {
 	case 'door':
-		this.gProps.spawnPlayerFromDoor(this.gStartInfo.sourceId);
+		this.gProps.spawnPlayerFromDoor(this.gState.sourceId);
 		break;
 	case 'save':
-		this.gProps.spawnPlayerFromSavePoint(this.gStartInfo.sourceId);
+		this.gProps.spawnPlayerFromSavePoint(this.gState.sourceId);
 		break;
 	}
 	this.gPlayer.spawn(playerPos);
@@ -179,18 +174,12 @@ Level.prototype.testTileRect = function(r) {
 	return false;
 };
 
-/*
-Level.prototype.render = function() {
-	this.gPlayer.group.forEachAlive(game.debug.body, game.debug);
-	this.gOuch.forEachAlive(game.debug.body, game.debug);
-};
-*/
-
 Level.prototype.spawnPlayer = function(obj) {
 	this.gPlayer.spawn(obj);
 };
 
 Level.prototype.update = function() {
+	this.gState.levelTime += this.time.physicsElapsed;
 	input.update();
 	if (this.gAlertWait) {
 		var name;
@@ -225,7 +214,7 @@ Level.prototype.lose = function(message) {
 		message = 'You died.';
 	}
 	this.gMenu = new menu.Menu([
-		menu.itemSavedGame(),
+		menu.itemLoadGame(),
 		menu.itemExit(),
 	], message);
 };
@@ -239,16 +228,6 @@ Level.prototype.setPaused = function(flag) {
 	}
 	game.physics.arcade.isPaused = flag;
 	this.gPaused = flag;
-};
-
-// Change the current level.
-Level.prototype.changeLevel = function(target) {
-	this.state.restart(true, false, {
-		state: this.gState,
-		level: target,
-		source: 'door',
-		sourceId: this.gStartInfo.level,
-	});
 };
 
 // Present an alert.

@@ -84,7 +84,7 @@ Behavior.prototype.damage = function(amt) {
 	var player = this.obj.player;
 	player.setHealth(player.health - amt);
 	if (player.health <= 0) {
-		this.kill('damage');
+		this.kill('Shot');
 	}
 };
 Behavior.prototype.push = function(push) {
@@ -111,6 +111,17 @@ Behavior.prototype.kill = function(reason) {
 		this.obj.behavior = new Die(this.obj);
 		break;
 	}
+	var status;
+	switch (reason) {
+	case 'Water':
+	case 'Lava':
+		status = 'drown';
+		break;
+	default:
+		status = 'shot';
+		break;
+	}
+	this.obj.level.gState.report(status);
 };
 
 ////////////////////////////////////////////////////////////////////////
@@ -133,7 +144,7 @@ Dead.prototype.kill = function() {};
 ////////////////////////////////////////////////////////////////////////
 // Die
 
-function Die(obj) {
+function Die(obj, reason) {
 	obj.sprite.body.gravity.y = params.GRAVITY;
 	this.obj = obj;
 	this.time = params.PLAYER_DEATH_TIME;

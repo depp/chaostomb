@@ -15,11 +15,6 @@ function start() {
 	game.state.add('Final', mfinal.FinalScreen);
 	game.state.add('Dummy', Dummy);
 	game.state.start('Load', true, false);
-	/*
-	game.state.start('Level', true, false, {
-		level: 'test',
-	});
-  */
 }
 
 function Dummy() {}

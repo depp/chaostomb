@@ -3,7 +3,7 @@ var music = require('./music');
 var text = require('./text');
 var input = require('./input');
 var params = require('./params');
-var persist = require('./persist');
+var gamestate = require('./gamestate');
 
 ////////////////////////////////////////////////////////////////////////
 // Menu Items
@@ -13,27 +13,6 @@ function itemExit() {
 		text: 'Exit',
 		func: function() {
 			game.state.start('Menu', true, false);
-		}
-	};
-}
-
-function itemNewGame() {
-	return {
-		text: 'Start New Game',
-		func: function() {
-			game.state.start('Level', true, false, {'level': 'entrance1'});
-		}
-	};
-}
-
-function itemSavedGame() {
-	var saveData = persist.loadSave();
-	return {
-		preference: saveData ? +10 : -10,
-		text: 'Load Saved Game',
-		enabled: !!saveData,
-		func: function() {
-			game.state.start('Level', true, false, saveData);
 		}
 	};
 }
@@ -62,7 +41,7 @@ function Menu(items, title) {
 			this.selection = i;
 			this.pointer.position.set(x, y);
 		}
-		obj = this.makeItem(x, y, it.text, it.enabled, true);
+		obj = this.makeItem(x, y, it.text, !!it.func, true);
 		obj.func = it.func;
 		obj.context = it.context;
 		this.items.push(obj);
@@ -71,9 +50,6 @@ function Menu(items, title) {
 }
 
 Menu.prototype.makeItem = function(x, y, txt, enabled, makeBack) {
-	if (typeof enabled == 'undefined') {
-		enabled = true;
-	}
 	var back;
 	if (makeBack) {
 		back = this.group.create(x, y, 'menu', 1);
@@ -108,7 +84,7 @@ Menu.prototype.update = function() {
 	}
 	if (this.input.fire === 1) {
 		var it = this.items[this.selection];
-		if (it.enabled) {
+		if (it.func) {
 			it.func.call(it.context);
 			sound = 'clack';
 		} else {
@@ -145,8 +121,8 @@ function MainMenu() {
 MainMenu.prototype.create = function() {
 	game.add.image(0, 0, 'title');
 	this.menu = new Menu([
-		itemNewGame(),
-		itemSavedGame(),
+		gamestate.itemNewGame(),
+		gamestate.itemLoadGame(),
 	]);
 };
 
@@ -160,8 +136,8 @@ MainMenu.prototype.update = function() {
 
 module.exports = {
 	itemExit: itemExit,
-	itemNewGame: itemNewGame,
-	itemSavedGame: itemSavedGame,
+	itemNewGame: gamestate.itemNewGame,
+	itemLoadGame: gamestate.itemLoadGame,
 	Menu: Menu,
 	MainMenu: MainMenu,
 };

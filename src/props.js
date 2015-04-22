@@ -45,7 +45,9 @@ Door.prototype.interact = function() {
 	var timer = game.time.create(true);
 	timer.add(
 		LEVEL_EXIT_TIME * 1000, function() {
-			level.changeLevel(target);
+			var st = level.gState;
+			st.report('door');
+			st.changeLevel(target, 'door', st.level);
 		});
 	timer.start();
 };
@@ -63,6 +65,7 @@ Door.prototype.spawnPlayer = function() {
 };
 Door.prototype.endGame = function() {
 	var level = this.level;
+	level.gState.report('end');
 	var nweap = level.gState.weapons.length, msg = null;
 	switch (nweap) {
 	case 0:
@@ -109,10 +112,10 @@ Door.prototype.endGame = function() {
 function Chest(level, sprite, info) {
 	this.level = level;
 	this.sprite = sprite;
-	this.ident = info.Id;
+	this.ident = parseInt(info.Id);
 	this.object = info.Object;
-	if (typeof this.ident == 'undefined') {
-		console.warn('Chest has no Id');
+	if (!isFinite(this.ident)) {
+		console.warn('Chest has no Id / invalid Id', info.Id);
 		sprite.name = null;
 	} else {
 		if (this.ident in level.gProps.chests) {
@@ -120,7 +123,7 @@ function Chest(level, sprite, info) {
 		} else {
 			level.gProps.chests[this.ident] = this;
 		}
-		if (this.ident in level.gState.chests) {
+		if (level.gState.chests.indexOf(this.ident) >= 0) {
 			sprite.frame += 4;
 			sprite.name = null;
 		}
@@ -129,7 +132,7 @@ function Chest(level, sprite, info) {
 Chest.prototype.markerOffset = 48;
 Chest.prototype.interact = function() {
 	this.sprite.name = null;
-	this.level.gState.chests[this.ident] = 0;
+	this.level.gState.chests.push(this.ident);
 
 	var level = this.level;
 	level.setPaused(true);
@@ -207,7 +210,7 @@ SavePoint.prototype.markerOffset = 48;
 SavePoint.prototype.dead = false;
 SavePoint.prototype.interact = function() {
 	this.level.gPlayer.healFull();
-	this.level.gState.save(this.level.gLevelName, this.ident);
+	this.level.gState.save(this.ident);
 	this.level.alert('Game saved.');
 	game.sound.play('good');
 };
