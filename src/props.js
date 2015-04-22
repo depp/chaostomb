@@ -189,11 +189,13 @@ Chest.prototype.interact = function() {
 	game.sound.play('fanfare');
 	tween.onComplete.addOnce(function() {
 		tfunc(this.level.gPlayer);
-		level.setPaused(false);
+		if (!message) {
+			level.setPaused(false);
+		}
 		treasure.destroy();
 	}, this);
 	if (message) {
-		level.alert(message, true);
+		level.alert(message, false, true);
 	}
 };
 
