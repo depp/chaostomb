@@ -28,7 +28,7 @@
 	<li><span>Down arrow:</span> interact</li>
 	<li><span>Z:</span> previous weapon</li>
 	<li><span>X:</span> next weapon</li>
-	<li><span>C:</span> shoot and select menu item</li>
+	<li><span>C:</span> shoot / select menu item</li>
       </ul>
       <h3>Links</h3>
       <ul class="links">
