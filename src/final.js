@@ -49,7 +49,7 @@ FinalScreen.prototype.init = function(state) {
 		txt += 'You found some good weapons, for sure.\n';
 		txt += 'Ultimate weapons?  Maybe not.\n';
 	} else {
-		if (hcount == 0) {
+		if (hcount === 0) {
 			txt += 'You relied solely on your wits,\n';
 			txt += '  and SOMEHOW made it through alive.\n';
 			txt += '(Wow, you picked up no hearts.)\n';
