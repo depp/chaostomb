@@ -124,6 +124,7 @@ function MainMenu() {
 }
 
 MainMenu.prototype.create = function() {
+	music.play(null);
 	game.add.image(0, 0, 'title');
 	this.menu = new Menu([
 		gamestate.itemNewGame(),
